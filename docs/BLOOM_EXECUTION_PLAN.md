@@ -1,6 +1,6 @@
 # Bloom Flutter App & Case Study — Execution Plan
 
-**Status:** Flutter foundation approved; ready to execute  
+**Status:** Baseline validated; Phase 0 closed with provisional release-identity risks
 **Last updated:** 2026-07-24  
 **Primary goal:** Publish a focused, trustworthy Bloom app on Google Play, then rebuild the portfolio case study around evidence from the working product.  
 **Product thesis:** Identification activates the user; dependable, editable care reminders and history retain them.
@@ -72,14 +72,14 @@
 
 ## 0.1 Repository and ownership
 
-- [ ] Use the separate `bloom-app` repository.
-- [ ] Initialize and maintain it as a Flutter/Dart project using the FVM-pinned Flutter SDK.
-- [ ] Configure the Android application ID as `design.chandrika.bloom`; document any naming risk before publication.
-- [ ] Add `docs/` to the mobile repository.
-- [ ] Copy this plan into `docs/BLOOM_EXECUTION_PLAN.md`.
-- [ ] Move revised product and design documents into `docs/` so they are tracked.
-- [ ] Keep signing keys and secrets outside Git.
-- [ ] Add secret scanning and a clear `.gitignore` before any API work.
+- [x] Use the separate `bloom-app` repository.
+- [x] Initialize and maintain it as a Flutter/Dart project using the FVM-pinned Flutter SDK.
+- [x] Configure the Android application ID as `design.chandrika.bloom`; document any naming risk before publication.
+- [x] Add `docs/` to the mobile repository.
+- [x] Copy this plan into `docs/BLOOM_EXECUTION_PLAN.md`.
+- [x] Move revised product and design documents into `docs/` so they are tracked.
+- [x] Keep signing keys and secrets outside Git.
+- [x] Add secret scanning and a clear `.gitignore` before any API work.
 
 Current source material:
 
@@ -92,24 +92,30 @@ Note: the copies in this repository's `docs/` directory become the implementatio
 
 ## 0.2 Product identity checks
 
-- [ ] Search Google Play for conflicting products named Bloom.
+- [x] Search Google Play for conflicting products named Bloom.
 - [ ] Perform an appropriate trademark/name availability check.
 - [ ] Confirm the final public app name and verify that the configured `design.chandrika.bloom` application ID can remain permanent.
 - [ ] Reserve a matching domain or subdomain if desired.
 - [ ] Decide the public developer name and support email.
+
+Search evidence recorded 2026-07-24: `design.chandrika.bloom` did not appear in public results, but multiple unrelated apps use **Bloom** and an existing plant-care product markets itself as **Bloom — Complete Plant Care Guide**. Treat the public name as a material collision risk until the owner completes store and trademark checks. The package ID is technically available based on public search only; Google Play Console remains authoritative.
+
+Owner decision recorded 2026-07-24: keep **Bloom**, the public developer name, support email, release countries, and domain explicitly provisional during product validation. This accepts the naming risk for development only; it does not approve the public store identity.
 
 ## 0.3 Development accounts
 
 - [ ] Create or verify the Google Play developer account early.
 - [ ] Record whether it is a personal or organization account.
 - [ ] If it is a personal account created after 2023-11-13, plan for the current 12-testers-for-14-days production-access requirement.
-- [ ] Create the plant-identification provider account only after the technical spike is approved.
+- [x] Defer creating the plant-identification provider account until the technical spike is approved.
+
+Account status recorded 2026-07-24: no Google Play developer account exists yet, so account type and the applicable production-access path cannot be determined. Account creation and classification are required before closed-beta scheduling.
 
 ### Exit gate
 
-- [ ] Mobile repository exists and builds locally.
-- [ ] Product documents are tracked.
-- [ ] App name risk and Play account type are documented.
+- [x] Mobile repository exists and builds locally.
+- [x] Product documents are tracked.
+- [x] App name risk and Play account status/type are documented; unresolved store-identity choices remain explicit release blockers.
 
 ---
 
@@ -123,11 +129,11 @@ Use this as the working promise:
 
 > Identify or search for a houseplant, review a suggested care plan for your conditions, and know what to do today.
 
-- [ ] Remove claims such as “never kill a plant,” “exactly what it needs,” and “care on autopilot.”
-- [ ] Treat “under one minute” as a design target until it is measured.
-- [ ] Define the target user as a non-expert with approximately 2–8 indoor plants.
+- [x] Remove claims such as “never kill a plant,” “exactly what it needs,” and “care on autopilot.”
+- [x] Treat “under one minute” as a design target until it is measured.
+- [x] Define the target user as a non-expert with approximately 2–8 indoor plants.
 - [ ] Define initial geography and language scope.
-- [ ] Confirm whether pet/child toxicity content is excluded or supported by a verified source.
+- [x] Exclude pet/child toxicity content until a verified, licensed source is approved.
 
 ## 1.2 Define the navigation
 
@@ -138,20 +144,20 @@ Recommended information architecture:
 3. **Discover** — manual search and camera identification
 4. **Settings** — accessed from the top app bar rather than a permanent bottom destination
 
-- [ ] Confirm these three bottom destinations.
-- [ ] Remove Community from production navigation.
-- [ ] Keep manual search next to scanning, not hidden as an error-only fallback.
+- [x] Confirm these three bottom destinations.
+- [x] Remove Community from production navigation.
+- [x] Keep manual search next to scanning, not hidden as an error-only fallback.
 
 ## 1.3 Write measurable product outcomes
 
-- [ ] Define activation: a plant is added and its care plan is confirmed.
-- [ ] Define first value: the user sees a meaningful next care task.
-- [ ] Define week-two retention.
-- [ ] Define acceptable scan latency.
-- [ ] Define acceptable top-1 and top-3 candidate confirmation rates.
-- [ ] Define acceptable manual-fallback rate.
-- [ ] Define acceptable duplicate/missed notification rate.
-- [ ] Define crash-free and ANR targets.
+- [x] Define activation: a plant is added and its care plan is confirmed.
+- [x] Define first value: the user sees a meaningful next care task.
+- [x] Define week-two retention.
+- [x] Define acceptable scan latency.
+- [x] Define acceptable top-1 and top-3 candidate confirmation rates.
+- [x] Define acceptable manual-fallback rate.
+- [x] Define acceptable duplicate/missed notification rate.
+- [x] Define crash-free and ANR targets.
 
 Suggested validation metrics:
 
@@ -167,17 +173,17 @@ Suggested validation metrics:
 
 ## 1.4 Create a scope decision artifact
 
-- [ ] Create a one-page `Now / Later / Not yet` table.
-- [ ] Record why Community was cut.
-- [ ] Record why accounts and cloud sync were cut.
-- [ ] Record why diagnosis and precise recovery guidance were cut.
-- [ ] Record the criteria required to revisit each deferred feature.
+- [x] Create a one-page `Now / Later / Not yet` artifact in [`SCOPE.md`](./SCOPE.md).
+- [x] Record why Community was cut.
+- [x] Record why accounts and cloud sync were cut.
+- [x] Record why diagnosis and precise recovery guidance were cut.
+- [x] Record the criteria required to revisit each deferred feature.
 
 ### Exit gate
 
-- [ ] One product promise, one target user, and one v1 scope are approved.
-- [ ] Success measures are written before UI production begins.
-- [ ] The PRD no longer conflicts with the production navigation or MVP.
+- [x] One product promise, one target user, and one v1 scope are documented.
+- [x] Success measures are written before UI production begins.
+- [x] The PRD no longer conflicts with the production navigation or MVP.
 
 ---
 
@@ -358,17 +364,17 @@ Initial candidate: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify). Tre
 
 ## 4.1 Project baseline
 
-- [ ] Flutter and Dart with standard Material 3 components
-- [ ] Use the FVM-pinned Flutter SDK for local development and automation.
-- [ ] Keep the architecture portable to future iOS and web targets while releasing Android first.
-- [ ] Configure Android application ID `design.chandrika.bloom`.
-- [ ] Target Android 16 / API 36
+- [x] Flutter and Dart with standard Material 3 components
+- [x] Use the FVM-pinned Flutter SDK for local development and automation.
+- [x] Keep the architecture portable to future iOS and web targets while releasing Android first.
+- [x] Configure Android application ID `design.chandrika.bloom`.
+- [x] Target Android 16 / API 36
 - [ ] Decide `minSdk` after checking target-user device coverage; `minSdk 26` is the working assumption.
 - [ ] Organize code by feature, with presentation, domain, and data layers where each layer adds value.
 - [ ] Use immutable screen state, explicit events/actions, and unidirectional state flow.
 - [ ] Keep platform channels and Android-native code behind narrow plugin or adapter boundaries.
 - [ ] Choose a lightweight dependency-injection/state-management approach only after comparing Flutter-native options.
-- [ ] CI build, `flutter analyze`, unit/widget tests, and Android debug artifact
+- [x] CI build, `flutter analyze`, unit/widget tests, and Android debug artifact
 
 ## 4.2 Local data spike
 
@@ -807,6 +813,10 @@ Record decisions as they happen.
 
 | Date | Decision | Evidence/rationale | Owner | Revisit when |
 |---|---|---|---|---|
+| 2026-07-24 | Keep release identity provisional during validation | Public search found multiple Bloom products, including a plant-care product; no Play developer account, final developer name, support email, country list, domain, or trademark clearance exists yet | Product owner | Before closed-beta scheduling or any public store asset is produced |
+| 2026-07-24 | Use Today, My Plants, and Discover as bottom destinations; open Settings from the top app bar | Keeps the daily care loop primary and manual search visible without spending a permanent destination on infrequent settings | Product owner | Prototype tests show users cannot find settings or manual search |
+| 2026-07-24 | Exclude toxicity guidance from v1 | No verified, licensed source or review process has been approved; unsupported safety guidance creates unacceptable trust risk | Product owner | A licensed source and review process are approved |
+| 2026-07-24 | Sequence technical spikes as persistence, then reminder projection and identification | Persisted tasks and stable event IDs are prerequisites for reliable, idempotent reminder behavior; identification can proceed independently after shared contracts stabilize | Engineering | A spike disproves the dependency or architecture |
 | 2026-07-24 | Build with Flutter/Dart, release Android first, and preserve iOS/web portability | Google Play remains the first release target; Flutter supports one product codebase while platform-specific capabilities stay behind plugins/adapters and Android-native configuration | TBD | iOS or web release work is prioritized, or a required capability cannot be supported reliably |
 | 2026-07-19 | Local-first MVP | Dependable offline care tasks and history are the retention core | TBD | A validated cross-device sync need justifies cloud infrastructure |
 | 2026-07-19 | Defer Community | Weak original signal, high moderation cost, distracts from care loop | TBD | Repeated beta demand and moderation capacity exist |
@@ -824,6 +834,7 @@ Record decisions as they happen.
 | Reminder behavior duplicates or misses tasks | Retention product becomes unreliable | Scheduling spike in Phase 4 |
 | Scope expands back into Community/social features | Delayed launch and moderation burden | Enforce v1 scope and exit gates |
 | “Bloom” name conflicts with existing products | Rebrand/package disruption | Name check in Phase 0 |
+| Google Play developer account has not been created or classified | Closed testing and production-access timing are unknown | Create the account and record its type before scheduling closed beta |
 | Privacy declarations do not match SDK/provider behavior | Play rejection or user-trust damage | Data inventory before beta |
 | First-time Flutter/mobile development takes longer than planned | Missed schedule or rushed release | Use the FVM-pinned SDK, build vertical slices, and preserve scope |
 

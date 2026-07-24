@@ -1,22 +1,38 @@
 # Bloom — Product Requirements Document
 
-**Version:** 1.0  
-**Status:** Ready for design generation  
-**Platform:** iOS and Android
+**Version:** 1.1
+**Status:** Android-first implementation brief
+**Platform:** Android first; preserve future iOS and web portability
 
 ---
 
 ## Overview
 
-Bloom is a personal plant care app that helps people keep their houseplants alive. It removes the guesswork from plant care by telling you exactly what each plant needs and when. Users can build a collection of their plants, get reminded when to water or fertilise them, and identify unknown plants using their camera.
+Bloom is a local-first plant care app for non-experts with approximately 2–8 indoor plants. Users can identify or search for a houseplant, review and edit a suggested care plan for their conditions, and see what care is due today.
 
-The core promise: you should never accidentally kill a plant because you forgot to water it, or because you didn't know what it needed.
+The core promise:
+
+> Identify or search for a houseplant, review a suggested care plan for your conditions, and know what to do today.
+
+Care guidance is a cautious, editable suggestion rather than a guarantee. The initial product is an English-language Android release; the first Google Play country list must be confirmed before closed beta.
 
 ---
 
 ## Target User
 
-Someone who owns 2–8 houseplants, genuinely wants them to thrive, but doesn't have deep horticultural knowledge. They forget watering schedules, aren't sure what "indirect light" really means for their specific plant, and feel guilty when a plant dies. They're not a hobbyist or expert — they just want a plant to look good in their home.
+Someone who owns approximately 2–8 indoor plants, genuinely wants them to thrive, but doesn't have deep horticultural knowledge. They forget watering schedules and are unsure how general care guidance applies to their home. They need understandable suggestions, editable reminders, and a dependable daily care loop rather than expert diagnosis.
+
+---
+
+## Navigation
+
+The production app has three bottom destinations:
+
+1. **Today** — overdue, due, upcoming, and completed care tasks
+2. **My Plants** — the saved collection, plant details, and care history
+3. **Discover** — manual search and camera identification
+
+Settings is opened from the top app bar. Manual search is always visible next to scanning and remains available when camera permission, connectivity, confidence, or the identification provider fails. Community is not part of production navigation.
 
 ---
 
@@ -58,17 +74,18 @@ If all tasks are done, the screen shows a positive empty state: "All caught up �
 
 ### 3. Plant Identification via Camera
 
-Users can point their camera at any plant and Bloom will identify it.
+Users can point their camera at a plant and Bloom will return ranked identification candidates with confidence messaging.
 
 The flow:
 1. User opens the Discover tab and taps "Scan a Plant"
 2. A camera viewfinder opens with a framing guide overlay
 3. User takes a photo
-4. Bloom returns the plant name, scientific name, and confidence level
-5. A result sheet slides up showing care summary (light, water, difficulty)
-6. User can tap "Add to My Plants" to add it to their collection with all care info pre-filled
+4. Bloom returns ranked candidates with common name, scientific name, and confidence guidance
+5. The user confirms a candidate or chooses search/retake when confidence is low
+6. A result sheet shows a sourced care summary
+7. The user reviews and edits the suggested care plan before adding the plant
 
-If identification fails or confidence is low, the user is shown the closest matches and can pick the correct one manually.
+If identification fails or confidence is low, the user can retake the image or use manual search. Bloom does not silently accept the first result.
 
 ---
 
@@ -96,11 +113,7 @@ Shows the plant's care schedule as a set of rows:
 Users can log a care action (e.g. "just watered") directly from this tab, which updates the schedule.
 
 **Info tab**
-Background information about the plant:
-- Origin / native habitat
-- Growth habit (fast, slow, trailing, upright)
-- Toxicity to pets and children
-- Common problems and how to spot them
+Shows sourced, versioned catalog information that is approved for v1. Pet/child toxicity and diagnosis or recovery guidance are excluded until a verified, licensed source and appropriate review are in place.
 
 **Notes tab**
 A personal journal for the plant. Users can write free-form notes with timestamps — e.g. "Repotted today", "New leaf appeared", "Noticed yellowing on lower leaves". Each note shows the date it was written.
@@ -120,10 +133,31 @@ Users can control:
 
 ### 7. Settings
 
+Settings is accessed from the Today top app bar rather than a fourth bottom-navigation destination.
+
 Users can adjust:
 - Notification preferences (which types, what time)
 - Unit preference (Celsius/Fahrenheit, metric/imperial)
 - App appearance (follows system light/dark mode)
+- Permission status
+- Privacy and delete-all-local-data controls
+- Support, version, and attribution information
+
+---
+
+## Product Outcomes
+
+These are initial validation thresholds, not launch claims. Revisit them after prototype and closed-beta evidence.
+
+- **Activation:** at least 70% of observed participants who start Add Plant confirm a plant and an editable care plan.
+- **Time to activation:** design target under one minute; measure the median and do not claim it publicly until demonstrated.
+- **First value:** every activated plant immediately produces a clear next task or an explicit no-task-yet state.
+- **Week-two retention:** at least 30% of activated closed-beta users complete or intentionally reschedule a care task during days 8–14.
+- **Identification latency:** median response at or below 5 seconds and p95 at or below 10 seconds on the supported network profile.
+- **Identification quality:** top-1 confirmation at or above 70% and top-3 confirmation at or above 90% on the approved benchmark set.
+- **Manual fallback:** available for 100% of identification attempts; investigate if more than 30% of attempts require it.
+- **Reminder reliability:** fewer than 1% duplicate or missed scheduled care tasks in the reminder test matrix.
+- **Stability:** at least 99.5% crash-free sessions and Android vitals below the current bad-behavior thresholds.
 
 ---
 
@@ -191,6 +225,9 @@ Users can adjust:
 - Social features, community feed, or sharing
 - Plant marketplace or e-commerce
 - Pest and disease diagnosis
+- Pet/child toxicity guidance without a verified, licensed source
 - Outdoor / garden plants (houseplants only)
 - Watering hardware integration
 - Multi-user households or shared plant collections
+- Accounts and cloud sync
+- Ads, subscriptions, and other monetization

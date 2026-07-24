@@ -37,8 +37,28 @@ the Android-first phase.
 
 ## Run and validate
 
+Start an Android API 36 emulator from Android Studio's Device Manager, or use
+the configured command-line emulator:
+
 ```sh
-fvm flutter run
+fvm flutter emulators
+fvm flutter emulators --launch bloom_api_36
+fvm flutter devices
+```
+
+Run the debug build on the connected Android target:
+
+```sh
+fvm flutter run -d <device-id>
+```
+
+While `flutter run` is attached, press `r` for hot reload, `R` for a full hot
+restart, and `q` to stop the development session. If only one supported device
+is connected, `fvm flutter run` selects it automatically.
+
+Run the same validation used by CI:
+
+```sh
 fvm dart format --output=none --set-exit-if-changed lib test
 fvm flutter analyze
 fvm flutter test
@@ -50,6 +70,8 @@ fvm flutter build apk --debug
 - [Execution plan](docs/BLOOM_EXECUTION_PLAN.md)
 - [Product requirements](docs/PRD.md)
 - [Design specification](docs/DESIGN.md)
+- [v1 scope decisions](docs/SCOPE.md)
+- [Technical spike sequence](docs/TECHNICAL_SPIKES.md)
 
 The execution plan is the source of truth for sequencing, scope, and exit
 gates. Product features should not begin until the current phase's exit gate is
