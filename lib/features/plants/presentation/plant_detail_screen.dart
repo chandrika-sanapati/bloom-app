@@ -8,6 +8,7 @@ import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/presentation/care_ui_mappers.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
 import 'package:bloom/shared/widgets/care_task_row.dart';
+import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class PlantDetailScreen extends StatefulWidget {
@@ -218,16 +219,18 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              height: 160,
-              width: double.infinity,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: plant.accent.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(BloomRadii.card),
-                  border: Border.all(color: BloomColors.borderSubtle),
-                ),
-                child: Icon(Icons.local_florist, size: 64, color: plant.accent),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(BloomRadii.card),
+                border: Border.all(color: BloomColors.borderSubtle),
+              ),
+              child: PlantThumbnail(
+                plantKey: plant.id,
+                accent: plant.accent,
+                height: 160,
+                borderRadius: BloomRadii.card,
+                iconSize: 64,
+                semanticLabel: '${plant.commonName} photo',
               ),
             ),
             const SizedBox(height: BloomSpacing.x4),

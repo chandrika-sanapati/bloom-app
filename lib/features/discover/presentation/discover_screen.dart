@@ -5,6 +5,7 @@ import 'package:bloom/features/discover/presentation/add_plant_screen.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
+import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class DiscoverScreen extends StatefulWidget {
@@ -157,14 +158,14 @@ class _CatalogResultRow extends StatelessWidget {
           padding: const EdgeInsets.all(BloomSpacing.x3),
           child: Row(
             children: [
-              Container(
+              PlantThumbnail(
+                plantKey: entry.id,
+                accent: entry.accent,
                 width: 56,
                 height: 56,
-                decoration: BoxDecoration(
-                  color: entry.accent.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(BloomRadii.image),
-                ),
-                child: Icon(Icons.eco_outlined, color: entry.accent),
+                icon: Icons.eco_outlined,
+                iconSize: 28,
+                semanticLabel: '${entry.commonName} photo',
               ),
               const SizedBox(width: BloomSpacing.x3),
               Expanded(

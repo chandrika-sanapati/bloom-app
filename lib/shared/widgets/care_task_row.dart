@@ -4,6 +4,7 @@ import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
+import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class CareTaskRow extends StatelessWidget {
@@ -46,14 +47,14 @@ class CareTaskRow extends StatelessWidget {
                 onTap: onOpenPlant ?? () => onToggle(!isDone),
                 child: Row(
                   children: [
-                    Container(
+                    PlantThumbnail(
+                      plantKey: task.plantId,
+                      accent: task.accent,
                       width: 56,
                       height: 56,
-                      decoration: BoxDecoration(
-                        color: task.accent.withValues(alpha: 0.18),
-                        borderRadius: BorderRadius.circular(BloomRadii.image),
-                      ),
-                      child: Icon(Icons.eco_outlined, color: task.accent),
+                      icon: Icons.eco_outlined,
+                      iconSize: 28,
+                      semanticLabel: '${task.plantName} photo',
                     ),
                     const SizedBox(width: BloomSpacing.x3),
                     Expanded(

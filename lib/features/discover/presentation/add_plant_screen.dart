@@ -6,6 +6,7 @@ import 'package:bloom/data/domain/entities.dart' as domain;
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
+import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class AddPlantScreen extends StatefulWidget {
@@ -136,16 +137,18 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
       body: ListView(
         padding: const EdgeInsets.all(BloomSpacing.screenMargin),
         children: [
-          SizedBox(
-            height: 140,
-            width: double.infinity,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: entry.accent.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(BloomRadii.card),
-                border: Border.all(color: BloomColors.borderSubtle),
-              ),
-              child: Icon(Icons.local_florist, size: 56, color: entry.accent),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(BloomRadii.card),
+              border: Border.all(color: BloomColors.borderSubtle),
+            ),
+            child: PlantThumbnail(
+              plantKey: entry.id,
+              accent: entry.accent,
+              height: 140,
+              borderRadius: BloomRadii.card,
+              iconSize: 56,
+              semanticLabel: '${entry.commonName} photo',
             ),
           ),
           const SizedBox(height: BloomSpacing.x4),

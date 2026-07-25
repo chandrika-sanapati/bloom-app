@@ -4,6 +4,7 @@ import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
+import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class PlantCard extends StatelessWidget {
@@ -30,9 +31,12 @@ class PlantCard extends StatelessWidget {
           children: [
             Expanded(
               flex: 3,
-              child: ColoredBox(
-                color: plant.accent.withValues(alpha: 0.18),
-                child: Icon(Icons.local_florist, size: 40, color: plant.accent),
+              child: PlantThumbnail(
+                plantKey: plant.id,
+                accent: plant.accent,
+                borderRadius: 0,
+                iconSize: 40,
+                semanticLabel: '${plant.commonName} photo',
               ),
             ),
             Expanded(
