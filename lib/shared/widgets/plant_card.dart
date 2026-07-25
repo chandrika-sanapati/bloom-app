@@ -7,9 +7,10 @@ import 'package:bloom/shared/widgets/bloom_status_chip.dart';
 import 'package:flutter/material.dart';
 
 class PlantCard extends StatelessWidget {
-  const PlantCard({required this.plant, super.key});
+  const PlantCard({required this.plant, this.onTap, super.key});
 
   final FixturePlant plant;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class PlantCard extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

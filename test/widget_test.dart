@@ -20,9 +20,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('plants in your collection'), findsOneWidget);
     expect(find.text('Add plant'), findsOneWidget);
-    expect(find.text('Peace Lily'), findsOneWidget);
+    expect(find.text('Peace Lily').hitTestable(), findsOneWidget);
 
-    await tester.tap(find.text('Add plant'));
+    await tester.tap(find.text('Peace Lily').hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.text('Open tasks'), findsOneWidget);
+    expect(find.text('Timeline'), findsOneWidget);
+    expect(find.text('Watered'), findsOneWidget);
+    expect(find.text('Log care'), findsOneWidget);
+
+    await tester.tap(find.text('About').hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.text('Plant overview'), findsOneWidget);
+    expect(find.text('Care plan'), findsOneWidget);
+    expect(find.textContaining('Keep soil lightly moist'), findsOneWidget);
+
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Add plant').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Popular houseplants'), findsOneWidget);
     expect(find.text('Scan a plant'), findsOneWidget);
@@ -31,7 +47,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Search results'), findsOneWidget);
     expect(find.text('Pothos'), findsOneWidget);
-    expect(find.text('Snake Plant'), findsNothing);
+    expect(find.text('Snake Plant').hitTestable(), findsNothing);
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();

@@ -1,4 +1,5 @@
 import 'package:bloom/app/theme/bloom_spacing.dart';
+import 'package:bloom/features/plants/presentation/plant_navigation.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/widgets/plant_card.dart';
 import 'package:flutter/material.dart';
@@ -85,10 +86,13 @@ class PlantsScreen extends StatelessWidget {
                   crossAxisSpacing: BloomSpacing.x3,
                   childAspectRatio: 0.72,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => PlantCard(plant: plants[index]),
-                  childCount: plants.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final plant = plants[index];
+                  return PlantCard(
+                    plant: plant,
+                    onTap: () => openPlantDetail(context, plant.id),
+                  );
+                }, childCount: plants.length),
               ),
             ),
         ],

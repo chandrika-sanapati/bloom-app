@@ -1,4 +1,5 @@
 import 'package:bloom/app/theme/bloom_spacing.dart';
+import 'package:bloom/features/plants/presentation/plant_navigation.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/widgets/care_task_row.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class _TodayScreenState extends State<TodayScreen> {
                 child: CareTaskRow(
                   task: task,
                   isDone: false,
+                  onOpenPlant: () => openPlantDetail(context, task.plantId),
                   onToggle: (_) {
                     setState(() => _completedTaskIds.add(task.id));
                   },
@@ -63,6 +65,7 @@ class _TodayScreenState extends State<TodayScreen> {
                 child: CareTaskRow(
                   task: task,
                   isDone: true,
+                  onOpenPlant: () => openPlantDetail(context, task.plantId),
                   onToggle: (_) {
                     setState(() => _completedTaskIds.remove(task.id));
                   },
