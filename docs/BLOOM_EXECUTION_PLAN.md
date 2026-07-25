@@ -345,7 +345,7 @@ Initial candidate: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify). Tre
 - [ ] Reminder preferences
 - [ ] Permission status
 - [ ] Privacy policy
-- [ ] Delete all local data
+- [x] Delete all local data
 - [ ] About, version, support, and attribution
 
 ## 3.4 Prototype validation
@@ -588,7 +588,7 @@ lib/
 - [ ] Publish a public privacy policy.
 - [ ] Link the privacy policy from inside the app.
 - [ ] Document retention and deletion.
-- [ ] Implement Delete all local data.
+- [x] Implement Delete all local data.
 - [ ] Strip EXIF/GPS before upload.
 - [ ] Confirm TLS and server-side secret handling.
 - [ ] Confirm identification images are not used for model training without separate consent.

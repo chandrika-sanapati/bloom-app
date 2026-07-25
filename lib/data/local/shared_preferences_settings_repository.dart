@@ -38,4 +38,11 @@ class SharedPreferencesSettingsRepository implements SettingsRepository {
   Future<void> setHasSeededSampleData(bool value) async {
     await _prefs.setBool(_seededKey, value);
   }
+
+  @override
+  Future<void> clearAll() async {
+    await _prefs.remove(_unitsKey);
+    await _prefs.remove(_remindersKey);
+    await _prefs.remove(_seededKey);
+  }
 }

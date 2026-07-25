@@ -33,6 +33,15 @@ class BloomServices {
     reminders.reconcile();
   }
 
+  /// Clears SQLite care data, preferences, and scheduled reminders.
+  /// Leaves an empty collection (does not reseed sample plants).
+  Future<void> deleteAllLocalData() async {
+    await reminders.disableReminders();
+    await care.deleteAllData();
+    await settings.clearAll();
+    notifyDataChanged();
+  }
+
   static Future<BloomServices> bootstrap({
     BloomDatabase? database,
     SharedPreferences? preferences,

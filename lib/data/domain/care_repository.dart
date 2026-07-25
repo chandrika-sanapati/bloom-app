@@ -38,5 +38,8 @@ abstract interface class CareRepository {
 
   Future<List<CareEvent>> listCareEvents(String userPlantId);
 
+  /// Wipes plants, plans, tasks, events, and species.
+  Future<void> deleteAllData();
+
   Future<void> close();
 }

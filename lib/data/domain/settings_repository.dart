@@ -11,4 +11,7 @@ abstract interface class SettingsRepository {
   Future<bool> getHasSeededSampleData();
 
   Future<void> setHasSeededSampleData(bool value);
+
+  /// Removes Bloom preference keys (units, reminders, seed flag).
+  Future<void> clearAll();
 }

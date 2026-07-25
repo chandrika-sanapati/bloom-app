@@ -21,5 +21,10 @@ void main() {
     expect(await repo.getUnits(), 'metric');
     expect(await repo.getRemindersEnabled(), isFalse);
     expect(await repo.getHasSeededSampleData(), isTrue);
+
+    await repo.clearAll();
+    expect(await repo.getUnits(), isNull);
+    expect(await repo.getRemindersEnabled(), isFalse);
+    expect(await repo.getHasSeededSampleData(), isFalse);
   });
 }

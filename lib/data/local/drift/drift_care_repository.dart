@@ -219,5 +219,16 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
+  Future<void> deleteAllData() {
+    return _db.transaction(() async {
+      await _db.delete(_db.careEventRows).go();
+      await _db.delete(_db.careTaskRows).go();
+      await _db.delete(_db.carePlanItemRows).go();
+      await _db.delete(_db.userPlantRows).go();
+      await _db.delete(_db.plantSpeciesRows).go();
+    });
+  }
+
+  @override
   Future<void> close() => _db.close();
 }
