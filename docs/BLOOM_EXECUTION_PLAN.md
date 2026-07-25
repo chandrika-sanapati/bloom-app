@@ -1,6 +1,6 @@
 # Bloom Flutter App & Case Study — Execution Plan
 
-**Status:** Phase 1 product definition locked; Phase 2 validation pack ready
+**Status:** Navigable Flutter skeleton started; Phase 2 validation intentionally deferred
 **Last updated:** 2026-07-25
 
 **Primary goal:** Publish a focused, trustworthy Bloom app on Google Play, then rebuild the portfolio case study around evidence from the working product.  
@@ -471,10 +471,10 @@ lib/
     widgets/
 ```
 
-- [ ] Keep the first release in one Flutter package unless build complexity justifies splitting packages.
+- [x] Keep the first release in one Flutter package unless build complexity justifies splitting packages.
 - [ ] Keep state transitions unidirectional: UI emits events/actions, state holders coordinate domain work, and immutable state renders back to widgets.
-- [ ] Add Flutter navigation and deep links from notifications, with Android manifest/app-link configuration where required.
-- [ ] Create design tokens from the approved Figma variables.
+- [x] Add Flutter navigation shell for Today / My Plants / Discover with Settings from the app bar; deep links from notifications remain later.
+- [x] Create initial design tokens and Material 3 theme from the local design system.
 - [ ] Add widget fixtures and golden-test data.
 - [ ] Set up Flutter entry points and Android debug, internal, and release flavors as needed.
 - [ ] Configure backups deliberately for the database and plant photos.
@@ -490,7 +490,7 @@ lib/
 
 ### Exit gate
 
-- [ ] App launches into a navigable production skeleton.
+- [x] App launches into a navigable production skeleton.
 - [ ] Persistence, dependency injection, error handling, and test infrastructure are in place.
 
 ---

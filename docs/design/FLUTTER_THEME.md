@@ -1,8 +1,9 @@
-# Flutter Theme Mapping (Not Implemented Yet)
+# Flutter Theme Mapping
 
-**Last reviewed:** 2026-07-25
+**Last reviewed:** 2026-07-25  
+**Status:** Initial theme and shell live in `lib/app/theme/` and `lib/app/navigation/`
 
-This note describes how [`../DESIGN.md`](../DESIGN.md) should map into Flutter later. It is documentation only; no theme package is required until the Phase 5 foundation pass.
+This note tracks how [`../DESIGN.md`](../DESIGN.md) maps into Flutter. Poppins bundling remains a follow-up; the skeleton uses the design type scale with the platform sans-serif.
 
 ## Seed and scheme
 
@@ -68,6 +69,8 @@ abstract final class BloomRadius {
 }
 ```
 
-## Implementation gate
+## Follow-ups
 
-Introduce `lib/app/theme/` only after Phase 2 validation and before or during Phase 5 skeleton work. Until then, keep the seed colour in `lib/main.dart` compatible with `brand.green`.
+- Bundle Poppins (or `google_fonts`) once font licensing/assets are decided.
+- Add dark theme only if product keeps system appearance in v1 settings.
+- Keep feature screens under `lib/features/*/presentation/` as the care loop lands.
