@@ -1,6 +1,7 @@
 import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/navigation/bloom_shell.dart';
 import 'package:bloom/app/presentation/bloom_splash_screen.dart';
+import 'package:bloom/app/theme/bloom_scroll_behavior.dart';
 import 'package:bloom/app/theme/bloom_theme.dart';
 import 'package:bloom/data/bloom_services.dart';
 import 'package:bloom/data/reminders/reminder_action_bridge.dart';
@@ -49,6 +50,7 @@ class _BloomAppState extends State<BloomApp> with WidgetsBindingObserver {
         title: 'Bloom',
         debugShowCheckedModeBanner: false,
         theme: buildBloomTheme(),
+        scrollBehavior: const BloomScrollBehavior(),
         home: _showSplash
             ? BloomSplashScreen(
                 onFinished: () {
