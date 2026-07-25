@@ -1,6 +1,6 @@
 # Reminders Spike — Decision Record
 
-**Status:** Light production wire-up under `lib/data/reminders/` + Settings toggle  
+**Status:** Light production wire-up + cold-start hardening  
 **Date:** 2026-07-25  
 **Production code:** [`lib/data/reminders/`](../../lib/data/reminders/), Settings + app lifecycle  
 **Tests:** [`test/spikes/reminders/`](../../test/spikes/reminders/)
@@ -25,24 +25,46 @@
    `action-{action}-{taskId}-{dueAtMs}`.
 4. Reconcile cancels Bloom schedules then reschedules open tasks (no duplicates).
 5. Boot receiver + `POST_NOTIFICATIONS` declared in AndroidManifest for reboot survival path.
+6. Cold-start / background actions:
+   - Action buttons use `showsUserInterface: true` so the main isolate can apply them.
+   - `getNotificationAppLaunchDetails` applies a pending action during bootstrap.
+   - `bloomNotificationBackground` applies SQLite mutations if a background engine is used.
+   - `ReminderActionBridge` pings the UI isolate to refresh tabs after a background mutation.
 
 ## Architecture
 
 | Piece | Role |
 |---|---|
 | `ReminderScheduler` | Platform adapter interface |
-| `FlutterReminderScheduler` | Real plugin wrapper |
+| `FlutterReminderScheduler` | Real plugin wrapper + background entry |
 | `RecordingReminderScheduler` | In-memory fake for tests |
 | `CareReminderService` | Projector: enable/disable, reconcile, actions |
 | Settings switch | Permission-in-context gate |
-| `BloomApp` lifecycle | Reconcile on resume |
+| `BloomApp` lifecycle | Reconcile on resume; listen for bridge pings |
 
-## Remaining gates (not accepted yet)
+## Manual smoke checklist (emulator / device)
 
-- API 26 + physical Android device smoke (OEM battery restrictions).
-- Reboot, timezone change, and DST acceptance matrix.
+Run on API 36 emulator first, then API 26 and one physical device before accepting Spike 2.
+
+### Cold-start actions
+
+1. Enable Care reminders in Settings; grant notification permission.
+2. Force-stop Bloom (`adb shell am force-stop design.chandrika.bloom`).
+3. Trigger or wait for a care notification.
+4. Tap **Done** from the shade → reopen Bloom → task is completed once, no duplicate care event.
+5. Repeat for **Snooze** (due time moves later; reminder rescheduled) and **Skip**.
+
+### Reboot survival
+
+1. With reminders enabled and at least one open task scheduled, reboot the device/emulator.
+2. After boot, confirm the OS still shows the pending care notification when due (plugin boot receiver).
+3. Open Bloom once → Today matches SQLite; pending notifications reconcile without duplicates (`adb shell dumpsys notification` / shade check).
+
+### Still open hardware gates
+
+- OEM battery restrictions on a physical device.
+- Timezone change and DST transition acceptance.
 - Missed/duplicate rate vs PRD threshold after device testing.
-- Background action delivery when process is dead (notification actions may need cold-start wiring).
 
 ## Accept criteria status
 
@@ -52,6 +74,7 @@
 | Permission in context | Wired in Settings |
 | Done/Snooze/Skip idempotent | Unit tested |
 | Reconcile without dupes | Unit tested |
-| Reboot / TZ / DST / OEM / physical device | **Open** |
+| Cold-start action wiring | Code + unit test; manual smoke open |
+| Reboot / TZ / DST / OEM / physical device | Checklist ready; hardware **open** |
 
 Do **not** treat Spike 2 as fully accepted until the open matrix rows pass on hardware.

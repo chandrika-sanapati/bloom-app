@@ -6,10 +6,12 @@ class RecordingReminderScheduler implements ReminderScheduler {
   var permissionGranted = true;
   var initializeCalls = 0;
   void Function(String taskId, ReminderAction action)? onAction;
+  ({String taskId, ReminderAction action})? launchAction;
 
   @override
   Future<void> initialize({
     void Function(String taskId, ReminderAction action)? onAction,
+    bool listenForActions = true,
   }) async {
     initializeCalls += 1;
     this.onAction = onAction;
@@ -40,6 +42,13 @@ class RecordingReminderScheduler implements ReminderScheduler {
 
   @override
   Future<List<String>> pendingTaskIds() async => scheduled.keys.toList();
+
+  @override
+  Future<({String taskId, ReminderAction action})?> takeLaunchAction() async {
+    final action = launchAction;
+    launchAction = null;
+    return action;
+  }
 
   void emulateAction(String taskId, ReminderAction action) {
     onAction?.call(taskId, action);

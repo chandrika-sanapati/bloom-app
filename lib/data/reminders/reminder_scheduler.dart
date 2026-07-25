@@ -2,6 +2,7 @@
 abstract interface class ReminderScheduler {
   Future<void> initialize({
     void Function(String taskId, ReminderAction action)? onAction,
+    bool listenForActions = true,
   });
 
   Future<bool> requestPermission();
@@ -18,6 +19,9 @@ abstract interface class ReminderScheduler {
   Future<void> cancelAll();
 
   Future<List<String>> pendingTaskIds();
+
+  /// Action that launched the app from a notification (cold start), if any.
+  Future<({String taskId, ReminderAction action})?> takeLaunchAction();
 }
 
 enum ReminderAction { done, snooze, skip, open }

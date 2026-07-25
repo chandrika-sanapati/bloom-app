@@ -54,20 +54,25 @@ class BloomServices {
     final seeder = FixtureSeeder(care, settings);
     await seeder.seedIfNeeded();
 
+    void Function()? onMutated;
     final reminders = CareReminderService(
       care: care,
       settings: settings,
       scheduler: reminderScheduler ?? FlutterReminderScheduler(),
+      onDataMutated: () => onMutated?.call(),
     );
-    await reminders.initialize();
-    await reminders.reconcile();
 
-    return BloomServices(
+    final services = BloomServices(
       care: care,
       settings: settings,
       seeder: seeder,
       reminders: reminders,
     );
+    onMutated = services.notifyDataChanged;
+
+    await reminders.initialize();
+    await reminders.reconcile();
+    return services;
   }
 
   /// Test helper that never touches platform notification channels.

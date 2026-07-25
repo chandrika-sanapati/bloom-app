@@ -11,14 +11,33 @@ class CareReminderService {
     required this._care,
     required this._settings,
     required this._scheduler,
+    this.onDataMutated,
   });
 
   final CareRepository _care;
   final SettingsRepository _settings;
   final ReminderScheduler _scheduler;
+  final void Function()? onDataMutated;
 
-  Future<void> initialize() {
-    return _scheduler.initialize(onAction: _handleAction);
+  Future<void> initialize({bool listenForActions = true}) async {
+    await _scheduler.initialize(
+      onAction: listenForActions ? _onNotificationAction : null,
+      listenForActions: listenForActions,
+    );
+    if (!listenForActions) {
+      return;
+    }
+    final launch = await _scheduler.takeLaunchAction();
+    if (launch != null) {
+      await handleAction(launch.taskId, launch.action);
+    }
+  }
+
+  Future<void> _onNotificationAction(
+    String taskId,
+    ReminderAction action,
+  ) async {
+    await handleAction(taskId, action);
   }
 
   /// Request permission in context (e.g. when enabling reminders in Settings).
@@ -64,7 +83,7 @@ class CareReminderService {
     }
   }
 
-  Future<void> _handleAction(String taskId, ReminderAction action) async {
+  Future<void> handleAction(String taskId, ReminderAction action) async {
     switch (action) {
       case ReminderAction.done:
         await completeTask(taskId);
@@ -74,6 +93,9 @@ class CareReminderService {
         await skipTask(taskId);
       case ReminderAction.open:
         break;
+    }
+    if (action != ReminderAction.open) {
+      onDataMutated?.call();
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/navigation/bloom_shell.dart';
 import 'package:bloom/app/theme/bloom_theme.dart';
 import 'package:bloom/data/bloom_services.dart';
+import 'package:bloom/data/reminders/reminder_action_bridge.dart';
 import 'package:flutter/material.dart';
 
 class BloomApp extends StatefulWidget {
@@ -18,6 +19,7 @@ class _BloomAppState extends State<BloomApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    ReminderActionBridge.listen(widget.services.notifyDataChanged);
   }
 
   @override

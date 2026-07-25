@@ -1,6 +1,6 @@
 # Bloom Technical Spike Sequence
 
-**Status:** Spike 1 adopted. Spike 2 light wire-up landed (`flutter_local_notifications`, Settings toggle, lifecycle reconcile); hardware/reboot gates still open. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md) and [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md).
+**Status:** Spike 1 adopted. Spike 2 wired with cold-start action handling; hardware reboot/OEM/TZ gates still open. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md) and [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md).
 **Last reviewed:** 2026-07-25
 
 These spikes prove architecture-changing assumptions with disposable code. Each spike must record the selected approach, rejected alternatives, evidence, and unresolved risks before production implementation begins.

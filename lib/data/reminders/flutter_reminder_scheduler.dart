@@ -1,9 +1,18 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:bloom/data/local/drift/bloom_database.dart';
+import 'package:bloom/data/local/drift/drift_care_repository.dart';
+import 'package:bloom/data/local/shared_preferences_settings_repository.dart';
+import 'package:bloom/data/reminders/care_reminder_service.dart';
+import 'package:bloom/data/reminders/reminder_action_bridge.dart';
+import 'package:bloom/data/reminders/reminder_payload.dart';
 import 'package:bloom/data/reminders/reminder_scheduler.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -13,7 +22,6 @@ class FlutterReminderScheduler implements ReminderScheduler {
 
   static const _channelId = 'bloom_care_reminders';
   static const _channelName = 'Care reminders';
-  static const _payloadPrefix = 'bloom:task:';
 
   final FlutterLocalNotificationsPlugin _plugin;
   void Function(String taskId, ReminderAction action)? _onAction;
@@ -21,6 +29,7 @@ class FlutterReminderScheduler implements ReminderScheduler {
   @override
   Future<void> initialize({
     void Function(String taskId, ReminderAction action)? onAction,
+    bool listenForActions = true,
   }) async {
     _onAction = onAction;
     tz_data.initializeTimeZones();
@@ -35,7 +44,12 @@ class FlutterReminderScheduler implements ReminderScheduler {
     const initSettings = InitializationSettings(android: android);
     await _plugin.initialize(
       settings: initSettings,
-      onDidReceiveNotificationResponse: _handleResponse,
+      onDidReceiveNotificationResponse: listenForActions
+          ? _handleResponse
+          : null,
+      onDidReceiveBackgroundNotificationResponse: listenForActions
+          ? bloomNotificationBackground
+          : null,
     );
 
     final androidPlugin = _plugin
@@ -84,9 +98,13 @@ class FlutterReminderScheduler implements ReminderScheduler {
         _channelName,
         channelDescription: 'Houseplant care windows from Bloom',
         actions: const [
-          AndroidNotificationAction('done', 'Done'),
-          AndroidNotificationAction('snooze', 'Snooze'),
-          AndroidNotificationAction('skip', 'Skip'),
+          AndroidNotificationAction('done', 'Done', showsUserInterface: true),
+          AndroidNotificationAction(
+            'snooze',
+            'Snooze',
+            showsUserInterface: true,
+          ),
+          AndroidNotificationAction('skip', 'Skip', showsUserInterface: true),
         ],
       ),
     );
@@ -98,7 +116,7 @@ class FlutterReminderScheduler implements ReminderScheduler {
       scheduledDate: tz.TZDateTime.from(scheduled, tz.local),
       notificationDetails: details,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      payload: '$_payloadPrefix$taskId',
+      payload: ReminderPayload.encode(taskId),
     );
   }
 
@@ -115,28 +133,67 @@ class FlutterReminderScheduler implements ReminderScheduler {
     final pending = await _plugin.pendingNotificationRequests();
     return [
       for (final request in pending)
-        if (request.payload != null &&
-            request.payload!.startsWith(_payloadPrefix))
-          request.payload!.substring(_payloadPrefix.length),
+        ?ReminderPayload.decodeTaskId(request.payload),
     ];
   }
 
+  @override
+  Future<({String taskId, ReminderAction action})?> takeLaunchAction() async {
+    final details = await _plugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp != true) {
+      return null;
+    }
+    final response = details!.notificationResponse;
+    if (response == null) {
+      return null;
+    }
+    return ReminderPayload.parseResponse(response);
+  }
+
   void _handleResponse(NotificationResponse response) {
-    final payload = response.payload;
-    if (payload == null || !payload.startsWith(_payloadPrefix)) {
+    final parsed = ReminderPayload.parseResponse(response);
+    if (parsed == null) {
       return;
     }
-    final taskId = payload.substring(_payloadPrefix.length);
-    final action = switch (response.actionId) {
-      'done' => ReminderAction.done,
-      'snooze' => ReminderAction.snooze,
-      'skip' => ReminderAction.skip,
-      _ => ReminderAction.open,
-    };
-    _onAction?.call(taskId, action);
+    _onAction?.call(parsed.taskId, parsed.action);
   }
 
   static int _notificationId(String taskId) {
     return taskId.hashCode & 0x7fffffff;
+  }
+}
+
+/// Top-level entry for notification actions when a background engine is used.
+@pragma('vm:entry-point')
+void bloomNotificationBackground(NotificationResponse response) {
+  unawaited(_handleBackgroundNotificationResponse(response));
+}
+
+Future<void> _handleBackgroundNotificationResponse(
+  NotificationResponse response,
+) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final parsed = ReminderPayload.parseResponse(response);
+  if (parsed == null || parsed.action == ReminderAction.open) {
+    return;
+  }
+
+  final db = BloomDatabase.defaults();
+  final care = DriftCareRepository(db);
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final settings = SharedPreferencesSettingsRepository(prefs);
+    final scheduler = FlutterReminderScheduler();
+    final reminders = CareReminderService(
+      care: care,
+      settings: settings,
+      scheduler: scheduler,
+    );
+    await reminders.initialize(listenForActions: false);
+    await reminders.handleAction(parsed.taskId, parsed.action);
+    ReminderActionBridge.notifyUiChanged();
+  } finally {
+    await care.close();
   }
 }
