@@ -15,7 +15,7 @@ void main() {
       preferences: await SharedPreferences.getInstance(),
     );
 
-    await tester.pumpWidget(BloomApp(services: services));
+    await tester.pumpWidget(BloomApp(services: services, showSplash: false));
     await tester.pumpAndSettle();
 
     expect(find.text("Today's tasks"), findsOneWidget);

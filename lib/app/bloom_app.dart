@@ -1,20 +1,26 @@
 import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/navigation/bloom_shell.dart';
+import 'package:bloom/app/presentation/bloom_splash_screen.dart';
 import 'package:bloom/app/theme/bloom_theme.dart';
 import 'package:bloom/data/bloom_services.dart';
 import 'package:bloom/data/reminders/reminder_action_bridge.dart';
 import 'package:flutter/material.dart';
 
 class BloomApp extends StatefulWidget {
-  const BloomApp({required this.services, super.key});
+  const BloomApp({required this.services, this.showSplash = true, super.key});
 
   final BloomServices services;
+
+  /// When false, opens straight into the shell (used by widget tests).
+  final bool showSplash;
 
   @override
   State<BloomApp> createState() => _BloomAppState();
 }
 
 class _BloomAppState extends State<BloomApp> with WidgetsBindingObserver {
+  late var _showSplash = widget.showSplash;
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +49,16 @@ class _BloomAppState extends State<BloomApp> with WidgetsBindingObserver {
         title: 'Bloom',
         debugShowCheckedModeBanner: false,
         theme: buildBloomTheme(),
-        home: const BloomShell(),
+        home: _showSplash
+            ? BloomSplashScreen(
+                onFinished: () {
+                  if (!mounted) {
+                    return;
+                  }
+                  setState(() => _showSplash = false);
+                },
+              )
+            : const BloomShell(),
       ),
     );
   }
