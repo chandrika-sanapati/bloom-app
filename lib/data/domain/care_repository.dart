@@ -16,6 +16,10 @@ abstract interface class CareRepository {
 
   Future<UserPlantRecord?> getUserPlantRecord(String userPlantId);
 
+  /// Removes a plant and its plan, tasks, and events.
+  /// Deletes the linked species row when no other plant references it.
+  Future<void> deleteUserPlant(String userPlantId);
+
   Future<void> replaceCarePlan({
     required String userPlantId,
     required List<CarePlanItem> items,

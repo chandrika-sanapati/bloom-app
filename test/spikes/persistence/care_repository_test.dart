@@ -223,4 +223,19 @@ void main() {
     expect(await repo.getSpecies('species-snake'), isNull);
     expect(await repo.listCareEvents('plant-snake'), isEmpty);
   });
+
+  test('deleteUserPlant removes plant graph and unused species', () async {
+    final db = BloomDatabase.memory();
+    final repo = DriftCareRepository(db);
+    addTearDown(repo.close);
+    await seedMinimalGraph(repo);
+
+    await repo.deleteUserPlant('plant-snake');
+
+    expect(await repo.getUserPlant('plant-snake'), isNull);
+    expect(await repo.getSpecies('species-snake'), isNull);
+    expect(await repo.listTasksForPlant('plant-snake'), isEmpty);
+    expect(await repo.listCareEvents('plant-snake'), isEmpty);
+    expect(await repo.getCarePlan('plant-snake'), isEmpty);
+  });
 }

@@ -338,7 +338,7 @@ Candidates to measure: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify) 
 - [ ] Care history
 - [ ] Edit schedule
 - [ ] Edit plant identity/name/photo
-- [ ] Archive/delete plant
+- [x] Archive/delete plant
 
 ### Settings and trust
 

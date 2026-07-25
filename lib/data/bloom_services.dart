@@ -42,6 +42,12 @@ class BloomServices {
     notifyDataChanged();
   }
 
+  /// Removes one plant from the collection and reconciles reminders.
+  Future<void> deleteUserPlant(String userPlantId) async {
+    await care.deleteUserPlant(userPlantId);
+    notifyDataChanged();
+  }
+
   static Future<BloomServices> bootstrap({
     BloomDatabase? database,
     SharedPreferences? preferences,

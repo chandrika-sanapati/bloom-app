@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+
 /// Summarize Phase 2 identification benchmark scores (no API keys).
 ///
 /// Usage (from repo root):
@@ -6,6 +7,8 @@
 ///   dart run docs/phase2/summarize_benchmark_scores.dart path/to/scores.csv
 ///
 /// Pass thresholds (PRD): top-1 ≥ 70%, top-3 ≥ 90%, median ≤ 5000ms, p95 ≤ 10000ms.
+library;
+
 import 'dart:io';
 
 void main(List<String> args) {

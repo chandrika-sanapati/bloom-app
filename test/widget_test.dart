@@ -45,6 +45,12 @@ void main() {
     expect(find.text('Care plan'), findsOneWidget);
     expect(find.textContaining('Keep soil lightly moist'), findsOneWidget);
 
+    await tester.tap(find.byTooltip('Remove plant'));
+    await tester.pumpAndSettle();
+    expect(find.text('Remove Peace Lily?'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
 

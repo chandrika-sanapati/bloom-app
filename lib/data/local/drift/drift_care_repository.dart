@@ -98,6 +98,40 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
+  Future<void> deleteUserPlant(String userPlantId) {
+    return _db.transaction(() async {
+      final plant = await (_db.select(
+        _db.userPlantRows,
+      )..where((t) => t.id.equals(userPlantId))).getSingleOrNull();
+      if (plant == null) {
+        return;
+      }
+
+      await (_db.delete(
+        _db.careEventRows,
+      )..where((t) => t.userPlantId.equals(userPlantId))).go();
+      await (_db.delete(
+        _db.careTaskRows,
+      )..where((t) => t.userPlantId.equals(userPlantId))).go();
+      await (_db.delete(
+        _db.carePlanItemRows,
+      )..where((t) => t.userPlantId.equals(userPlantId))).go();
+      await (_db.delete(
+        _db.userPlantRows,
+      )..where((t) => t.id.equals(userPlantId))).go();
+
+      final remaining = await (_db.select(
+        _db.userPlantRows,
+      )..where((t) => t.speciesId.equals(plant.speciesId))).get();
+      if (remaining.isEmpty) {
+        await (_db.delete(
+          _db.plantSpeciesRows,
+        )..where((t) => t.id.equals(plant.speciesId))).go();
+      }
+    });
+  }
+
+  @override
   Future<void> replaceCarePlan({
     required String userPlantId,
     required List<CarePlanItem> items,

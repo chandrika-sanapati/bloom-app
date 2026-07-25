@@ -129,6 +129,49 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     await _reload();
   }
 
+  Future<void> _confirmDeletePlant() async {
+    final plant = _plant;
+    if (plant == null) {
+      return;
+    }
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Remove ${plant.commonName}?'),
+          content: const Text(
+            'This deletes the plant, its care plan, open tasks, and timeline '
+            'from this device. Scheduled reminders for it are cleared.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Remove plant'),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    final services = BloomScope.of(context).services;
+    final name = plant.commonName;
+    await services.deleteUserPlant(widget.plantId);
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('$name removed from My Plants.')));
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -162,6 +205,13 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Remove plant',
+            onPressed: _confirmDeletePlant,
+            icon: const Icon(Icons.delete_outline),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(BloomSpacing.screenMargin),
