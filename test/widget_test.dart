@@ -36,5 +36,7 @@ void main() {
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
     expect(find.text('Care reminders'), findsOneWidget);
+    expect(find.text('Bloom'), findsOneWidget);
+    expect(find.byType(Image), findsWidgets);
   });
 }

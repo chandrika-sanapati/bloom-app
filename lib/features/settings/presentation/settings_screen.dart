@@ -1,4 +1,5 @@
 import 'package:bloom/app/theme/bloom_spacing.dart';
+import 'package:bloom/shared/widgets/bloom_logo.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -6,12 +7,22 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         padding: const EdgeInsets.all(BloomSpacing.screenMargin),
-        children: const [
-          _SettingsSection(
+        children: [
+          const Center(child: BloomLogo(size: 88, showWordmark: true)),
+          const SizedBox(height: BloomSpacing.x2),
+          Text(
+            'Placeholder brand mark',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall,
+          ),
+          const SizedBox(height: BloomSpacing.x6),
+          const _SettingsSection(
             title: 'Reminders',
             children: [
               ListTile(
@@ -21,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ],
           ),
-          _SettingsSection(
+          const _SettingsSection(
             title: 'Preferences',
             children: [
               ListTile(
@@ -31,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ],
           ),
-          _SettingsSection(
+          const _SettingsSection(
             title: 'Trust',
             children: [
               ListTile(
