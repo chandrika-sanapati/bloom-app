@@ -69,7 +69,10 @@ fvm flutter build apk --debug
 
 - [Execution plan](docs/BLOOM_EXECUTION_PLAN.md)
 - [Product requirements](docs/PRD.md)
-- [Design specification](docs/DESIGN.md)
+- [Design system](docs/DESIGN.md)
+- [Figma source and vision pack](docs/design/FIGMA_SOURCE.md)
+- [Screen inventory](docs/design/SCREEN_INVENTORY.md)
+- [Flutter theme mapping](docs/design/FLUTTER_THEME.md)
 - [v1 scope decisions](docs/SCOPE.md)
 - [Phase 2 validation pack](docs/PHASE2_VALIDATION.md)
 - [Technical spike sequence](docs/TECHNICAL_SPIKES.md)
