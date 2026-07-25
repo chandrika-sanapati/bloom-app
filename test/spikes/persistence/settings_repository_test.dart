@@ -11,7 +11,7 @@ void main() {
     final repo = SharedPreferencesSettingsRepository(prefs);
 
     expect(await repo.getUnits(), isNull);
-    expect(await repo.getRemindersEnabled(), isTrue);
+    expect(await repo.getRemindersEnabled(), isFalse);
     expect(await repo.getHasSeededSampleData(), isFalse);
 
     await repo.setUnits('metric');

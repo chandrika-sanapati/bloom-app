@@ -20,7 +20,8 @@ class SharedPreferencesSettingsRepository implements SettingsRepository {
 
   @override
   Future<bool> getRemindersEnabled() async {
-    return _prefs.getBool(_remindersKey) ?? true;
+    // Off until the user enables reminders in Settings (permission in context).
+    return _prefs.getBool(_remindersKey) ?? false;
   }
 
   @override

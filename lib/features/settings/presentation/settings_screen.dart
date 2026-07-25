@@ -1,9 +1,74 @@
+import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/shared/widgets/bloom_logo.dart';
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  var _loading = true;
+  var _started = false;
+  var _remindersEnabled = false;
+  var _busy = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) {
+      return;
+    }
+    _started = true;
+    _load();
+  }
+
+  Future<void> _load() async {
+    final enabled = await BloomScope.of(context).settings.getRemindersEnabled();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _remindersEnabled = enabled;
+      _loading = false;
+    });
+  }
+
+  Future<void> _onRemindersChanged(bool value) async {
+    final services = BloomScope.of(context).services;
+    setState(() => _busy = true);
+    try {
+      if (value) {
+        final granted = await services.reminders.enableReminders();
+        if (!mounted) {
+          return;
+        }
+        setState(() => _remindersEnabled = granted);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              granted
+                  ? 'Care reminders enabled for open tasks.'
+                  : 'Notification permission was not granted.',
+            ),
+          ),
+        );
+      } else {
+        await services.reminders.disableReminders();
+        if (!mounted) {
+          return;
+        }
+        setState(() => _remindersEnabled = false);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +87,17 @@ class SettingsScreen extends StatelessWidget {
             style: theme.textTheme.bodySmall,
           ),
           const SizedBox(height: BloomSpacing.x6),
-          const _SettingsSection(
+          _SettingsSection(
             title: 'Reminders',
             children: [
-              ListTile(
-                leading: Icon(Icons.notifications_outlined),
-                title: Text('Care reminders'),
-                subtitle: Text('Coming in the reminder spike'),
+              SwitchListTile(
+                secondary: const Icon(Icons.notifications_outlined),
+                title: const Text('Care reminders'),
+                subtitle: const Text(
+                  'Schedule inexact care windows from open tasks. Permission is requested here.',
+                ),
+                value: _remindersEnabled,
+                onChanged: (_loading || _busy) ? null : _onRemindersChanged,
               ),
             ],
           ),

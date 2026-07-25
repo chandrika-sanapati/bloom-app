@@ -1,6 +1,8 @@
 import 'package:bloom/data/bloom_services.dart';
 import 'package:bloom/data/domain/care_repository.dart';
+import 'package:bloom/data/domain/settings_repository.dart';
 import 'package:bloom/data/local/fixture_seeder.dart';
+import 'package:bloom/data/reminders/care_reminder_service.dart';
 import 'package:flutter/material.dart';
 
 class BloomScope extends InheritedWidget {
@@ -10,7 +12,11 @@ class BloomScope extends InheritedWidget {
 
   CareRepository get care => services.care;
 
+  SettingsRepository get settings => services.settings;
+
   FixtureSeeder get seeder => services.seeder;
+
+  CareReminderService get reminders => services.reminders;
 
   static BloomScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<BloomScope>();
