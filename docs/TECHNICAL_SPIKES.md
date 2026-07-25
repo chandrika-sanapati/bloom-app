@@ -1,7 +1,7 @@
 # Bloom Technical Spike Sequence
 
-**Status:** Prepared; begin after the Phase 2 product-risk and Phase 3 prototype gates
-**Last reviewed:** 2026-07-24
+**Status:** Spike 1 (local persistence) implemented under `lib/spikes/persistence/`; not yet adopted into feature UI. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md).
+**Last reviewed:** 2026-07-25
 
 These spikes prove architecture-changing assumptions with disposable code. Each spike must record the selected approach, rejected alternatives, evidence, and unresolved risks before production implementation begins.
 

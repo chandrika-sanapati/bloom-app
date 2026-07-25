@@ -1,0 +1,64 @@
+import 'package:drift/drift.dart';
+
+@DataClassName('PlantSpeciesRow')
+class PlantSpeciesRows extends Table {
+  TextColumn get id => text()();
+  TextColumn get commonName => text()();
+  TextColumn get scientificName => text()();
+  IntColumn get difficulty => integer()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DataClassName('UserPlantRow')
+class UserPlantRows extends Table {
+  TextColumn get id => text()();
+  TextColumn get speciesId => text().references(PlantSpeciesRows, #id)();
+  TextColumn get displayName => text()();
+  TextColumn get statusLabel => text()();
+
+  /// Schema v2 column — nullable so v1→v2 migration can add it safely.
+  TextColumn get notes => text().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DataClassName('CarePlanItemRow')
+class CarePlanItemRows extends Table {
+  TextColumn get id => text()();
+  TextColumn get userPlantId => text().references(UserPlantRows, #id)();
+  IntColumn get kind => integer()();
+  TextColumn get title => text()();
+  TextColumn get cadenceLabel => text()();
+  IntColumn get sortOrder => integer()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DataClassName('CareTaskRow')
+class CareTaskRows extends Table {
+  TextColumn get id => text()();
+  TextColumn get userPlantId => text().references(UserPlantRows, #id)();
+  TextColumn get actionLabel => text()();
+  IntColumn get urgency => integer()();
+  DateTimeColumn get dueAt => dateTime()();
+  BoolColumn get isDone => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DataClassName('CareEventRow')
+class CareEventRows extends Table {
+  TextColumn get id => text()();
+  TextColumn get userPlantId => text().references(UserPlantRows, #id)();
+  IntColumn get kind => integer()();
+  TextColumn get label => text()();
+  DateTimeColumn get occurredAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}

@@ -65,6 +65,12 @@ fvm flutter test
 fvm flutter build apk --debug
 ```
 
+After changing Drift tables under `lib/spikes/persistence/`, regenerate code:
+
+```sh
+fvm dart run build_runner build
+```
+
 ## Product documents
 
 - [Execution plan](docs/BLOOM_EXECUTION_PLAN.md)
@@ -76,6 +82,7 @@ fvm flutter build apk --debug
 - [v1 scope decisions](docs/SCOPE.md)
 - [Phase 2 validation pack](docs/PHASE2_VALIDATION.md)
 - [Technical spike sequence](docs/TECHNICAL_SPIKES.md)
+- [Persistence spike decision](docs/spikes/PERSISTENCE_SPIKE.md)
 
 The execution plan is the source of truth for sequencing, scope, and exit
 gates. Product features should not begin until the current phase's exit gate is
