@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:bloom/spikes/persistence/data/drift/bloom_spike_database.dart';
-import 'package:bloom/spikes/persistence/data/drift/drift_care_repository.dart';
-import 'package:bloom/spikes/persistence/domain/care_repository.dart';
-import 'package:bloom/spikes/persistence/domain/entities.dart';
+import 'package:bloom/data/domain/care_repository.dart';
+import 'package:bloom/data/domain/entities.dart';
+import 'package:bloom/data/local/drift/bloom_database.dart';
+import 'package:bloom/data/local/drift/drift_care_repository.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
@@ -24,15 +24,17 @@ void main() {
 
   Future<void> seedMinimalGraph(CareRepository repo) async {
     await repo.upsertSpecies(
-      const SpikePlantSpecies(
+      const PlantSpecies(
         id: 'species-snake',
         commonName: 'Snake Plant',
         scientificName: 'Dracaena trifasciata',
-        difficulty: SpikePlantDifficulty.easy,
+        difficulty: PlantDifficulty.easy,
+        overview: 'Hardy houseplant.',
+        accentArgb: 0xFF6B8F71,
       ),
     );
     await repo.upsertUserPlant(
-      const SpikeUserPlant(
+      const UserPlant(
         id: 'plant-snake',
         speciesId: 'species-snake',
         displayName: 'Snake Plant',
@@ -42,10 +44,10 @@ void main() {
     await repo.replaceCarePlan(
       userPlantId: 'plant-snake',
       items: const [
-        SpikeCarePlanItem(
+        CarePlanItem(
           id: 'plan-water',
           userPlantId: 'plant-snake',
-          kind: SpikeCareActionKind.water,
+          kind: CareActionKind.water,
           title: 'Water',
           cadenceLabel: 'When soil is fully dry',
           sortOrder: 0,
@@ -53,20 +55,20 @@ void main() {
       ],
     );
     await repo.upsertCareTask(
-      SpikeCareTask(
+      CareTask(
         id: 'task-snake-water',
         userPlantId: 'plant-snake',
         actionLabel: 'Water',
-        urgency: SpikeCareUrgency.overdue,
+        urgency: CareUrgency.overdue,
         dueAt: DateTime.utc(2026, 7, 20),
         isDone: false,
       ),
     );
     await repo.addCareEvent(
-      SpikeCareEvent(
+      CareEvent(
         id: 'event-1',
         userPlantId: 'plant-snake',
-        kind: SpikeCareActionKind.water,
+        kind: CareActionKind.water,
         label: 'Watered',
         occurredAt: DateTime.utc(2026, 7, 10),
       ),
@@ -74,7 +76,7 @@ void main() {
   }
 
   test('persists species, plant, care plan, task, and event', () async {
-    final db = BloomSpikeDatabase.memory();
+    final db = BloomDatabase.memory();
     final repo = DriftCareRepository(db);
     addTearDown(repo.close);
 
@@ -82,6 +84,7 @@ void main() {
 
     final species = await repo.getSpecies('species-snake');
     expect(species?.commonName, 'Snake Plant');
+    expect(species?.overview, 'Hardy houseplant.');
 
     final plant = await repo.getUserPlant('plant-snake');
     expect(plant?.displayName, 'Snake Plant');
@@ -91,7 +94,7 @@ void main() {
     expect(plan.first.title, 'Water');
 
     final task = await repo.getCareTask('task-snake-water');
-    expect(task?.urgency, SpikeCareUrgency.overdue);
+    expect(task?.urgency, CareUrgency.overdue);
     expect(task?.isDone, isFalse);
 
     final events = await repo.listCareEvents('plant-snake');
@@ -101,24 +104,24 @@ void main() {
 
   test('recreates Today open-task state after close and reopen', () async {
     final file = File(p.join(tempDir.path, 'today.sqlite'));
-    final first = DriftCareRepository(BloomSpikeDatabase.file(file));
+    final first = DriftCareRepository(BloomDatabase.file(file));
     await seedMinimalGraph(first);
     await first.upsertCareTask(
-      SpikeCareTask(
+      CareTask(
         id: 'task-upcoming',
         userPlantId: 'plant-snake',
         actionLabel: 'Check soil',
-        urgency: SpikeCareUrgency.upcoming,
+        urgency: CareUrgency.upcoming,
         dueAt: DateTime.utc(2026, 7, 28),
         isDone: false,
       ),
     );
     await first.upsertCareTask(
-      SpikeCareTask(
+      CareTask(
         id: 'task-done',
         userPlantId: 'plant-snake',
         actionLabel: 'Fertilise',
-        urgency: SpikeCareUrgency.done,
+        urgency: CareUrgency.dueToday,
         dueAt: DateTime.utc(2026, 7, 18),
         isDone: true,
       ),
@@ -128,14 +131,14 @@ void main() {
     expect(before.map((t) => t.id), ['task-snake-water', 'task-upcoming']);
     await first.close();
 
-    final second = DriftCareRepository(BloomSpikeDatabase.file(file));
+    final second = DriftCareRepository(BloomDatabase.file(file));
     addTearDown(second.close);
     final after = await second.listOpenTasksForToday();
     expect(after.map((t) => t.id), ['task-snake-water', 'task-upcoming']);
     expect(after.first.actionLabel, 'Water');
   });
 
-  test('migrates schema v1 to v2 without losing user plants', () async {
+  test('migrates schema v1 to v3 without losing user plants', () async {
     final sqliteDb = sqlite3.openInMemory();
     sqliteDb.execute('PRAGMA foreign_keys = ON');
     sqliteDb.execute('''
@@ -191,7 +194,7 @@ void main() {
     );
     sqliteDb.execute('PRAGMA user_version = 1');
 
-    final db = BloomSpikeDatabase(NativeDatabase.opened(sqliteDb));
+    final db = BloomDatabase(NativeDatabase.opened(sqliteDb));
     final repo = DriftCareRepository(db);
     addTearDown(repo.close);
 
@@ -200,16 +203,7 @@ void main() {
     expect(plant!.displayName, 'Office Pothos');
     expect(plant.notes, isNull);
 
-    await repo.upsertUserPlant(
-      const SpikeUserPlant(
-        id: 'plant-1',
-        speciesId: 'species-1',
-        displayName: 'Office Pothos',
-        statusLabel: 'Healthy',
-        notes: 'Near the window',
-      ),
-    );
-    final updated = await repo.getUserPlant('plant-1');
-    expect(updated?.notes, 'Near the window');
+    final species = await repo.getSpecies('species-1');
+    expect(species?.overview, '');
   });
 }

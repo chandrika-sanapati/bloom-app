@@ -1,16 +1,16 @@
-import 'package:bloom/spikes/persistence/data/drift/bloom_spike_database.dart';
-import 'package:bloom/spikes/persistence/data/drift/mappers.dart';
-import 'package:bloom/spikes/persistence/domain/care_repository.dart';
-import 'package:bloom/spikes/persistence/domain/entities.dart';
+import 'package:bloom/data/domain/care_repository.dart';
+import 'package:bloom/data/domain/entities.dart';
+import 'package:bloom/data/local/drift/bloom_database.dart';
+import 'package:bloom/data/local/drift/mappers.dart';
 import 'package:drift/drift.dart';
 
 class DriftCareRepository implements CareRepository {
   DriftCareRepository(this._db);
 
-  final BloomSpikeDatabase _db;
+  final BloomDatabase _db;
 
   @override
-  Future<void> upsertSpecies(SpikePlantSpecies species) {
+  Future<void> upsertSpecies(PlantSpecies species) {
     return _db
         .into(_db.plantSpeciesRows)
         .insertOnConflictUpdate(
@@ -19,12 +19,14 @@ class DriftCareRepository implements CareRepository {
             commonName: species.commonName,
             scientificName: species.scientificName,
             difficulty: difficultyToDb(species.difficulty),
+            overview: Value(species.overview),
+            accentArgb: Value(species.accentArgb),
           ),
         );
   }
 
   @override
-  Future<SpikePlantSpecies?> getSpecies(String id) async {
+  Future<PlantSpecies?> getSpecies(String id) async {
     final row = await (_db.select(
       _db.plantSpeciesRows,
     )..where((t) => t.id.equals(id))).getSingleOrNull();
@@ -32,7 +34,7 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<void> upsertUserPlant(SpikeUserPlant plant) {
+  Future<void> upsertUserPlant(UserPlant plant) {
     return _db
         .into(_db.userPlantRows)
         .insertOnConflictUpdate(
@@ -47,7 +49,7 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<SpikeUserPlant?> getUserPlant(String id) async {
+  Future<UserPlant?> getUserPlant(String id) async {
     final row = await (_db.select(
       _db.userPlantRows,
     )..where((t) => t.id.equals(id))).getSingleOrNull();
@@ -55,15 +57,50 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<List<SpikeUserPlant>> listUserPlants() async {
+  Future<List<UserPlant>> listUserPlants() async {
     final rows = await _db.select(_db.userPlantRows).get();
     return rows.map(mapUserPlant).toList();
   }
 
   @override
+  Future<List<UserPlantRecord>> listUserPlantRecords() async {
+    final query = _db.select(_db.userPlantRows).join([
+      innerJoin(
+        _db.plantSpeciesRows,
+        _db.plantSpeciesRows.id.equalsExp(_db.userPlantRows.speciesId),
+      ),
+    ]);
+    final rows = await query.get();
+    return rows.map((row) {
+      return UserPlantRecord(
+        plant: mapUserPlant(row.readTable(_db.userPlantRows)),
+        species: mapSpecies(row.readTable(_db.plantSpeciesRows)),
+      );
+    }).toList();
+  }
+
+  @override
+  Future<UserPlantRecord?> getUserPlantRecord(String userPlantId) async {
+    final query = _db.select(_db.userPlantRows).join([
+      innerJoin(
+        _db.plantSpeciesRows,
+        _db.plantSpeciesRows.id.equalsExp(_db.userPlantRows.speciesId),
+      ),
+    ])..where(_db.userPlantRows.id.equals(userPlantId));
+    final row = await query.getSingleOrNull();
+    if (row == null) {
+      return null;
+    }
+    return UserPlantRecord(
+      plant: mapUserPlant(row.readTable(_db.userPlantRows)),
+      species: mapSpecies(row.readTable(_db.plantSpeciesRows)),
+    );
+  }
+
+  @override
   Future<void> replaceCarePlan({
     required String userPlantId,
-    required List<SpikeCarePlanItem> items,
+    required List<CarePlanItem> items,
   }) {
     return _db.transaction(() async {
       await (_db.delete(
@@ -87,7 +124,7 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<List<SpikeCarePlanItem>> getCarePlan(String userPlantId) async {
+  Future<List<CarePlanItem>> getCarePlan(String userPlantId) async {
     final rows =
         await (_db.select(_db.carePlanItemRows)
               ..where((t) => t.userPlantId.equals(userPlantId))
@@ -97,7 +134,7 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<void> upsertCareTask(SpikeCareTask task) {
+  Future<void> upsertCareTask(CareTask task) {
     return _db
         .into(_db.careTaskRows)
         .insertOnConflictUpdate(
@@ -113,7 +150,7 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<SpikeCareTask?> getCareTask(String id) async {
+  Future<CareTask?> getCareTask(String id) async {
     final row = await (_db.select(
       _db.careTaskRows,
     )..where((t) => t.id.equals(id))).getSingleOrNull();
@@ -121,7 +158,7 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<List<SpikeCareTask>> listOpenTasksForToday() async {
+  Future<List<CareTask>> listOpenTasksForToday() async {
     final rows =
         await (_db.select(_db.careTaskRows)
               ..where((t) => t.isDone.equals(false))
@@ -134,7 +171,30 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<void> addCareEvent(SpikeCareEvent event) {
+  Future<List<CareTask>> listCompletedTasks() async {
+    final rows =
+        await (_db.select(_db.careTaskRows)
+              ..where((t) => t.isDone.equals(true))
+              ..orderBy([(t) => OrderingTerm.desc(t.dueAt)]))
+            .get();
+    return rows.map(mapCareTask).toList();
+  }
+
+  @override
+  Future<List<CareTask>> listTasksForPlant(String userPlantId) async {
+    final rows =
+        await (_db.select(_db.careTaskRows)
+              ..where((t) => t.userPlantId.equals(userPlantId))
+              ..orderBy([
+                (t) => OrderingTerm.asc(t.isDone),
+                (t) => OrderingTerm.asc(t.urgency),
+              ]))
+            .get();
+    return rows.map(mapCareTask).toList();
+  }
+
+  @override
+  Future<void> addCareEvent(CareEvent event) {
     return _db
         .into(_db.careEventRows)
         .insert(
@@ -149,7 +209,7 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<List<SpikeCareEvent>> listCareEvents(String userPlantId) async {
+  Future<List<CareEvent>> listCareEvents(String userPlantId) async {
     final rows =
         await (_db.select(_db.careEventRows)
               ..where((t) => t.userPlantId.equals(userPlantId))

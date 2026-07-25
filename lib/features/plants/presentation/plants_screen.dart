@@ -1,18 +1,53 @@
+import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/features/plants/presentation/plant_navigation.dart';
-import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
+import 'package:bloom/shared/models/fixture_models.dart';
+import 'package:bloom/shared/presentation/care_ui_mappers.dart';
 import 'package:bloom/shared/widgets/plant_card.dart';
 import 'package:flutter/material.dart';
 
-class PlantsScreen extends StatelessWidget {
+class PlantsScreen extends StatefulWidget {
   const PlantsScreen({super.key, this.onAddPlant});
 
   final VoidCallback? onAddPlant;
 
   @override
+  State<PlantsScreen> createState() => _PlantsScreenState();
+}
+
+class _PlantsScreenState extends State<PlantsScreen> {
+  var _loading = true;
+  var _started = false;
+  List<FixturePlant> _plants = const [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) {
+      return;
+    }
+    _started = true;
+    _reload();
+  }
+
+  Future<void> _reload() async {
+    final records = await BloomScope.of(context).care.listUserPlantRecords();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _plants = records.map(toFixturePlant).toList();
+      _loading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final plants = BloomFixtures.plants;
+
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return SafeArea(
       child: CustomScrollView(
@@ -29,19 +64,19 @@ class PlantsScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      '${plants.length} plants in your collection',
+                      '${_plants.length} plants in your collection',
                       style: theme.textTheme.bodySmall,
                     ),
                   ),
                   FilledButton.tonal(
-                    onPressed: onAddPlant,
+                    onPressed: widget.onAddPlant,
                     child: const Text('Add plant'),
                   ),
                 ],
               ),
             ),
           ),
-          if (plants.isEmpty)
+          if (_plants.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Padding(
@@ -64,7 +99,7 @@ class PlantsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: BloomSpacing.x4),
                     FilledButton(
-                      onPressed: onAddPlant,
+                      onPressed: widget.onAddPlant,
                       child: const Text('Go to Discover'),
                     ),
                   ],
@@ -87,12 +122,17 @@ class PlantsScreen extends StatelessWidget {
                   childAspectRatio: 0.72,
                 ),
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final plant = plants[index];
+                  final plant = _plants[index];
                   return PlantCard(
                     plant: plant,
-                    onTap: () => openPlantDetail(context, plant.id),
+                    onTap: () async {
+                      await openPlantDetail(context, plant.id);
+                      if (mounted) {
+                        await _reload();
+                      }
+                    },
                   );
-                }, childCount: plants.length),
+                }, childCount: _plants.length),
               ),
             ),
         ],

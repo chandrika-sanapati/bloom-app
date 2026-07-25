@@ -7,4 +7,8 @@ abstract interface class SettingsRepository {
   Future<bool> getRemindersEnabled();
 
   Future<void> setRemindersEnabled(bool enabled);
+
+  Future<bool> getHasSeededSampleData();
+
+  Future<void> setHasSeededSampleData(bool value);
 }

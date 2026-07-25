@@ -6,6 +6,9 @@ class PlantSpeciesRows extends Table {
   TextColumn get commonName => text()();
   TextColumn get scientificName => text()();
   IntColumn get difficulty => integer()();
+  TextColumn get overview => text().withDefault(const Constant(''))();
+  IntColumn get accentArgb =>
+      integer().withDefault(const Constant(0xFF2AAA8A))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -17,8 +20,6 @@ class UserPlantRows extends Table {
   TextColumn get speciesId => text().references(PlantSpeciesRows, #id)();
   TextColumn get displayName => text()();
   TextColumn get statusLabel => text()();
-
-  /// Schema v2 column — nullable so v1→v2 migration can add it safely.
   TextColumn get notes => text().nullable()();
 
   @override

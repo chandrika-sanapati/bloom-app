@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'bloom_spike_database.dart';
+part of 'bloom_database.dart';
 
 // ignore_for_file: type=lint
 class $PlantSpeciesRowsTable extends PlantSpeciesRows
@@ -51,12 +51,38 @@ class $PlantSpeciesRowsTable extends PlantSpeciesRows
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _overviewMeta = const VerificationMeta(
+    'overview',
+  );
+  @override
+  late final GeneratedColumn<String> overview = GeneratedColumn<String>(
+    'overview',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _accentArgbMeta = const VerificationMeta(
+    'accentArgb',
+  );
+  @override
+  late final GeneratedColumn<int> accentArgb = GeneratedColumn<int>(
+    'accent_argb',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0xFF2AAA8A),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     commonName,
     scientificName,
     difficulty,
+    overview,
+    accentArgb,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -102,6 +128,18 @@ class $PlantSpeciesRowsTable extends PlantSpeciesRows
     } else if (isInserting) {
       context.missing(_difficultyMeta);
     }
+    if (data.containsKey('overview')) {
+      context.handle(
+        _overviewMeta,
+        overview.isAcceptableOrUnknown(data['overview']!, _overviewMeta),
+      );
+    }
+    if (data.containsKey('accent_argb')) {
+      context.handle(
+        _accentArgbMeta,
+        accentArgb.isAcceptableOrUnknown(data['accent_argb']!, _accentArgbMeta),
+      );
+    }
     return context;
   }
 
@@ -127,6 +165,14 @@ class $PlantSpeciesRowsTable extends PlantSpeciesRows
         DriftSqlType.int,
         data['${effectivePrefix}difficulty'],
       )!,
+      overview: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}overview'],
+      )!,
+      accentArgb: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}accent_argb'],
+      )!,
     );
   }
 
@@ -141,11 +187,15 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
   final String commonName;
   final String scientificName;
   final int difficulty;
+  final String overview;
+  final int accentArgb;
   const PlantSpeciesRow({
     required this.id,
     required this.commonName,
     required this.scientificName,
     required this.difficulty,
+    required this.overview,
+    required this.accentArgb,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -154,6 +204,8 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
     map['common_name'] = Variable<String>(commonName);
     map['scientific_name'] = Variable<String>(scientificName);
     map['difficulty'] = Variable<int>(difficulty);
+    map['overview'] = Variable<String>(overview);
+    map['accent_argb'] = Variable<int>(accentArgb);
     return map;
   }
 
@@ -163,6 +215,8 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
       commonName: Value(commonName),
       scientificName: Value(scientificName),
       difficulty: Value(difficulty),
+      overview: Value(overview),
+      accentArgb: Value(accentArgb),
     );
   }
 
@@ -176,6 +230,8 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
       commonName: serializer.fromJson<String>(json['commonName']),
       scientificName: serializer.fromJson<String>(json['scientificName']),
       difficulty: serializer.fromJson<int>(json['difficulty']),
+      overview: serializer.fromJson<String>(json['overview']),
+      accentArgb: serializer.fromJson<int>(json['accentArgb']),
     );
   }
   @override
@@ -186,6 +242,8 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
       'commonName': serializer.toJson<String>(commonName),
       'scientificName': serializer.toJson<String>(scientificName),
       'difficulty': serializer.toJson<int>(difficulty),
+      'overview': serializer.toJson<String>(overview),
+      'accentArgb': serializer.toJson<int>(accentArgb),
     };
   }
 
@@ -194,11 +252,15 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
     String? commonName,
     String? scientificName,
     int? difficulty,
+    String? overview,
+    int? accentArgb,
   }) => PlantSpeciesRow(
     id: id ?? this.id,
     commonName: commonName ?? this.commonName,
     scientificName: scientificName ?? this.scientificName,
     difficulty: difficulty ?? this.difficulty,
+    overview: overview ?? this.overview,
+    accentArgb: accentArgb ?? this.accentArgb,
   );
   PlantSpeciesRow copyWithCompanion(PlantSpeciesRowsCompanion data) {
     return PlantSpeciesRow(
@@ -212,6 +274,10 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
       difficulty: data.difficulty.present
           ? data.difficulty.value
           : this.difficulty,
+      overview: data.overview.present ? data.overview.value : this.overview,
+      accentArgb: data.accentArgb.present
+          ? data.accentArgb.value
+          : this.accentArgb,
     );
   }
 
@@ -221,13 +287,22 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
           ..write('id: $id, ')
           ..write('commonName: $commonName, ')
           ..write('scientificName: $scientificName, ')
-          ..write('difficulty: $difficulty')
+          ..write('difficulty: $difficulty, ')
+          ..write('overview: $overview, ')
+          ..write('accentArgb: $accentArgb')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, commonName, scientificName, difficulty);
+  int get hashCode => Object.hash(
+    id,
+    commonName,
+    scientificName,
+    difficulty,
+    overview,
+    accentArgb,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -235,7 +310,9 @@ class PlantSpeciesRow extends DataClass implements Insertable<PlantSpeciesRow> {
           other.id == this.id &&
           other.commonName == this.commonName &&
           other.scientificName == this.scientificName &&
-          other.difficulty == this.difficulty);
+          other.difficulty == this.difficulty &&
+          other.overview == this.overview &&
+          other.accentArgb == this.accentArgb);
 }
 
 class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
@@ -243,12 +320,16 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
   final Value<String> commonName;
   final Value<String> scientificName;
   final Value<int> difficulty;
+  final Value<String> overview;
+  final Value<int> accentArgb;
   final Value<int> rowid;
   const PlantSpeciesRowsCompanion({
     this.id = const Value.absent(),
     this.commonName = const Value.absent(),
     this.scientificName = const Value.absent(),
     this.difficulty = const Value.absent(),
+    this.overview = const Value.absent(),
+    this.accentArgb = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   PlantSpeciesRowsCompanion.insert({
@@ -256,6 +337,8 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
     required String commonName,
     required String scientificName,
     required int difficulty,
+    this.overview = const Value.absent(),
+    this.accentArgb = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        commonName = Value(commonName),
@@ -266,6 +349,8 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
     Expression<String>? commonName,
     Expression<String>? scientificName,
     Expression<int>? difficulty,
+    Expression<String>? overview,
+    Expression<int>? accentArgb,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -273,6 +358,8 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
       if (commonName != null) 'common_name': commonName,
       if (scientificName != null) 'scientific_name': scientificName,
       if (difficulty != null) 'difficulty': difficulty,
+      if (overview != null) 'overview': overview,
+      if (accentArgb != null) 'accent_argb': accentArgb,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -282,6 +369,8 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
     Value<String>? commonName,
     Value<String>? scientificName,
     Value<int>? difficulty,
+    Value<String>? overview,
+    Value<int>? accentArgb,
     Value<int>? rowid,
   }) {
     return PlantSpeciesRowsCompanion(
@@ -289,6 +378,8 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
       commonName: commonName ?? this.commonName,
       scientificName: scientificName ?? this.scientificName,
       difficulty: difficulty ?? this.difficulty,
+      overview: overview ?? this.overview,
+      accentArgb: accentArgb ?? this.accentArgb,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -308,6 +399,12 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
     if (difficulty.present) {
       map['difficulty'] = Variable<int>(difficulty.value);
     }
+    if (overview.present) {
+      map['overview'] = Variable<String>(overview.value);
+    }
+    if (accentArgb.present) {
+      map['accent_argb'] = Variable<int>(accentArgb.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -321,6 +418,8 @@ class PlantSpeciesRowsCompanion extends UpdateCompanion<PlantSpeciesRow> {
           ..write('commonName: $commonName, ')
           ..write('scientificName: $scientificName, ')
           ..write('difficulty: $difficulty, ')
+          ..write('overview: $overview, ')
+          ..write('accentArgb: $accentArgb, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -491,8 +590,6 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
   final String speciesId;
   final String displayName;
   final String statusLabel;
-
-  /// Schema v2 column — nullable so v1→v2 migration can add it safely.
   final String? notes;
   const UserPlantRow({
     required this.id,
@@ -1911,9 +2008,9 @@ class CareEventRowsCompanion extends UpdateCompanion<CareEventRow> {
   }
 }
 
-abstract class _$BloomSpikeDatabase extends GeneratedDatabase {
-  _$BloomSpikeDatabase(QueryExecutor e) : super(e);
-  $BloomSpikeDatabaseManager get managers => $BloomSpikeDatabaseManager(this);
+abstract class _$BloomDatabase extends GeneratedDatabase {
+  _$BloomDatabase(QueryExecutor e) : super(e);
+  $BloomDatabaseManager get managers => $BloomDatabaseManager(this);
   late final $PlantSpeciesRowsTable plantSpeciesRows = $PlantSpeciesRowsTable(
     this,
   );
@@ -1942,6 +2039,8 @@ typedef $$PlantSpeciesRowsTableCreateCompanionBuilder =
       required String commonName,
       required String scientificName,
       required int difficulty,
+      Value<String> overview,
+      Value<int> accentArgb,
       Value<int> rowid,
     });
 typedef $$PlantSpeciesRowsTableUpdateCompanionBuilder =
@@ -1950,13 +2049,15 @@ typedef $$PlantSpeciesRowsTableUpdateCompanionBuilder =
       Value<String> commonName,
       Value<String> scientificName,
       Value<int> difficulty,
+      Value<String> overview,
+      Value<int> accentArgb,
       Value<int> rowid,
     });
 
 final class $$PlantSpeciesRowsTableReferences
     extends
         BaseReferences<
-          _$BloomSpikeDatabase,
+          _$BloomDatabase,
           $PlantSpeciesRowsTable,
           PlantSpeciesRow
         > {
@@ -1967,11 +2068,10 @@ final class $$PlantSpeciesRowsTableReferences
   );
 
   static MultiTypedResultKey<$UserPlantRowsTable, List<UserPlantRow>>
-  _userPlantRowsRefsTable(_$BloomSpikeDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.userPlantRows,
-        aliasName: 'plant_species_rows__id__user_plant_rows__species_id',
-      );
+  _userPlantRowsRefsTable(_$BloomDatabase db) => MultiTypedResultKey.fromTable(
+    db.userPlantRows,
+    aliasName: 'plant_species_rows__id__user_plant_rows__species_id',
+  );
 
   $$UserPlantRowsTableProcessedTableManager get userPlantRowsRefs {
     final manager = $$UserPlantRowsTableTableManager(
@@ -1987,7 +2087,7 @@ final class $$PlantSpeciesRowsTableReferences
 }
 
 class $$PlantSpeciesRowsTableFilterComposer
-    extends Composer<_$BloomSpikeDatabase, $PlantSpeciesRowsTable> {
+    extends Composer<_$BloomDatabase, $PlantSpeciesRowsTable> {
   $$PlantSpeciesRowsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -2012,6 +2112,16 @@ class $$PlantSpeciesRowsTableFilterComposer
 
   ColumnFilters<int> get difficulty => $composableBuilder(
     column: $table.difficulty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get overview => $composableBuilder(
+    column: $table.overview,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get accentArgb => $composableBuilder(
+    column: $table.accentArgb,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2042,7 +2152,7 @@ class $$PlantSpeciesRowsTableFilterComposer
 }
 
 class $$PlantSpeciesRowsTableOrderingComposer
-    extends Composer<_$BloomSpikeDatabase, $PlantSpeciesRowsTable> {
+    extends Composer<_$BloomDatabase, $PlantSpeciesRowsTable> {
   $$PlantSpeciesRowsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -2069,10 +2179,20 @@ class $$PlantSpeciesRowsTableOrderingComposer
     column: $table.difficulty,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get overview => $composableBuilder(
+    column: $table.overview,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get accentArgb => $composableBuilder(
+    column: $table.accentArgb,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PlantSpeciesRowsTableAnnotationComposer
-    extends Composer<_$BloomSpikeDatabase, $PlantSpeciesRowsTable> {
+    extends Composer<_$BloomDatabase, $PlantSpeciesRowsTable> {
   $$PlantSpeciesRowsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -2095,6 +2215,14 @@ class $$PlantSpeciesRowsTableAnnotationComposer
 
   GeneratedColumn<int> get difficulty => $composableBuilder(
     column: $table.difficulty,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get overview =>
+      $composableBuilder(column: $table.overview, builder: (column) => column);
+
+  GeneratedColumn<int> get accentArgb => $composableBuilder(
+    column: $table.accentArgb,
     builder: (column) => column,
   );
 
@@ -2127,7 +2255,7 @@ class $$PlantSpeciesRowsTableAnnotationComposer
 class $$PlantSpeciesRowsTableTableManager
     extends
         RootTableManager<
-          _$BloomSpikeDatabase,
+          _$BloomDatabase,
           $PlantSpeciesRowsTable,
           PlantSpeciesRow,
           $$PlantSpeciesRowsTableFilterComposer,
@@ -2140,7 +2268,7 @@ class $$PlantSpeciesRowsTableTableManager
           PrefetchHooks Function({bool userPlantRowsRefs})
         > {
   $$PlantSpeciesRowsTableTableManager(
-    _$BloomSpikeDatabase db,
+    _$BloomDatabase db,
     $PlantSpeciesRowsTable table,
   ) : super(
         TableManagerState(
@@ -2158,12 +2286,16 @@ class $$PlantSpeciesRowsTableTableManager
                 Value<String> commonName = const Value.absent(),
                 Value<String> scientificName = const Value.absent(),
                 Value<int> difficulty = const Value.absent(),
+                Value<String> overview = const Value.absent(),
+                Value<int> accentArgb = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PlantSpeciesRowsCompanion(
                 id: id,
                 commonName: commonName,
                 scientificName: scientificName,
                 difficulty: difficulty,
+                overview: overview,
+                accentArgb: accentArgb,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2172,12 +2304,16 @@ class $$PlantSpeciesRowsTableTableManager
                 required String commonName,
                 required String scientificName,
                 required int difficulty,
+                Value<String> overview = const Value.absent(),
+                Value<int> accentArgb = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => PlantSpeciesRowsCompanion.insert(
                 id: id,
                 commonName: commonName,
                 scientificName: scientificName,
                 difficulty: difficulty,
+                overview: overview,
+                accentArgb: accentArgb,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -2226,7 +2362,7 @@ class $$PlantSpeciesRowsTableTableManager
 
 typedef $$PlantSpeciesRowsTableProcessedTableManager =
     ProcessedTableManager<
-      _$BloomSpikeDatabase,
+      _$BloomDatabase,
       $PlantSpeciesRowsTable,
       PlantSpeciesRow,
       $$PlantSpeciesRowsTableFilterComposer,
@@ -2258,19 +2394,14 @@ typedef $$UserPlantRowsTableUpdateCompanionBuilder =
     });
 
 final class $$UserPlantRowsTableReferences
-    extends
-        BaseReferences<
-          _$BloomSpikeDatabase,
-          $UserPlantRowsTable,
-          UserPlantRow
-        > {
+    extends BaseReferences<_$BloomDatabase, $UserPlantRowsTable, UserPlantRow> {
   $$UserPlantRowsTableReferences(
     super.$_db,
     super.$_table,
     super.$_typedResult,
   );
 
-  static $PlantSpeciesRowsTable _speciesIdTable(_$BloomSpikeDatabase db) => db
+  static $PlantSpeciesRowsTable _speciesIdTable(_$BloomDatabase db) => db
       .plantSpeciesRows
       .createAlias('user_plant_rows__species_id__plant_species_rows__id');
 
@@ -2289,7 +2420,7 @@ final class $$UserPlantRowsTableReferences
   }
 
   static MultiTypedResultKey<$CarePlanItemRowsTable, List<CarePlanItemRow>>
-  _carePlanItemRowsRefsTable(_$BloomSpikeDatabase db) =>
+  _carePlanItemRowsRefsTable(_$BloomDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.carePlanItemRows,
         aliasName: 'user_plant_rows__id__care_plan_item_rows__user_plant_id',
@@ -2310,11 +2441,10 @@ final class $$UserPlantRowsTableReferences
   }
 
   static MultiTypedResultKey<$CareTaskRowsTable, List<CareTaskRow>>
-  _careTaskRowsRefsTable(_$BloomSpikeDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.careTaskRows,
-        aliasName: 'user_plant_rows__id__care_task_rows__user_plant_id',
-      );
+  _careTaskRowsRefsTable(_$BloomDatabase db) => MultiTypedResultKey.fromTable(
+    db.careTaskRows,
+    aliasName: 'user_plant_rows__id__care_task_rows__user_plant_id',
+  );
 
   $$CareTaskRowsTableProcessedTableManager get careTaskRowsRefs {
     final manager = $$CareTaskRowsTableTableManager(
@@ -2329,11 +2459,10 @@ final class $$UserPlantRowsTableReferences
   }
 
   static MultiTypedResultKey<$CareEventRowsTable, List<CareEventRow>>
-  _careEventRowsRefsTable(_$BloomSpikeDatabase db) =>
-      MultiTypedResultKey.fromTable(
-        db.careEventRows,
-        aliasName: 'user_plant_rows__id__care_event_rows__user_plant_id',
-      );
+  _careEventRowsRefsTable(_$BloomDatabase db) => MultiTypedResultKey.fromTable(
+    db.careEventRows,
+    aliasName: 'user_plant_rows__id__care_event_rows__user_plant_id',
+  );
 
   $$CareEventRowsTableProcessedTableManager get careEventRowsRefs {
     final manager = $$CareEventRowsTableTableManager(
@@ -2349,7 +2478,7 @@ final class $$UserPlantRowsTableReferences
 }
 
 class $$UserPlantRowsTableFilterComposer
-    extends Composer<_$BloomSpikeDatabase, $UserPlantRowsTable> {
+    extends Composer<_$BloomDatabase, $UserPlantRowsTable> {
   $$UserPlantRowsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -2477,7 +2606,7 @@ class $$UserPlantRowsTableFilterComposer
 }
 
 class $$UserPlantRowsTableOrderingComposer
-    extends Composer<_$BloomSpikeDatabase, $UserPlantRowsTable> {
+    extends Composer<_$BloomDatabase, $UserPlantRowsTable> {
   $$UserPlantRowsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -2530,7 +2659,7 @@ class $$UserPlantRowsTableOrderingComposer
 }
 
 class $$UserPlantRowsTableAnnotationComposer
-    extends Composer<_$BloomSpikeDatabase, $UserPlantRowsTable> {
+    extends Composer<_$BloomDatabase, $UserPlantRowsTable> {
   $$UserPlantRowsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -2656,7 +2785,7 @@ class $$UserPlantRowsTableAnnotationComposer
 class $$UserPlantRowsTableTableManager
     extends
         RootTableManager<
-          _$BloomSpikeDatabase,
+          _$BloomDatabase,
           $UserPlantRowsTable,
           UserPlantRow,
           $$UserPlantRowsTableFilterComposer,
@@ -2674,7 +2803,7 @@ class $$UserPlantRowsTableTableManager
           })
         > {
   $$UserPlantRowsTableTableManager(
-    _$BloomSpikeDatabase db,
+    _$BloomDatabase db,
     $UserPlantRowsTable table,
   ) : super(
         TableManagerState(
@@ -2849,7 +2978,7 @@ class $$UserPlantRowsTableTableManager
 
 typedef $$UserPlantRowsTableProcessedTableManager =
     ProcessedTableManager<
-      _$BloomSpikeDatabase,
+      _$BloomDatabase,
       $UserPlantRowsTable,
       UserPlantRow,
       $$UserPlantRowsTableFilterComposer,
@@ -2890,7 +3019,7 @@ typedef $$CarePlanItemRowsTableUpdateCompanionBuilder =
 final class $$CarePlanItemRowsTableReferences
     extends
         BaseReferences<
-          _$BloomSpikeDatabase,
+          _$BloomDatabase,
           $CarePlanItemRowsTable,
           CarePlanItemRow
         > {
@@ -2900,7 +3029,7 @@ final class $$CarePlanItemRowsTableReferences
     super.$_typedResult,
   );
 
-  static $UserPlantRowsTable _userPlantIdTable(_$BloomSpikeDatabase db) => db
+  static $UserPlantRowsTable _userPlantIdTable(_$BloomDatabase db) => db
       .userPlantRows
       .createAlias('care_plan_item_rows__user_plant_id__user_plant_rows__id');
 
@@ -2920,7 +3049,7 @@ final class $$CarePlanItemRowsTableReferences
 }
 
 class $$CarePlanItemRowsTableFilterComposer
-    extends Composer<_$BloomSpikeDatabase, $CarePlanItemRowsTable> {
+    extends Composer<_$BloomDatabase, $CarePlanItemRowsTable> {
   $$CarePlanItemRowsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -2978,7 +3107,7 @@ class $$CarePlanItemRowsTableFilterComposer
 }
 
 class $$CarePlanItemRowsTableOrderingComposer
-    extends Composer<_$BloomSpikeDatabase, $CarePlanItemRowsTable> {
+    extends Composer<_$BloomDatabase, $CarePlanItemRowsTable> {
   $$CarePlanItemRowsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -3036,7 +3165,7 @@ class $$CarePlanItemRowsTableOrderingComposer
 }
 
 class $$CarePlanItemRowsTableAnnotationComposer
-    extends Composer<_$BloomSpikeDatabase, $CarePlanItemRowsTable> {
+    extends Composer<_$BloomDatabase, $CarePlanItemRowsTable> {
   $$CarePlanItemRowsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -3088,7 +3217,7 @@ class $$CarePlanItemRowsTableAnnotationComposer
 class $$CarePlanItemRowsTableTableManager
     extends
         RootTableManager<
-          _$BloomSpikeDatabase,
+          _$BloomDatabase,
           $CarePlanItemRowsTable,
           CarePlanItemRow,
           $$CarePlanItemRowsTableFilterComposer,
@@ -3101,7 +3230,7 @@ class $$CarePlanItemRowsTableTableManager
           PrefetchHooks Function({bool userPlantId})
         > {
   $$CarePlanItemRowsTableTableManager(
-    _$BloomSpikeDatabase db,
+    _$BloomDatabase db,
     $CarePlanItemRowsTable table,
   ) : super(
         TableManagerState(
@@ -3206,7 +3335,7 @@ class $$CarePlanItemRowsTableTableManager
 
 typedef $$CarePlanItemRowsTableProcessedTableManager =
     ProcessedTableManager<
-      _$BloomSpikeDatabase,
+      _$BloomDatabase,
       $CarePlanItemRowsTable,
       CarePlanItemRow,
       $$CarePlanItemRowsTableFilterComposer,
@@ -3240,11 +3369,10 @@ typedef $$CareTaskRowsTableUpdateCompanionBuilder =
     });
 
 final class $$CareTaskRowsTableReferences
-    extends
-        BaseReferences<_$BloomSpikeDatabase, $CareTaskRowsTable, CareTaskRow> {
+    extends BaseReferences<_$BloomDatabase, $CareTaskRowsTable, CareTaskRow> {
   $$CareTaskRowsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $UserPlantRowsTable _userPlantIdTable(_$BloomSpikeDatabase db) => db
+  static $UserPlantRowsTable _userPlantIdTable(_$BloomDatabase db) => db
       .userPlantRows
       .createAlias('care_task_rows__user_plant_id__user_plant_rows__id');
 
@@ -3264,7 +3392,7 @@ final class $$CareTaskRowsTableReferences
 }
 
 class $$CareTaskRowsTableFilterComposer
-    extends Composer<_$BloomSpikeDatabase, $CareTaskRowsTable> {
+    extends Composer<_$BloomDatabase, $CareTaskRowsTable> {
   $$CareTaskRowsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -3322,7 +3450,7 @@ class $$CareTaskRowsTableFilterComposer
 }
 
 class $$CareTaskRowsTableOrderingComposer
-    extends Composer<_$BloomSpikeDatabase, $CareTaskRowsTable> {
+    extends Composer<_$BloomDatabase, $CareTaskRowsTable> {
   $$CareTaskRowsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -3380,7 +3508,7 @@ class $$CareTaskRowsTableOrderingComposer
 }
 
 class $$CareTaskRowsTableAnnotationComposer
-    extends Composer<_$BloomSpikeDatabase, $CareTaskRowsTable> {
+    extends Composer<_$BloomDatabase, $CareTaskRowsTable> {
   $$CareTaskRowsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -3432,7 +3560,7 @@ class $$CareTaskRowsTableAnnotationComposer
 class $$CareTaskRowsTableTableManager
     extends
         RootTableManager<
-          _$BloomSpikeDatabase,
+          _$BloomDatabase,
           $CareTaskRowsTable,
           CareTaskRow,
           $$CareTaskRowsTableFilterComposer,
@@ -3444,10 +3572,8 @@ class $$CareTaskRowsTableTableManager
           CareTaskRow,
           PrefetchHooks Function({bool userPlantId})
         > {
-  $$CareTaskRowsTableTableManager(
-    _$BloomSpikeDatabase db,
-    $CareTaskRowsTable table,
-  ) : super(
+  $$CareTaskRowsTableTableManager(_$BloomDatabase db, $CareTaskRowsTable table)
+    : super(
         TableManagerState(
           db: db,
           table: table,
@@ -3548,7 +3674,7 @@ class $$CareTaskRowsTableTableManager
 
 typedef $$CareTaskRowsTableProcessedTableManager =
     ProcessedTableManager<
-      _$BloomSpikeDatabase,
+      _$BloomDatabase,
       $CareTaskRowsTable,
       CareTaskRow,
       $$CareTaskRowsTableFilterComposer,
@@ -3580,19 +3706,14 @@ typedef $$CareEventRowsTableUpdateCompanionBuilder =
     });
 
 final class $$CareEventRowsTableReferences
-    extends
-        BaseReferences<
-          _$BloomSpikeDatabase,
-          $CareEventRowsTable,
-          CareEventRow
-        > {
+    extends BaseReferences<_$BloomDatabase, $CareEventRowsTable, CareEventRow> {
   $$CareEventRowsTableReferences(
     super.$_db,
     super.$_table,
     super.$_typedResult,
   );
 
-  static $UserPlantRowsTable _userPlantIdTable(_$BloomSpikeDatabase db) => db
+  static $UserPlantRowsTable _userPlantIdTable(_$BloomDatabase db) => db
       .userPlantRows
       .createAlias('care_event_rows__user_plant_id__user_plant_rows__id');
 
@@ -3612,7 +3733,7 @@ final class $$CareEventRowsTableReferences
 }
 
 class $$CareEventRowsTableFilterComposer
-    extends Composer<_$BloomSpikeDatabase, $CareEventRowsTable> {
+    extends Composer<_$BloomDatabase, $CareEventRowsTable> {
   $$CareEventRowsTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -3665,7 +3786,7 @@ class $$CareEventRowsTableFilterComposer
 }
 
 class $$CareEventRowsTableOrderingComposer
-    extends Composer<_$BloomSpikeDatabase, $CareEventRowsTable> {
+    extends Composer<_$BloomDatabase, $CareEventRowsTable> {
   $$CareEventRowsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -3718,7 +3839,7 @@ class $$CareEventRowsTableOrderingComposer
 }
 
 class $$CareEventRowsTableAnnotationComposer
-    extends Composer<_$BloomSpikeDatabase, $CareEventRowsTable> {
+    extends Composer<_$BloomDatabase, $CareEventRowsTable> {
   $$CareEventRowsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -3767,7 +3888,7 @@ class $$CareEventRowsTableAnnotationComposer
 class $$CareEventRowsTableTableManager
     extends
         RootTableManager<
-          _$BloomSpikeDatabase,
+          _$BloomDatabase,
           $CareEventRowsTable,
           CareEventRow,
           $$CareEventRowsTableFilterComposer,
@@ -3780,7 +3901,7 @@ class $$CareEventRowsTableTableManager
           PrefetchHooks Function({bool userPlantId})
         > {
   $$CareEventRowsTableTableManager(
-    _$BloomSpikeDatabase db,
+    _$BloomDatabase db,
     $CareEventRowsTable table,
   ) : super(
         TableManagerState(
@@ -3879,7 +4000,7 @@ class $$CareEventRowsTableTableManager
 
 typedef $$CareEventRowsTableProcessedTableManager =
     ProcessedTableManager<
-      _$BloomSpikeDatabase,
+      _$BloomDatabase,
       $CareEventRowsTable,
       CareEventRow,
       $$CareEventRowsTableFilterComposer,
@@ -3892,9 +4013,9 @@ typedef $$CareEventRowsTableProcessedTableManager =
       PrefetchHooks Function({bool userPlantId})
     >;
 
-class $BloomSpikeDatabaseManager {
-  final _$BloomSpikeDatabase _db;
-  $BloomSpikeDatabaseManager(this._db);
+class $BloomDatabaseManager {
+  final _$BloomDatabase _db;
+  $BloomDatabaseManager(this._db);
   $$PlantSpeciesRowsTableTableManager get plantSpeciesRows =>
       $$PlantSpeciesRowsTableTableManager(_db, _db.plantSpeciesRows);
   $$UserPlantRowsTableTableManager get userPlantRows =>

@@ -1,8 +1,11 @@
+import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/theme/bloom_colors.dart';
 import 'package:bloom/app/theme/bloom_radii.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
+import 'package:bloom/data/domain/entities.dart' as domain;
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
+import 'package:bloom/shared/presentation/care_ui_mappers.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
 import 'package:bloom/shared/widgets/care_task_row.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +21,121 @@ class PlantDetailScreen extends StatefulWidget {
 
 class _PlantDetailScreenState extends State<PlantDetailScreen> {
   int _tabIndex = 0;
-  final Set<String> _completedTaskIds = {};
+  var _loading = true;
+  var _started = false;
+  FixturePlant? _plant;
+  List<FixtureCareTask> _openTasks = const [];
+  List<FixtureCareHistoryEvent> _history = const [];
+  List<FixtureCarePlanItem> _carePlan = const [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) {
+      return;
+    }
+    _started = true;
+    _reload();
+  }
+
+  Future<void> _reload() async {
+    final care = BloomScope.of(context).care;
+    final record = await care.getUserPlantRecord(widget.plantId);
+    if (record == null) {
+      if (mounted) {
+        setState(() {
+          _plant = null;
+          _loading = false;
+        });
+      }
+      return;
+    }
+
+    final tasks = await care.listTasksForPlant(widget.plantId);
+    final events = await care.listCareEvents(widget.plantId);
+    final plan = await care.getCarePlan(widget.plantId);
+    final accent = Color(record.species.accentArgb);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _plant = toFixturePlant(record);
+      _openTasks = [
+        for (final task in tasks.where((t) => !t.isDone))
+          toFixtureTask(
+            task: task,
+            plantName: record.plant.displayName,
+            accent: accent,
+          ),
+      ];
+      _history = events.map(toFixtureHistoryEvent).toList();
+      _carePlan = plan.map(toFixturePlanItem).toList();
+      _loading = false;
+    });
+  }
+
+  Future<void> _setTaskDone(FixtureCareTask task, bool isDone) async {
+    final care = BloomScope.of(context).care;
+    final existing = await care.getCareTask(task.id);
+    if (existing == null) {
+      return;
+    }
+    await care.upsertCareTask(
+      domain.CareTask(
+        id: existing.id,
+        userPlantId: existing.userPlantId,
+        actionLabel: existing.actionLabel,
+        urgency: existing.urgency,
+        dueAt: existing.dueAt,
+        isDone: isDone,
+      ),
+    );
+    if (isDone) {
+      await care.addCareEvent(
+        domain.CareEvent(
+          id: 'event-${task.id}-${DateTime.now().millisecondsSinceEpoch}',
+          userPlantId: task.plantId,
+          kind: domain.CareActionKind.check,
+          label: '${task.actionLabel} done',
+          occurredAt: DateTime.now(),
+        ),
+      );
+    }
+    await _reload();
+  }
+
+  Future<void> _logCare() async {
+    final care = BloomScope.of(context).care;
+    await care.addCareEvent(
+      domain.CareEvent(
+        id: 'event-log-${widget.plantId}-${DateTime.now().millisecondsSinceEpoch}',
+        userPlantId: widget.plantId,
+        kind: domain.CareActionKind.water,
+        label: 'Logged care',
+        occurredAt: DateTime.now(),
+      ),
+    );
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Care logged to timeline.')));
+    await _reload();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final plant = BloomFixtures.plantById(widget.plantId);
+    if (_loading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Plant')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final plant = _plant;
     if (plant == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Plant')),
@@ -31,11 +144,6 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     }
 
     final theme = Theme.of(context);
-    final openTasks = BloomFixtures.tasksForPlant(
-      plant.id,
-    ).where((task) => !_completedTaskIds.contains(task.id)).toList();
-    final history = BloomFixtures.historyForPlant(plant.id);
-    final carePlan = BloomFixtures.carePlanForPlant(plant.id);
 
     return Scaffold(
       appBar: AppBar(
@@ -108,21 +216,13 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                     ),
                   ),
                   FilledButton.tonal(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Log care will write to history after persistence lands.',
-                          ),
-                        ),
-                      );
-                    },
+                    onPressed: _logCare,
                     child: const Text('Log care'),
                   ),
                 ],
               ),
               const SizedBox(height: BloomSpacing.x3),
-              if (openTasks.isEmpty)
+              if (_openTasks.isEmpty)
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(BloomSpacing.x5),
@@ -133,28 +233,20 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                   ),
                 )
               else
-                ...openTasks.map(
+                ..._openTasks.map(
                   (task) => Padding(
                     padding: const EdgeInsets.only(bottom: BloomSpacing.x3),
                     child: CareTaskRow(
                       task: task,
                       isDone: false,
-                      onToggle: (done) {
-                        setState(() {
-                          if (done) {
-                            _completedTaskIds.add(task.id);
-                          } else {
-                            _completedTaskIds.remove(task.id);
-                          }
-                        });
-                      },
+                      onToggle: (done) => _setTaskDone(task, done),
                     ),
                   ),
                 ),
               const SizedBox(height: BloomSpacing.x5),
               Text('Timeline', style: theme.textTheme.titleMedium),
               const SizedBox(height: BloomSpacing.x3),
-              if (history.isEmpty)
+              if (_history.isEmpty)
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(BloomSpacing.x5),
@@ -170,9 +262,9 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                     padding: const EdgeInsets.all(BloomSpacing.x4),
                     child: Column(
                       children: [
-                        for (var i = 0; i < history.length; i++) ...[
-                          _TimelineRow(event: history[i]),
-                          if (i != history.length - 1)
+                        for (var i = 0; i < _history.length; i++) ...[
+                          _TimelineRow(event: _history[i]),
+                          if (i != _history.length - 1)
                             const Divider(height: BloomSpacing.x6),
                         ],
                       ],
@@ -204,9 +296,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            'Editing the care plan comes with persistence.',
-                          ),
+                          content: Text('Care plan editing UI comes next.'),
                         ),
                       );
                     },
@@ -222,23 +312,23 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               Card(
                 child: Column(
                   children: [
-                    for (var i = 0; i < carePlan.length; i++) ...[
+                    for (var i = 0; i < _carePlan.length; i++) ...[
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: BloomFixtures.careActionColor(
-                            carePlan[i].kind,
+                            _carePlan[i].kind,
                           ).withValues(alpha: 0.15),
                           child: Icon(
-                            BloomFixtures.careActionIcon(carePlan[i].kind),
+                            BloomFixtures.careActionIcon(_carePlan[i].kind),
                             color: BloomFixtures.careActionColor(
-                              carePlan[i].kind,
+                              _carePlan[i].kind,
                             ),
                           ),
                         ),
-                        title: Text(carePlan[i].title),
-                        subtitle: Text(carePlan[i].cadenceLabel),
+                        title: Text(_carePlan[i].title),
+                        subtitle: Text(_carePlan[i].cadenceLabel),
                       ),
-                      if (i != carePlan.length - 1) const Divider(height: 1),
+                      if (i != _carePlan.length - 1) const Divider(height: 1),
                     ],
                   ],
                 ),

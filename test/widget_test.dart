@@ -1,12 +1,24 @@
 import 'package:bloom/app/bloom_app.dart';
+import 'package:bloom/data/bloom_services.dart';
+import 'package:bloom/data/local/drift/bloom_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Bloom shell shows fixture Today, Plants, and Discover UI', (
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('Bloom shell loads persisted Today, Plants, and Discover UI', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const BloomApp());
+    SharedPreferences.setMockInitialValues({});
+    final services = await BloomServices.bootstrap(
+      database: BloomDatabase.memory(),
+      preferences: await SharedPreferences.getInstance(),
+    );
+
+    await tester.pumpWidget(BloomApp(services: services));
+    await tester.pumpAndSettle();
 
     expect(find.text("Today's tasks"), findsOneWidget);
     expect(find.text('Snake Plant'), findsWidgets);

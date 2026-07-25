@@ -65,7 +65,7 @@ fvm flutter test
 fvm flutter build apk --debug
 ```
 
-After changing Drift tables under `lib/spikes/persistence/`, regenerate code:
+After changing Drift tables under `lib/data/local/drift/`, regenerate code:
 
 ```sh
 fvm dart run build_runner build

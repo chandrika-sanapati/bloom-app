@@ -1,27 +1,31 @@
-// Spike domain entities. No persistence-package imports.
+// Local-first domain entities. No persistence-package imports.
 
-enum SpikePlantDifficulty { easy, moderate }
+enum PlantDifficulty { easy, moderate }
 
-enum SpikeCareUrgency { overdue, dueToday, upcoming, done }
+enum CareUrgency { overdue, dueToday, upcoming, done }
 
-enum SpikeCareActionKind { water, fertilise, prune, check, light }
+enum CareActionKind { water, fertilise, prune, check, light }
 
-class SpikePlantSpecies {
-  const SpikePlantSpecies({
+class PlantSpecies {
+  const PlantSpecies({
     required this.id,
     required this.commonName,
     required this.scientificName,
     required this.difficulty,
+    required this.overview,
+    required this.accentArgb,
   });
 
   final String id;
   final String commonName;
   final String scientificName;
-  final SpikePlantDifficulty difficulty;
+  final PlantDifficulty difficulty;
+  final String overview;
+  final int accentArgb;
 }
 
-class SpikeUserPlant {
-  const SpikeUserPlant({
+class UserPlant {
+  const UserPlant({
     required this.id,
     required this.speciesId,
     required this.displayName,
@@ -33,13 +37,11 @@ class SpikeUserPlant {
   final String speciesId;
   final String displayName;
   final String statusLabel;
-
-  /// Added in schema v2 migration spike.
   final String? notes;
 }
 
-class SpikeCarePlanItem {
-  const SpikeCarePlanItem({
+class CarePlanItem {
+  const CarePlanItem({
     required this.id,
     required this.userPlantId,
     required this.kind,
@@ -50,14 +52,14 @@ class SpikeCarePlanItem {
 
   final String id;
   final String userPlantId;
-  final SpikeCareActionKind kind;
+  final CareActionKind kind;
   final String title;
   final String cadenceLabel;
   final int sortOrder;
 }
 
-class SpikeCareTask {
-  const SpikeCareTask({
+class CareTask {
+  const CareTask({
     required this.id,
     required this.userPlantId,
     required this.actionLabel,
@@ -69,13 +71,13 @@ class SpikeCareTask {
   final String id;
   final String userPlantId;
   final String actionLabel;
-  final SpikeCareUrgency urgency;
+  final CareUrgency urgency;
   final DateTime dueAt;
   final bool isDone;
 }
 
-class SpikeCareEvent {
-  const SpikeCareEvent({
+class CareEvent {
+  const CareEvent({
     required this.id,
     required this.userPlantId,
     required this.kind,
@@ -85,7 +87,15 @@ class SpikeCareEvent {
 
   final String id;
   final String userPlantId;
-  final SpikeCareActionKind kind;
+  final CareActionKind kind;
   final String label;
   final DateTime occurredAt;
+}
+
+/// User plant joined with its species for collection/detail UI.
+class UserPlantRecord {
+  const UserPlantRecord({required this.plant, required this.species});
+
+  final UserPlant plant;
+  final PlantSpecies species;
 }

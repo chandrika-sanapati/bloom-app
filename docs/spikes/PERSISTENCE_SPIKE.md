@@ -1,9 +1,9 @@
 # Persistence Spike — Decision Record
 
-**Status:** Spike complete (not yet adopted into feature UI)  
-**Date:** 2026-07-25  
-**Code:** [`lib/spikes/persistence/`](../../lib/spikes/persistence/)  
-**Tests:** [`test/spikes/persistence/`](../../test/spikes/persistence/)
+**Status:** Adopted into app data layer (`lib/data/`); feature UI reads/writes SQLite  
+**Date:** 2026-07-25 (spike), adopted 2026-07-25  
+**Production code:** [`lib/data/`](../../lib/data/)  
+**Tests:** [`test/spikes/persistence/`](../../test/spikes/persistence/), [`test/widget_test.dart`](../../test/widget_test.dart)
 
 ## Decision
 
@@ -12,39 +12,39 @@
 
 ## Rejected alternative
 
-**sqflite (direct):** Rejected for this codebase because typed queries, reactive streams, and first-class migration helpers reduce hand-written SQL and keep repository adapters smaller as care-task/event volume grows. Code generation cost is accepted and checked in via `*.g.dart`.
+**sqflite (direct):** Rejected because typed queries, reactive streams, and first-class migration helpers reduce hand-written SQL as care-task/event volume grows. Code generation cost is accepted and checked in via `*.g.dart`.
 
-## What was proven
+## What was proven (spike)
 
 1. Persist one of each: `PlantSpecies`, `UserPlant`, `CarePlan` (items), `CareTask`, `CareEvent`.
-2. Recreate Today open-task ordering after closing and reopening a file-backed database (process-death analogue; offline).
-3. Forward schema migration v1 → v2 (`user_plant_rows.notes`) without losing existing plants.
-4. Feature/tests talk only to [`CareRepository`](../../lib/spikes/persistence/domain/care_repository.dart) / [`SettingsRepository`](../../lib/spikes/persistence/domain/settings_repository.dart) — no Drift types outside `data/drift/`.
-5. Round-trip units + reminders-enabled via `shared_preferences`.
+2. Recreate Today open-task ordering after closing and reopening a file-backed database.
+3. Forward schema migration without losing existing plants (now through schema v3).
+4. Call sites use [`CareRepository`](../../lib/data/domain/care_repository.dart) / [`SettingsRepository`](../../lib/data/domain/settings_repository.dart).
+5. Round-trip preferences via `shared_preferences`.
+
+## Adoption notes
+
+- Bootstrap: [`BloomServices.bootstrap`](../../lib/data/bloom_services.dart) opens `BloomDatabase.defaults()`, seeds sample data once via [`FixtureSeeder`](../../lib/data/local/fixture_seeder.dart), and is provided through [`BloomScope`](../../lib/app/bloom_scope.dart).
+- Today / My Plants / plant detail load and mutate through `CareRepository`.
+- Schema v3 adds `overview` and `accent_argb` on species for UI.
+- Disposable `lib/spikes/persistence/` copy removed in favor of `lib/data/`.
 
 ## Codegen
-
-After changing tables or the `@DriftDatabase` class:
 
 ```sh
 fvm dart run build_runner build
 ```
 
-Commit generated [`bloom_spike_database.g.dart`](../../lib/spikes/persistence/data/drift/bloom_spike_database.g.dart) so CI does not need a separate codegen step.
+Commit generated [`bloom_database.g.dart`](../../lib/data/local/drift/bloom_database.g.dart).
 
 ## Backup / recovery stance
 
-- **Now:** SQLite file is the source of truth; no automated backup/export in the spike.
-- **Before production adopt:** Decide user-facing export/delete-all behavior and whether OS backup (Android Auto Backup) should include the DB file. Record rollback: keep previous DB file on failed migration and surface a recoverable error rather than wiping data.
+- **Now:** SQLite file is the source of truth; sample seed runs once per install prefs flag.
+- **Before Play release:** Decide export/delete-all behavior and Android Auto Backup inclusion. On failed migration, prefer recoverable error over wiping data.
 
 ## Unresolved risks / remaining gates
 
-- API 26 + physical-device smoke before accepting platform behavior for production.
-- Not wired into Today / My Plants / detail (fixtures remain).
-- `IdentificationAttempt` entity deferred.
-- Stable task/event IDs are strings; freeze these contracts before the reminder spike.
-- OEM file-path / backup quirks not validated on device yet.
-
-## Adopt next
-
-When accepted: move or copy repository contracts into a production data layer, seed from fixtures on first launch if desired, and point Today/My Plants at `CareRepository` instead of `BloomFixtures`.
+- API 26 + physical-device smoke before freezing platform behavior.
+- `IdentificationAttempt` entity still deferred.
+- Stable task/event string IDs should stay frozen before the reminder spike.
+- Discover add-to-collection still fixture/snackbar only.
