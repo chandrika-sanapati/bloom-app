@@ -1,19 +1,21 @@
 # Bloom Phase 2 Validation Pack
 
-**Status:** Kits ready — recruitment, ID benchmark, and care-content decisions in progress  
+**Status:** Camera-blocking gates closed — care locked; scanning **deferred**; prototype sessions still owner-owned  
 **Last reviewed:** 2026-07-25  
 **Market context:** English-only app; initial Play markets are Europe, the United States, and India
 
-This pack turns Phase 2 into runnable work. Camera identification production work stays gated until the exit criteria below are met or explicitly deferred with recorded evidence.
+Care ownership is locked and camera identification is explicitly deferred until a provider is Adopted from the benchmark kit. Spike 3 stays closed. Prototype recruitment/sessions continue in parallel and do not by themselves unlock the camera.
 
 ### Working artifacts
 
 | Artifact | Path |
 |---|---|
 | Consent + session templates | [`phase2/CONSENT_AND_SESSION.md`](./phase2/CONSENT_AND_SESSION.md) |
+| Recruitment tracker | [`phase2/RECRUITMENT_TRACKER.md`](./phase2/RECRUITMENT_TRACKER.md) |
 | ID provider benchmark kit | [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md) |
+| Score rollup helper | [`phase2/summarize_benchmark_scores.dart`](./phase2/summarize_benchmark_scores.dart) |
 | Score + photo CSVs | [`phase2/benchmark_scores.csv`](./phase2/benchmark_scores.csv), [`phase2/benchmark_photo_log.csv`](./phase2/benchmark_photo_log.csv) |
-| Care-content decision note | [`phase2/CARE_CONTENT_DECISION.md`](./phase2/CARE_CONTENT_DECISION.md) |
+| Care-content decision note | [`phase2/CARE_CONTENT_DECISION.md`](./phase2/CARE_CONTENT_DECISION.md) (**locked**) |
 | Catalog ↔ taxonomy map | [`phase2/catalog_mapping.csv`](./phase2/catalog_mapping.csv) |
 
 ## Success thresholds
@@ -169,6 +171,10 @@ Create a short care-content decision note that records the chosen sources, rejec
 
 ## Phase 2 exit gate
 
-- [ ] Core prototype tasks are understandable without coaching.
-- [ ] One identification approach passes the agreed benchmark, or scanning is explicitly deferred.
-- [ ] Care-content ownership, sourcing, and limitations are documented (provisional note exists; owner lock still required).
+- [ ] Core prototype tasks are understandable without coaching (tracker ready — [`phase2/RECRUITMENT_TRACKER.md`](./phase2/RECRUITMENT_TRACKER.md); sessions not yet run).
+- [x] One identification approach passes the agreed benchmark, or scanning is explicitly deferred (**deferred** 2026-07-25).
+- [x] Care-content ownership, sourcing, and limitations are documented (**locked** 2026-07-25).
+
+### Camera unlock rule
+
+Spike 3 may start only after [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md) decision log Winner is `plantnet` or `plant_id` with PRD thresholds passed (use the score rollup helper).

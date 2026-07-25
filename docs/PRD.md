@@ -1,18 +1,20 @@
 # Bloom — Product Requirements Document
 
-**Version:** 1.2
-**Status:** Android-first implementation brief
+**Version:** 1.3
+**Status:** Android-first implementation brief  
 **Platform:** Android first; preserve future iOS and web portability
+
+**Delivery note (2026-07-25):** Camera identification is **deferred** until the Phase 2 provider benchmark records Adopt. V1 add-plant is **search-first**; Discover may keep a non-blocking scan entry that routes to search until Spike 3 is unlocked. See [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
 
 ---
 
 ## Overview
 
-Bloom is a local-first plant care app for non-experts with approximately 2–8 indoor plants. Users can identify or search for a houseplant, review and edit a suggested care plan for their conditions, and see what care is due today.
+Bloom is a local-first plant care app for non-experts with approximately 2–8 indoor plants. Users can search for a houseplant (and later identify one by camera once a provider is Adopted), review and edit a suggested care plan for their conditions, and see what care is due today.
 
 The core promise:
 
-> Identify or search for a houseplant, review a suggested care plan for your conditions, and know what to do today.
+> Search for a houseplant (camera when unlocked), review a suggested care plan for your conditions, and know what to do today.
 
 Care guidance is a cautious, editable suggestion rather than a guarantee.
 
@@ -41,9 +43,9 @@ The production app has three bottom destinations:
 
 1. **Today** — overdue, due, upcoming, and completed care tasks
 2. **My Plants** — the saved collection, plant details, and care history
-3. **Discover** — manual search and camera identification
+3. **Discover** — manual search (primary); camera identification when Phase 2 Adopt unlocks Spike 3
 
-Settings is opened from the top app bar. Manual search is always visible next to scanning and remains available when camera permission, connectivity, confidence, or the identification provider fails. Community is not part of production navigation.
+Settings is opened from the top app bar. Manual search is always available. When camera ships, search remains next to scanning and available when camera permission, connectivity, confidence, or the identification provider fails. Community is not part of production navigation.
 
 ---
 

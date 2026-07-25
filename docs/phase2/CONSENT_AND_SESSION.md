@@ -2,7 +2,8 @@
 
 **Status:** Ready to use  
 **Date:** 2026-07-25  
-**Parent pack:** [`../PHASE2_VALIDATION.md`](../PHASE2_VALIDATION.md)
+**Parent pack:** [`../PHASE2_VALIDATION.md`](../PHASE2_VALIDATION.md)  
+**Tracker:** [`RECRUITMENT_TRACKER.md`](./RECRUITMENT_TRACKER.md)
 
 ## Recruitment blurb (copy/paste)
 

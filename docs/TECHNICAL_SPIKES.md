@@ -1,6 +1,6 @@
 # Bloom Technical Spike Sequence
 
-**Status:** Spike 1 adopted. Spike 2 wired with cold-start action handling; hardware reboot/OEM/TZ gates still open. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md) and [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md).
+**Status:** Spike 1 adopted. Spike 2 wired (hardware reboot/OEM/TZ gates still open). Spike 3 (camera) **blocked** — Phase 2 deferred scanning until an ID provider is Adopted. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md), [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md), [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
 **Last reviewed:** 2026-07-25
 
 These spikes prove architecture-changing assumptions with disposable code. Each spike must record the selected approach, rejected alternatives, evidence, and unresolved risks before production implementation begins.
@@ -49,7 +49,7 @@ Accept when duplicate and missed-task rates remain below the PRD threshold acros
 
 ## Spike 3 — Camera and identification
 
-Begin only after the Phase 2 provider benchmark defines candidate quality and latency thresholds. It may run alongside the reminder spike once shared persistence contracts are stable.
+**Do not begin** until [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md) records **Adopt** for a passing provider. Phase 2 currently **defers** scanning (search-first v1). When unlocked, it may proceed once shared persistence contracts remain stable.
 
 Evaluate the official Flutter `camera` and `image_picker` packages. Confirm that gallery import uses Android Photo Picker on supported versions. Evaluate a maintained compressor that writes a resized upload copy with EXIF retention disabled.
 

@@ -1,8 +1,10 @@
 # Identification Provider Benchmark Kit
 
-**Status:** Ready to run (no provider adopted yet)  
+**Status:** Deferred — no provider adopted; measurement still runnable  
 **Date:** 2026-07-25  
 **Parent pack:** [`../PHASE2_VALIDATION.md`](../PHASE2_VALIDATION.md)
+
+**Current product decision:** Camera identification is **deferred**. V1 add-plant is search-first until this kit is measured and a provider is Adopted. Use [`summarize_benchmark_scores.dart`](./summarize_benchmark_scores.dart) after filling [`benchmark_scores.csv`](./benchmark_scores.csv).
 
 ## Candidates to measure
 
@@ -157,14 +159,14 @@ Columns:
 | Taxonomy id stability | | |
 | Care-catalog mapping feasibility | | |
 
-## Decision log (fill after measurement)
+## Decision log
 
 | Field | Value |
 |---|---|
-| Date | |
-| Winner | `plantnet` / `plant_id` / `defer` |
-| Top-1 / Top-3 / latency evidence | |
-| Terms acceptable? | |
-| Follow-ups | |
+| Date | 2026-07-25 |
+| Winner | `defer` |
+| Top-1 / Top-3 / latency evidence | No completed score corpus yet. Kit, photo log, and score CSV templates are published; owner measurement outstanding. |
+| Terms acceptable? | Not evaluated (no production calls). |
+| Follow-ups | Create provider accounts (keys out of git), fill `benchmark_photo_log.csv` + `benchmark_scores.csv`, run `dart run docs/phase2/summarize_benchmark_scores.dart`, then flip this log to `plantnet` or `plant_id` if thresholds pass. |
 
-Link the completed decision from [`../BLOOM_EXECUTION_PLAN.md`](../BLOOM_EXECUTION_PLAN.md) decision log.
+Recorded in [`../BLOOM_EXECUTION_PLAN.md`](../BLOOM_EXECUTION_PLAN.md) decision log. Spike 3 (camera) stays closed until Adopt.

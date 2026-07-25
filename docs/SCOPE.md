@@ -10,8 +10,7 @@ This artifact protects the local care loop from scope expansion. A feature moves
 - Initial Play markets: Europe, the United States, and India
 - Today view with overdue, due, upcoming, and completed tasks
 - My Plants collection, plant detail, and chronological care history
-- Manual plant search that remains available in every identification failure state
-- Camera identification with ranked candidates and confidence messaging
+- Manual plant search as the primary add-plant path (always available)
 - Short environment questionnaire and an editable suggested care plan
 - Done, Snooze, Skip, and Reschedule reminder actions
 - Reminder preferences and permission management
@@ -20,6 +19,7 @@ This artifact protects the local care loop from scope expansion. A feature moves
 
 ## Later — after the core build is stable
 
+- Camera identification with ranked candidates and confidence messaging (**deferred** until [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md) records Adopt for a passing provider)
 - iOS and web releases
 - Optional photo growth timeline
 - Additional catalog species and additional countries beyond Europe, the United States, and India

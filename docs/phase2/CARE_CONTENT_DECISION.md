@@ -1,7 +1,7 @@
 # Care Content — Decision Note
 
-**Status:** Provisional recommendation (owner lock required)  
-**Date:** 2026-07-25  
+**Status:** Locked  
+**Date locked:** 2026-07-25  
 **Parent pack:** [`../PHASE2_VALIDATION.md`](../PHASE2_VALIDATION.md)
 
 ## Product constraints (non-negotiable)
@@ -22,7 +22,7 @@ From PRD / scope:
 
 | Option | Fit | Notes |
 |---|---|---|
-| **GBIF Taxonomic Backbone** (recommended) | High | Stable `usageKey`, free, reviewable, industry-standard. Use as Bloom’s canonical species id when possible. |
+| **GBIF Taxonomic Backbone** (selected) | High | Stable `usageKey`, free, reviewable, industry-standard. Bloom’s canonical species id when possible. |
 | Provider-native IDs only (Pl@ntNet / plant.id) | Medium | Fine as secondary keys; do not make the care DB depend on one vendor. |
 | Wikidata QIDs alone | Medium | Useful crosswalk; less curated for horticultural synonyms than GBIF. |
 
@@ -30,14 +30,14 @@ From PRD / scope:
 
 | Option | Fit | Notes |
 |---|---|---|
-| **Originally authored Bloom care plans** citing public extension / RHS-style guidance (recommended) | High | Full control of cautious language; matches “no exact volumes”; versionable in-repo. |
+| **Originally authored Bloom care plans** citing public extension / RHS-style guidance (selected) | High | Full control of cautious language; matches “no exact volumes”; versionable in-repo. |
 | FloraDB / commercial houseplant datasets | Low–medium for Bloom v1 | Strong GBIF links, but emphasize quantitative volumes and ASPCA toxicity — both largely **out of Bloom v1 scope**. NC sample cannot ship in a commercial app without a commercial license. |
-| Kindwise / Plant.id plant details endpoints | Medium | Convenient if plant.id wins ID benchmark; still need Bloom rewriting for cautious, editable schedules. |
+| Kindwise / Plant.id plant details endpoints | Medium | Convenient if plant.id later wins an ID benchmark; still need Bloom rewriting for cautious, editable schedules. |
 | Scraping blogs / retailer pages | Rejected | Fragile licensing and reviewability. |
 
-## Provisional decision (pending owner lock)
+## Locked decision
 
-| Decision | Provisional choice |
+| Decision | Locked choice |
 |---|---|
 | Taxonomy source | **GBIF** `usageKey` (+ scientific name + common name) |
 | Care-content source | **Bloom-authored** plans for a curated catalog, each rule citing a reviewable public source URL |
@@ -45,7 +45,9 @@ From PRD / scope:
 | Content versioning | `care_content_version` string per plan item (start `2026.07`) |
 | Toxicity / disease | **Out of scope** — do not import ASPCA fields into v1 UI |
 | Exact quantities | **Forbidden** — use qualitative bands (“water when the top soil feels dry”) |
-| Horticultural review before closed beta | **Required** (recommend: one independent reviewer for the 40-plant set) |
+| Horticultural review before closed beta | **Required** — one independent reviewer for the 40-plant set |
+
+No vendor care API is the source of truth. Fixture care copy may remain until the catalog is authored against this decision.
 
 ### Environment answers that may change the suggested schedule
 
@@ -75,9 +77,9 @@ Use (or close variants) in UI and catalog copy:
 - Auto-generated care from raw LLM without source URLs and human edit
 - Per-provider care blobs with no GBIF crosswalk
 
-## v1 catalog workflow
+## v1 catalog workflow (next)
 
-1. Lock this decision note (owner).
+1. ~~Lock this decision note (owner).~~ **Done 2026-07-25**
 2. For each of the 40 benchmark species, author:
    - overview (2–3 sentences)
    - care plan items: water, light, fertilise (optional), check
@@ -87,12 +89,10 @@ Use (or close variants) in UI and catalog copy:
 3. Maintain [`catalog_mapping.csv`](./catalog_mapping.csv) for GBIF + provider taxon ids.
 4. Independent horticultural pass before closed beta.
 
-## Owner lock checklist
+## Lock record
 
-Reply to lock or override:
-
-1. Accept GBIF + Bloom-authored care plans? (`yes` / alternative)
-2. Require independent horticultural review before closed beta? (`yes` / `defer`)
-3. Keep toxicity claims out of v1? (`yes` recommended)
-
-Until locked, engineering may keep fixture care copy but must not treat a vendor care API as source of truth.
+| # | Question | Answer |
+|---|---|---|
+| 1 | Accept GBIF + Bloom-authored care plans? | **yes** |
+| 2 | Require independent horticultural review before closed beta? | **yes** |
+| 3 | Keep toxicity claims out of v1? | **yes** |
