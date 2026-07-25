@@ -17,6 +17,10 @@ class _BloomShellState extends State<BloomShell> {
 
   static const _titles = ['Today', 'My Plants', 'Discover'];
 
+  void _openDiscover() {
+    setState(() => _index = 2);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +40,11 @@ class _BloomShellState extends State<BloomShell> {
       ),
       body: IndexedStack(
         index: _index,
-        children: const [TodayScreen(), PlantsScreen(), DiscoverScreen()],
+        children: [
+          const TodayScreen(),
+          PlantsScreen(onAddPlant: _openDiscover),
+          const DiscoverScreen(),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,

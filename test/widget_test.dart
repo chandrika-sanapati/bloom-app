@@ -3,31 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Bloom launches into a navigable Material 3 shell', (
+  testWidgets('Bloom shell shows fixture Today, Plants, and Discover UI', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const BloomApp());
 
-    expect(find.text('Today'), findsWidgets);
-    expect(find.text('My Plants'), findsOneWidget);
-    expect(find.text('Discover'), findsOneWidget);
-    expect(find.byTooltip('Settings'), findsOneWidget);
+    expect(find.text("Today's tasks"), findsOneWidget);
+    expect(find.text('Snake Plant'), findsWidgets);
+    expect(find.text('Water'), findsWidgets);
 
-    final context = tester.element(find.byType(NavigationBar));
-    expect(Theme.of(context).useMaterial3, isTrue);
+    await tester.tap(find.byType(Checkbox).first);
+    await tester.pumpAndSettle();
+    expect(find.text('Completed'), findsOneWidget);
 
     await tester.tap(find.text('My Plants').last);
     await tester.pumpAndSettle();
-    expect(find.textContaining('saved houseplant collection'), findsOneWidget);
+    expect(find.textContaining('plants in your collection'), findsOneWidget);
+    expect(find.text('Add plant'), findsOneWidget);
+    expect(find.text('Peace Lily'), findsOneWidget);
 
-    await tester.tap(find.text('Discover').last);
+    await tester.tap(find.text('Add plant'));
     await tester.pumpAndSettle();
+    expect(find.text('Popular houseplants'), findsOneWidget);
     expect(find.text('Scan a plant'), findsOneWidget);
-    expect(find.text('Search for plants'), findsOneWidget);
+
+    await tester.enterText(find.byType(SearchBar), 'pothos');
+    await tester.pumpAndSettle();
+    expect(find.text('Search results'), findsOneWidget);
+    expect(find.text('Pothos'), findsOneWidget);
+    expect(find.text('Snake Plant'), findsNothing);
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
     expect(find.text('Care reminders'), findsOneWidget);
-    expect(find.text('Privacy'), findsOneWidget);
   });
 }

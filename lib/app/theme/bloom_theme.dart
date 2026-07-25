@@ -91,7 +91,9 @@ ThemeData buildBloomTheme() {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: const Size.fromHeight(48),
+        // Prefer height only — Size.fromHeight() forces infinite width and
+        // breaks buttons inside Rows / flexible layouts.
+        minimumSize: const Size(64, 48),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(BloomRadii.button),
         ),

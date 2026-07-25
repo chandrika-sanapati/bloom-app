@@ -1,0 +1,91 @@
+import 'package:bloom/app/theme/bloom_colors.dart';
+import 'package:bloom/app/theme/bloom_radii.dart';
+import 'package:bloom/app/theme/bloom_spacing.dart';
+import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
+import 'package:bloom/shared/models/fixture_models.dart';
+import 'package:bloom/shared/widgets/bloom_status_chip.dart';
+import 'package:flutter/material.dart';
+
+class CareTaskRow extends StatelessWidget {
+  const CareTaskRow({
+    required this.task,
+    required this.isDone,
+    required this.onToggle,
+    super.key,
+  });
+
+  final FixtureCareTask task;
+  final bool isDone;
+  final ValueChanged<bool> onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final urgency = isDone ? CareUrgency.done : task.urgency;
+    final urgencyColor = BloomFixtures.urgencyColor(urgency);
+    final titleStyle = theme.textTheme.titleSmall?.copyWith(
+      color: isDone ? BloomColors.labelTertiary : BloomColors.labelPrimary,
+      decoration: isDone ? TextDecoration.lineThrough : null,
+    );
+
+    return Material(
+      color: BloomColors.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(BloomRadii.card),
+        side: const BorderSide(color: BloomColors.borderSubtle),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(BloomRadii.card),
+        onTap: () => onToggle(!isDone),
+        child: Padding(
+          padding: const EdgeInsets.all(BloomSpacing.x3),
+          child: Row(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: task.accent.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(BloomRadii.image),
+                ),
+                child: Icon(Icons.eco_outlined, color: task.accent),
+              ),
+              const SizedBox(width: BloomSpacing.x3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(task.plantName, style: titleStyle),
+                    const SizedBox(height: BloomSpacing.x1),
+                    Text(
+                      task.actionLabel,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: isDone
+                            ? BloomColors.labelTertiary
+                            : BloomColors.labelSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: BloomSpacing.x2),
+                    BloomStatusChip(
+                      label: BloomFixtures.urgencyLabel(urgency),
+                      color: urgencyColor,
+                      icon: BloomFixtures.urgencyIcon(urgency),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: BloomSpacing.x2),
+              Checkbox(
+                value: isDone,
+                onChanged: (value) => onToggle(value ?? false),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(BloomRadii.control),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
