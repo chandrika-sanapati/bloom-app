@@ -1,0 +1,1 @@
+provider,photo_id,species_id,top1_match,top3_match,latency_ms,http_status,confidence_raw,low_confidence_ok,non_plant_rejected,taxonomy_id,notes

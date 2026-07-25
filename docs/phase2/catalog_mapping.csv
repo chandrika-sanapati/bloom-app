@@ -1,0 +1,6 @@
+species_id,common_name,scientific_name,gbif_usage_key,plantnet_taxon_id,plant_id_taxon_id,care_content_version,notes
+1,Snake plant,Dracaena trifasciata,,,,,2026.07,fixture
+2,Peace lily,Spathiphyllum wallisii,,,,,2026.07,fixture
+3,Rubber plant,Ficus elastica,,,,,2026.07,fixture
+4,Monstera,Monstera deliciosa,,,,,2026.07,fixture
+5,Pothos,Epipremnum aureum,,,,,2026.07,fixture

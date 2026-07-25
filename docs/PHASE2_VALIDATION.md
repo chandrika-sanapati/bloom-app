@@ -1,10 +1,20 @@
 # Bloom Phase 2 Validation Pack
 
-**Status:** Ready to execute  
+**Status:** Kits ready — recruitment, ID benchmark, and care-content decisions in progress  
 **Last reviewed:** 2026-07-25  
 **Market context:** English-only app; initial Play markets are Europe, the United States, and India
 
-This pack turns Phase 2 into runnable work. Do not start production UI or technical spikes until the exit criteria below are met or explicitly deferred with recorded evidence.
+This pack turns Phase 2 into runnable work. Camera identification production work stays gated until the exit criteria below are met or explicitly deferred with recorded evidence.
+
+### Working artifacts
+
+| Artifact | Path |
+|---|---|
+| Consent + session templates | [`phase2/CONSENT_AND_SESSION.md`](./phase2/CONSENT_AND_SESSION.md) |
+| ID provider benchmark kit | [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md) |
+| Score + photo CSVs | [`phase2/benchmark_scores.csv`](./phase2/benchmark_scores.csv), [`phase2/benchmark_photo_log.csv`](./phase2/benchmark_photo_log.csv) |
+| Care-content decision note | [`phase2/CARE_CONTENT_DECISION.md`](./phase2/CARE_CONTENT_DECISION.md) |
+| Catalog ↔ taxonomy map | [`phase2/catalog_mapping.csv`](./phase2/catalog_mapping.csv) |
 
 ## Success thresholds
 
@@ -161,4 +171,4 @@ Create a short care-content decision note that records the chosen sources, rejec
 
 - [ ] Core prototype tasks are understandable without coaching.
 - [ ] One identification approach passes the agreed benchmark, or scanning is explicitly deferred.
-- [ ] Care-content ownership, sourcing, and limitations are documented.
+- [ ] Care-content ownership, sourcing, and limitations are documented (provisional note exists; owner lock still required).

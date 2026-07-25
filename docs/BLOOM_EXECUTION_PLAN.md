@@ -1,6 +1,6 @@
 # Bloom Flutter App & Case Study — Execution Plan
 
-**Status:** Navigable Flutter skeleton started; Phase 2 validation intentionally deferred
+**Status:** App foundation advancing; Phase 2 validation kits ready (recruitment + ID/care decisions still open)
 **Last updated:** 2026-07-25
 
 **Primary goal:** Publish a focused, trustworthy Bloom app on Google Play, then rebuild the portfolio case study around evidence from the working product.  
@@ -196,7 +196,7 @@ Runnable checklist, script, benchmark method, and pass/fail rules live in [`PHAS
 
 ## 2.1 Recruit research participants
 
-- [x] Write recruitment criteria, screening questions, and consent requirements.
+- [x] Write recruitment criteria, screening questions, and consent requirements ([`phase2/CONSENT_AND_SESSION.md`](./phase2/CONSENT_AND_SESSION.md)).
 - [ ] Recruit 6–8 new plant owners for prototype testing.
 - [ ] Avoid relying only on the original three participants.
 - [ ] Include novice and moderately experienced plant owners.
@@ -224,12 +224,12 @@ Test these tasks without coaching. Full script and observation focus are in the 
 Build a representative benchmark set. Method and decision rule are in the validation pack.
 
 - [x] Publish the identification benchmark method and provider decision rule.
-- [ ] Select 30–50 common houseplant species.
-- [ ] Include visually similar species.
-- [ ] Include healthy and damaged leaves.
-- [ ] Include poor lighting and cluttered backgrounds.
-- [ ] Include non-plant images to test rejection.
-- [ ] Document ownership/permission for every benchmark photo.
+- [x] Select 30–50 common houseplant species (40 listed in [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md)).
+- [x] Include visually similar species (confusion pairs documented).
+- [x] Include healthy and damaged leaves (condition codes in benchmark kit).
+- [x] Include poor lighting and cluttered backgrounds (condition codes in benchmark kit).
+- [x] Include non-plant images to test rejection (condition `N` in benchmark kit).
+- [ ] Document ownership/permission for every benchmark photo (use [`phase2/benchmark_photo_log.csv`](./phase2/benchmark_photo_log.csv)).
 
 Measure each candidate provider:
 
@@ -243,19 +243,19 @@ Measure each candidate provider:
 - [ ] Image retention and training terms
 - [ ] Taxonomy identifiers and care-data compatibility
 
-Initial candidate: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify). Treat this as a candidate, not a committed dependency.
+Candidates to measure: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify) and [Kindwise plant.id](https://www.kindwise.com/plant-id). Treat both as disposable until the benchmark passes. Kit: [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
 
 ## 2.4 Care-content feasibility
 
 - [x] Publish the care-content decision checklist and v1 content rules.
-- [ ] Select a licensed and reviewable taxonomy source.
-- [ ] Select or author a licensed care-content source.
-- [ ] Start with a curated catalog of approximately 30–50 common houseplants.
-- [ ] Give every care rule a source and content version.
-- [ ] Define which environmental answers influence the schedule.
-- [ ] Avoid unsupported exact quantities.
-- [ ] Define cautious language for uncertainty and exceptions.
-- [ ] Decide whether horticultural review is required before beta.
+- [x] Select a licensed and reviewable taxonomy source (**provisional: GBIF** — see [`phase2/CARE_CONTENT_DECISION.md`](./phase2/CARE_CONTENT_DECISION.md)).
+- [x] Select or author a licensed care-content source (**provisional: Bloom-authored plans with cited public sources**).
+- [x] Start with a curated catalog of approximately 30–50 common houseplants (40-species list shared with ID benchmark).
+- [ ] Give every care rule a source and content version (catalog authoring remaining).
+- [x] Define which environmental answers influence the schedule.
+- [x] Avoid unsupported exact quantities.
+- [x] Define cautious language for uncertainty and exceptions.
+- [x] Decide whether horticultural review is required before beta (**provisional: required** — owner lock pending).
 
 ### Exit gate
 
@@ -820,6 +820,8 @@ Record decisions as they happen.
 
 | Date | Decision | Evidence/rationale | Owner | Revisit when |
 |---|---|---|---|---|
+| 2026-07-25 | Phase 2 ID benchmark measures Pl@ntNet and Kindwise plant.id against a 40-species houseplant corpus | Two maintained APIs with clear commercial paths; kit records quality, latency, cost, and retention terms before any camera spike | Engineering (provisional) | Benchmark complete → adopt one or defer scanning |
+| 2026-07-25 | Provisional care stack: GBIF taxonomy + Bloom-authored schedules with cited sources; no toxicity; horticultural review before closed beta | Matches v1 content rules; rejects quantitative/toxicity datasets that fight scope; owner lock still required | Product owner (pending lock) | Owner confirms or overrides in [`phase2/CARE_CONTENT_DECISION.md`](./phase2/CARE_CONTENT_DECISION.md) |
 | 2026-07-25 | Ship English-only across Europe, the United States, and India | Owner wants one English product experience while covering the primary launch regions; non-English localization waits for closed-beta evidence of a blocking language barrier | Product owner | Closed-beta feedback shows language blocks activation or retention in a priority market |
 | 2026-07-24 | Keep release identity provisional during validation | Public search found multiple Bloom products, including a plant-care product; no Play developer account, final developer name, support email, domain, or trademark clearance exists yet. Geography was later locked separately. | Product owner | Before closed-beta scheduling or any public store asset is produced |
 | 2026-07-24 | Use Today, My Plants, and Discover as bottom destinations; open Settings from the top app bar | Keeps the daily care loop primary and manual search visible without spending a permanent destination on infrequent settings | Product owner | Prototype tests show users cannot find settings or manual search |
