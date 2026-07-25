@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bloom/data/local/drift/tables.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:drift_flutter/drift_flutter.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 part 'bloom_database.g.dart';
@@ -24,15 +24,11 @@ class BloomDatabase extends _$BloomDatabase {
 
   BloomDatabase.file(File file) : super(NativeDatabase(file));
 
-  BloomDatabase.defaults()
-    : super(
-        driftDatabase(
-          name: 'bloom',
-          native: DriftNativeOptions(
-            databaseDirectory: getApplicationSupportDirectory,
-          ),
-        ),
-      );
+  /// Opens the on-device SQLite file on the UI isolate.
+  ///
+  /// Avoids background Drift workers that leave stale isolate ports across
+  /// Flutter hot restart and can hang [BloomServices.bootstrap].
+  BloomDatabase.defaults() : super(_openDefaults());
 
   @override
   int get schemaVersion => 3;
@@ -54,4 +50,13 @@ class BloomDatabase extends _$BloomDatabase {
       },
     );
   }
+}
+
+LazyDatabase _openDefaults() {
+  return LazyDatabase(() async {
+    final directory = await getApplicationSupportDirectory();
+    final file = File(p.join(directory.path, 'bloom.sqlite'));
+    // Main-isolate connection: background workers survive hot restart poorly.
+    return NativeDatabase(file);
+  });
 }

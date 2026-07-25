@@ -42,28 +42,33 @@ class FlutterReminderScheduler implements ReminderScheduler {
 
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const initSettings = InitializationSettings(android: android);
-    await _plugin.initialize(
-      settings: initSettings,
-      onDidReceiveNotificationResponse: listenForActions
-          ? _handleResponse
-          : null,
-      onDidReceiveBackgroundNotificationResponse: listenForActions
-          ? bloomNotificationBackground
-          : null,
-    );
+    try {
+      await _plugin.initialize(
+        settings: initSettings,
+        onDidReceiveNotificationResponse: listenForActions
+            ? _handleResponse
+            : null,
+        onDidReceiveBackgroundNotificationResponse: listenForActions
+            ? bloomNotificationBackground
+            : null,
+      );
 
-    final androidPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    await androidPlugin?.createNotificationChannel(
-      const AndroidNotificationChannel(
-        _channelId,
-        _channelName,
-        description: 'Houseplant care windows from Bloom',
-        importance: Importance.defaultImportance,
-      ),
-    );
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      await androidPlugin?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          _channelId,
+          _channelName,
+          description: 'Houseplant care windows from Bloom',
+          importance: Importance.defaultImportance,
+        ),
+      );
+    } on Object catch (error, stack) {
+      // Hot restart can re-enter plugin init while native state still exists.
+      debugPrint('Reminder scheduler init skipped: $error\n$stack');
+    }
   }
 
   @override

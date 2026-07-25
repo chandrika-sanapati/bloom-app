@@ -7,7 +7,7 @@
 
 ## Decision
 
-**Selected:** [Drift](https://pub.dev/packages/drift) (`drift` + `drift_flutter`) for relational local data.  
+**Selected:** [Drift](https://pub.dev/packages/drift) with a main-isolate `NativeDatabase` for relational local data.  
 **Preferences:** [`shared_preferences`](https://pub.dev/packages/shared_preferences) for non-relational settings only.
 
 ## Rejected alternative
