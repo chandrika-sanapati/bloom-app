@@ -71,6 +71,7 @@ fvm flutter build apk --debug
 - [Product requirements](docs/PRD.md)
 - [Design specification](docs/DESIGN.md)
 - [v1 scope decisions](docs/SCOPE.md)
+- [Phase 2 validation pack](docs/PHASE2_VALIDATION.md)
 - [Technical spike sequence](docs/TECHNICAL_SPIKES.md)
 
 The execution plan is the source of truth for sequencing, scope, and exit

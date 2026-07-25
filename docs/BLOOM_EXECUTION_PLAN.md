@@ -1,7 +1,8 @@
 # Bloom Flutter App & Case Study — Execution Plan
 
-**Status:** Baseline validated; Phase 0 closed with provisional release-identity risks
-**Last updated:** 2026-07-24  
+**Status:** Phase 1 product definition locked; Phase 2 validation pack ready
+**Last updated:** 2026-07-25
+
 **Primary goal:** Publish a focused, trustworthy Bloom app on Google Play, then rebuild the portfolio case study around evidence from the working product.  
 **Product thesis:** Identification activates the user; dependable, editable care reminders and history retain them.
 
@@ -132,7 +133,7 @@ Use this as the working promise:
 - [x] Remove claims such as “never kill a plant,” “exactly what it needs,” and “care on autopilot.”
 - [x] Treat “under one minute” as a design target until it is measured.
 - [x] Define the target user as a non-expert with approximately 2–8 indoor plants.
-- [ ] Define initial geography and language scope.
+- [x] Define initial geography and language scope: English only; Europe, the United States, and India.
 - [x] Exclude pet/child toxicity content until a verified, licensed source is approved.
 
 ## 1.2 Define the navigation
@@ -191,8 +192,11 @@ Suggested validation metrics:
 
 **Objective:** Test the product loop and identification feasibility before polishing or building the whole app.
 
+Runnable checklist, script, benchmark method, and pass/fail rules live in [`PHASE2_VALIDATION.md`](./PHASE2_VALIDATION.md).
+
 ## 2.1 Recruit research participants
 
+- [x] Write recruitment criteria, screening questions, and consent requirements.
 - [ ] Recruit 6–8 new plant owners for prototype testing.
 - [ ] Avoid relying only on the original three participants.
 - [ ] Include novice and moderately experienced plant owners.
@@ -202,8 +206,9 @@ Suggested validation metrics:
 
 ## 2.2 Prototype tasks
 
-Test these tasks without coaching:
+Test these tasks without coaching. Full script and observation focus are in the validation pack.
 
+- [x] Publish the moderated prototype task script.
 - [ ] Add a known plant through search.
 - [ ] Add an unknown plant through the camera flow.
 - [ ] Correct an inaccurate first identification result.
@@ -216,8 +221,9 @@ Test these tasks without coaching:
 
 ## 2.3 Identification vendor benchmark
 
-Build a representative benchmark set:
+Build a representative benchmark set. Method and decision rule are in the validation pack.
 
+- [x] Publish the identification benchmark method and provider decision rule.
 - [ ] Select 30–50 common houseplant species.
 - [ ] Include visually similar species.
 - [ ] Include healthy and damaged leaves.
@@ -241,6 +247,7 @@ Initial candidate: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify). Tre
 
 ## 2.4 Care-content feasibility
 
+- [x] Publish the care-content decision checklist and v1 content rules.
 - [ ] Select a licensed and reviewable taxonomy source.
 - [ ] Select or author a licensed care-content source.
 - [ ] Start with a curated catalog of approximately 30–50 common houseplants.
@@ -813,7 +820,8 @@ Record decisions as they happen.
 
 | Date | Decision | Evidence/rationale | Owner | Revisit when |
 |---|---|---|---|---|
-| 2026-07-24 | Keep release identity provisional during validation | Public search found multiple Bloom products, including a plant-care product; no Play developer account, final developer name, support email, country list, domain, or trademark clearance exists yet | Product owner | Before closed-beta scheduling or any public store asset is produced |
+| 2026-07-25 | Ship English-only across Europe, the United States, and India | Owner wants one English product experience while covering the primary launch regions; non-English localization waits for closed-beta evidence of a blocking language barrier | Product owner | Closed-beta feedback shows language blocks activation or retention in a priority market |
+| 2026-07-24 | Keep release identity provisional during validation | Public search found multiple Bloom products, including a plant-care product; no Play developer account, final developer name, support email, domain, or trademark clearance exists yet. Geography was later locked separately. | Product owner | Before closed-beta scheduling or any public store asset is produced |
 | 2026-07-24 | Use Today, My Plants, and Discover as bottom destinations; open Settings from the top app bar | Keeps the daily care loop primary and manual search visible without spending a permanent destination on infrequent settings | Product owner | Prototype tests show users cannot find settings or manual search |
 | 2026-07-24 | Exclude toxicity guidance from v1 | No verified, licensed source or review process has been approved; unsupported safety guidance creates unacceptable trust risk | Product owner | A licensed source and review process are approved |
 | 2026-07-24 | Sequence technical spikes as persistence, then reminder projection and identification | Persisted tasks and stable event IDs are prerequisites for reliable, idempotent reminder behavior; identification can proceed independently after shared contracts stabilize | Engineering | A spike disproves the dependency or architecture |

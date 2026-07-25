@@ -1,6 +1,6 @@
 # Bloom — Product Requirements Document
 
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Android-first implementation brief
 **Platform:** Android first; preserve future iOS and web portability
 
@@ -14,7 +14,18 @@ The core promise:
 
 > Identify or search for a houseplant, review a suggested care plan for your conditions, and know what to do today.
 
-Care guidance is a cautious, editable suggestion rather than a guarantee. The initial product is an English-language Android release; the first Google Play country list must be confirmed before closed beta.
+Care guidance is a cautious, editable suggestion rather than a guarantee.
+
+---
+
+## Geography and language
+
+- **App language:** English only in v1. No localized UI, notifications, or care copy.
+- **Initial Play markets:** Europe, the United States, and India.
+- **Store listing language:** English.
+- **Deferred:** non-English localization unless closed-beta evidence shows a blocking language barrier in a priority market.
+
+Europe means the Google Play country set for Europe available at release time. Exact country enablement is confirmed in Play Console before closed beta; the product itself stays English-only across all enabled markets.
 
 ---
 
