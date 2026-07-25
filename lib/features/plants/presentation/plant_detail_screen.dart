@@ -77,7 +77,8 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
   }
 
   Future<void> _setTaskDone(FixtureCareTask task, bool isDone) async {
-    final care = BloomScope.of(context).care;
+    final services = BloomScope.of(context).services;
+    final care = services.care;
     final existing = await care.getCareTask(task.id);
     if (existing == null) {
       return;
@@ -103,12 +104,13 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
         ),
       );
     }
+    services.notifyDataChanged();
     await _reload();
   }
 
   Future<void> _logCare() async {
-    final care = BloomScope.of(context).care;
-    await care.addCareEvent(
+    final services = BloomScope.of(context).services;
+    await services.care.addCareEvent(
       domain.CareEvent(
         id: 'event-log-${widget.plantId}-${DateTime.now().millisecondsSinceEpoch}',
         userPlantId: widget.plantId,
@@ -120,6 +122,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     if (!mounted) {
       return;
     }
+    services.notifyDataChanged();
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Care logged to timeline.')));

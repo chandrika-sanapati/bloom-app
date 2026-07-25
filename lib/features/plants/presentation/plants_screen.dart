@@ -19,15 +19,28 @@ class _PlantsScreenState extends State<PlantsScreen> {
   var _loading = true;
   var _started = false;
   List<FixturePlant> _plants = const [];
+  ValueNotifier<int>? _revision;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final revision = BloomScope.of(context).services.dataRevision;
+    if (_revision != revision) {
+      _revision?.removeListener(_reload);
+      _revision = revision;
+      _revision!.addListener(_reload);
+    }
     if (_started) {
       return;
     }
     _started = true;
     _reload();
+  }
+
+  @override
+  void dispose() {
+    _revision?.removeListener(_reload);
+    super.dispose();
   }
 
   Future<void> _reload() async {

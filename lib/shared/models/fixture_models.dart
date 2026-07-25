@@ -51,6 +51,7 @@ class FixtureCatalogEntry {
     required this.scientificName,
     required this.difficulty,
     required this.accent,
+    required this.overview,
   });
 
   final String id;
@@ -58,6 +59,7 @@ class FixtureCatalogEntry {
   final String scientificName;
   final PlantDifficulty difficulty;
   final Color accent;
+  final String overview;
 }
 
 class FixtureCarePlanItem {

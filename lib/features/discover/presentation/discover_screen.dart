@@ -1,6 +1,7 @@
 import 'package:bloom/app/theme/bloom_colors.dart';
 import 'package:bloom/app/theme/bloom_radii.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
+import 'package:bloom/features/discover/presentation/add_plant_screen.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
@@ -33,6 +34,18 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       return entry.commonName.toLowerCase().contains(query) ||
           entry.scientificName.toLowerCase().contains(query);
     }).toList();
+  }
+
+  Future<void> _openAddPlant(FixtureCatalogEntry entry) async {
+    final nickname = await Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(builder: (_) => AddPlantScreen(entry: entry)),
+    );
+    if (!mounted || nickname == null) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('$nickname added to My Plants.')));
   }
 
   @override
@@ -109,7 +122,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             ...results.map(
               (entry) => Padding(
                 padding: const EdgeInsets.only(bottom: BloomSpacing.x3),
-                child: _CatalogResultRow(entry: entry),
+                child: _CatalogResultRow(
+                  entry: entry,
+                  onTap: () => _openAddPlant(entry),
+                ),
               ),
             ),
         ],
@@ -119,9 +135,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 }
 
 class _CatalogResultRow extends StatelessWidget {
-  const _CatalogResultRow({required this.entry});
+  const _CatalogResultRow({required this.entry, required this.onTap});
 
   final FixtureCatalogEntry entry;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -135,15 +152,7 @@ class _CatalogResultRow extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(BloomRadii.card),
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '${entry.commonName} selected. Add-to-collection comes next.',
-              ),
-            ),
-          );
-        },
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(BloomSpacing.x3),
           child: Row(

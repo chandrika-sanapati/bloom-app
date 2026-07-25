@@ -94,6 +94,9 @@ abstract final class BloomFixtures {
       scientificName: 'Dracaena trifasciata',
       difficulty: PlantDifficulty.easy,
       accent: Color(0xFF6B8F71),
+      overview:
+          'A hardy houseplant with stiff, upright leaves. Let the soil dry '
+          'between drinks.',
     ),
     FixtureCatalogEntry(
       id: 'catalog-pothos',
@@ -101,6 +104,9 @@ abstract final class BloomFixtures {
       scientificName: 'Epipremnum aureum',
       difficulty: PlantDifficulty.easy,
       accent: Color(0xFF7BA17D),
+      overview:
+          'A trailing vine that tolerates lower light. Water when the top of '
+          'the soil feels dry.',
     ),
     FixtureCatalogEntry(
       id: 'catalog-aloe',
@@ -108,6 +114,9 @@ abstract final class BloomFixtures {
       scientificName: 'Aloe barbadensis',
       difficulty: PlantDifficulty.easy,
       accent: Color(0xFF9BB89A),
+      overview:
+          'A succulent that stores water in thick leaves. Prefer bright light '
+          'and infrequent watering.',
     ),
     FixtureCatalogEntry(
       id: 'catalog-monstera',
@@ -115,6 +124,9 @@ abstract final class BloomFixtures {
       scientificName: 'Monstera deliciosa',
       difficulty: PlantDifficulty.moderate,
       accent: Color(0xFF4F7F57),
+      overview:
+          'Famous for split leaves. Likes bright indirect light and watering '
+          'when the top of the soil has dried out.',
     ),
     FixtureCatalogEntry(
       id: 'catalog-rubber',
@@ -122,6 +134,9 @@ abstract final class BloomFixtures {
       scientificName: 'Ficus elastica',
       difficulty: PlantDifficulty.moderate,
       accent: Color(0xFF5C7A6A),
+      overview:
+          'A bold indoor tree with thick, shiny leaves. Prefers bright '
+          'indirect light and moderate watering.',
     ),
     FixtureCatalogEntry(
       id: 'catalog-lily',
@@ -129,6 +144,9 @@ abstract final class BloomFixtures {
       scientificName: 'Spathiphyllum',
       difficulty: PlantDifficulty.easy,
       accent: Color(0xFF8FAE8B),
+      overview:
+          'Known for glossy leaves and white blooms. Enjoys evenly moist soil '
+          'and medium light.',
     ),
   ];
 
@@ -201,7 +219,56 @@ abstract final class BloomFixtures {
         cadenceLabel: 'Provide a stake or moss pole as it climbs',
       ),
     ],
+    'catalog-pothos': [
+      FixtureCarePlanItem(
+        kind: CareActionKind.water,
+        title: 'Water',
+        cadenceLabel: 'When the top of the soil feels dry',
+      ),
+      FixtureCarePlanItem(
+        kind: CareActionKind.light,
+        title: 'Light',
+        cadenceLabel: 'Low to bright indirect light',
+      ),
+      FixtureCarePlanItem(
+        kind: CareActionKind.prune,
+        title: 'Prune',
+        cadenceLabel: 'Trim long vines to keep shape',
+      ),
+    ],
+    'catalog-aloe': [
+      FixtureCarePlanItem(
+        kind: CareActionKind.water,
+        title: 'Water',
+        cadenceLabel: 'Sparingly — only when soil is fully dry',
+      ),
+      FixtureCarePlanItem(
+        kind: CareActionKind.light,
+        title: 'Light',
+        cadenceLabel: 'Bright light; some direct sun is fine',
+      ),
+    ],
   };
+
+  static List<FixtureCarePlanItem> suggestedCarePlan(
+    FixtureCatalogEntry entry,
+  ) {
+    final plantKey = entry.id.replaceFirst('catalog-', 'plant-');
+    return carePlans[plantKey] ??
+        carePlans[entry.id] ??
+        const [
+          FixtureCarePlanItem(
+            kind: CareActionKind.water,
+            title: 'Water',
+            cadenceLabel: 'When the top of the soil feels dry',
+          ),
+          FixtureCarePlanItem(
+            kind: CareActionKind.light,
+            title: 'Light',
+            cadenceLabel: 'Bright indirect light',
+          ),
+        ];
+  }
 
   static final history = <FixtureCareHistoryEvent>[
     FixtureCareHistoryEvent(

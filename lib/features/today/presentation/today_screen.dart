@@ -19,15 +19,28 @@ class _TodayScreenState extends State<TodayScreen> {
   var _started = false;
   List<FixtureCareTask> _open = const [];
   List<FixtureCareTask> _completed = const [];
+  ValueNotifier<int>? _revision;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final revision = BloomScope.of(context).services.dataRevision;
+    if (_revision != revision) {
+      _revision?.removeListener(_reload);
+      _revision = revision;
+      _revision!.addListener(_reload);
+    }
     if (_started) {
       return;
     }
     _started = true;
     _reload();
+  }
+
+  @override
+  void dispose() {
+    _revision?.removeListener(_reload);
+    super.dispose();
   }
 
   Future<void> _reload() async {
@@ -69,7 +82,8 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 
   Future<void> _setDone(FixtureCareTask task, bool isDone) async {
-    final care = BloomScope.of(context).care;
+    final services = BloomScope.of(context).services;
+    final care = services.care;
     final existing = await care.getCareTask(task.id);
     if (existing == null) {
       return;
@@ -95,12 +109,13 @@ class _TodayScreenState extends State<TodayScreen> {
         ),
       );
     }
-    await _reload();
+    services.notifyDataChanged();
   }
 
   Future<void> _restore() async {
-    await BloomScope.of(context).seeder.restoreSampleTasks();
-    await _reload();
+    final services = BloomScope.of(context).services;
+    await services.seeder.restoreSampleTasks();
+    services.notifyDataChanged();
   }
 
   @override
