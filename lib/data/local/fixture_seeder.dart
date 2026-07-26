@@ -4,7 +4,9 @@ import 'package:bloom/data/domain/settings_repository.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 
-/// Seeds sample collection data once so the UI is explorable offline.
+/// Optional sample collection for tests / demos.
+///
+/// Production bootstrap does not call [seedIfNeeded]; first-run stays empty.
 class FixtureSeeder {
   FixtureSeeder(this._care, this._settings);
 

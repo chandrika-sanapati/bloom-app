@@ -61,13 +61,16 @@ class BloomServices {
     BloomDatabase? database,
     SharedPreferences? preferences,
     ReminderScheduler? reminderScheduler,
+    bool seedSampleData = false,
   }) async {
     final db = database ?? BloomDatabase.defaults();
     final prefs = preferences ?? await SharedPreferences.getInstance();
     final settings = SharedPreferencesSettingsRepository(prefs);
     final care = DriftCareRepository(db);
     final seeder = FixtureSeeder(care, settings);
-    await seeder.seedIfNeeded();
+    if (seedSampleData) {
+      await seeder.seedIfNeeded();
+    }
 
     void Function()? onMutated;
     final reminders = CareReminderService(
@@ -92,15 +95,20 @@ class BloomServices {
   }
 
   /// Test helper that never touches platform notification channels.
+  ///
+  /// Defaults to seeding sample plants so existing UI tests stay stable.
+  /// Pass [seedSampleData]: false for clean-slate first-run coverage.
   static Future<BloomServices> bootstrapForTest({
     BloomDatabase? database,
     SharedPreferences? preferences,
     RecordingReminderScheduler? scheduler,
+    bool seedSampleData = true,
   }) {
     return bootstrap(
       database: database ?? BloomDatabase.memory(),
       preferences: preferences,
       reminderScheduler: scheduler ?? RecordingReminderScheduler(),
+      seedSampleData: seedSampleData,
     );
   }
 }

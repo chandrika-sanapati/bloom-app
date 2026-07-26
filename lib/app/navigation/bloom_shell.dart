@@ -41,7 +41,7 @@ class _BloomShellState extends State<BloomShell> {
       body: IndexedStack(
         index: _index,
         children: [
-          const TodayScreen(),
+          TodayScreen(onAddPlant: _openDiscover),
           PlantsScreen(onAddPlant: _openDiscover),
           const DiscoverScreen(),
         ],

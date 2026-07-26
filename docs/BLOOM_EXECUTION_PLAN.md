@@ -529,8 +529,8 @@ lib/
 
 ### Exit gate
 
-- [ ] A user can search, add, plan, receive a task, act on it, and inspect history without any remote service.
-- [ ] The app remains useful when identification is unavailable.
+- [x] A user can search, add, plan, receive a task, act on it, and inspect history without any remote service.
+- [x] The app remains useful when identification is unavailable.
 
 ---
 

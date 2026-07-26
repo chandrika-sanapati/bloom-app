@@ -8,7 +8,9 @@ import 'package:bloom/shared/widgets/care_task_row.dart';
 import 'package:flutter/material.dart';
 
 class TodayScreen extends StatefulWidget {
-  const TodayScreen({super.key});
+  const TodayScreen({super.key, this.onAddPlant});
+
+  final VoidCallback? onAddPlant;
 
   @override
   State<TodayScreen> createState() => _TodayScreenState();
@@ -17,6 +19,7 @@ class TodayScreen extends StatefulWidget {
 class _TodayScreenState extends State<TodayScreen> {
   var _loading = true;
   var _started = false;
+  var _plantCount = 0;
   List<FixtureCareTask> _open = const [];
   List<FixtureCareTask> _completed = const [];
   ValueNotifier<int>? _revision;
@@ -57,6 +60,7 @@ class _TodayScreenState extends State<TodayScreen> {
     }
 
     setState(() {
+      _plantCount = records.length;
       _open = [
         for (final task in openTasks)
           toFixtureTask(
@@ -237,22 +241,26 @@ class _TodayScreenState extends State<TodayScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    final hasPlants = _plantCount > 0;
+    final subtitle = !hasPlants
+        ? 'Add a houseplant to see today’s care.'
+        : _open.isEmpty
+        ? 'All caught up — your garden is thriving.'
+        : 'Here is what needs care today.';
+
     return SafeArea(
       child: ListView(
         padding: const EdgeInsets.all(BloomSpacing.screenMargin),
         children: [
           Text('Good day', style: theme.textTheme.titleLarge),
           const SizedBox(height: BloomSpacing.x1),
-          Text(
-            _open.isEmpty
-                ? 'All caught up — your garden is thriving.'
-                : 'Here is what needs care today.',
-            style: theme.textTheme.bodySmall,
-          ),
+          Text(subtitle, style: theme.textTheme.bodySmall),
           const SizedBox(height: BloomSpacing.x5),
           Text("Today's tasks", style: theme.textTheme.titleMedium),
           const SizedBox(height: BloomSpacing.x3),
-          if (_open.isEmpty)
+          if (!hasPlants)
+            _EmptyCollectionCard(onAddPlant: widget.onAddPlant)
+          else if (_open.isEmpty)
             const _AllCaughtUpCard()
           else
             ..._open.map(
@@ -290,6 +298,46 @@ class _TodayScreenState extends State<TodayScreen> {
 }
 
 enum _SnoozeChoice { oneHour, threeHours, tomorrowMorning }
+
+class _EmptyCollectionCard extends StatelessWidget {
+  const _EmptyCollectionCard({this.onAddPlant});
+
+  final VoidCallback? onAddPlant;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(BloomSpacing.x6),
+        child: Column(
+          children: [
+            Icon(
+              Icons.local_florist_outlined,
+              size: 40,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(height: BloomSpacing.x3),
+            Text('Nothing due yet', style: theme.textTheme.titleMedium),
+            const SizedBox(height: BloomSpacing.x2),
+            Text(
+              'Search Discover for a houseplant, confirm a care plan, and '
+              'your first task will show up here.',
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: BloomSpacing.x4),
+            FilledButton(
+              onPressed: onAddPlant,
+              child: const Text('Go to Discover'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _AllCaughtUpCard extends StatelessWidget {
   const _AllCaughtUpCard();
