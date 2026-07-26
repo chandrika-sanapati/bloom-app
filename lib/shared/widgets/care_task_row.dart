@@ -7,12 +7,15 @@ import 'package:bloom/shared/widgets/bloom_status_chip.dart';
 import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
 
+enum CareTaskMenuAction { snooze, skip, reschedule }
+
 class CareTaskRow extends StatelessWidget {
   const CareTaskRow({
     required this.task,
     required this.isDone,
     required this.onToggle,
     this.onOpenPlant,
+    this.onMenuAction,
     super.key,
   });
 
@@ -20,6 +23,7 @@ class CareTaskRow extends StatelessWidget {
   final bool isDone;
   final ValueChanged<bool> onToggle;
   final VoidCallback? onOpenPlant;
+  final ValueChanged<CareTaskMenuAction>? onMenuAction;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +88,26 @@ class CareTaskRow extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: BloomSpacing.x2),
+            if (!isDone && onMenuAction != null) ...[
+              PopupMenuButton<CareTaskMenuAction>(
+                tooltip: 'Task actions',
+                onSelected: onMenuAction,
+                itemBuilder: (context) => const [
+                  PopupMenuItem(
+                    value: CareTaskMenuAction.snooze,
+                    child: Text('Snooze'),
+                  ),
+                  PopupMenuItem(
+                    value: CareTaskMenuAction.skip,
+                    child: Text('Skip'),
+                  ),
+                  PopupMenuItem(
+                    value: CareTaskMenuAction.reschedule,
+                    child: Text('Reschedule'),
+                  ),
+                ],
+              ),
+            ],
             Checkbox(
               value: isDone,
               onChanged: (value) => onToggle(value ?? false),

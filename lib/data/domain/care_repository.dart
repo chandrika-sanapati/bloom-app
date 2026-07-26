@@ -31,8 +31,11 @@ abstract interface class CareRepository {
 
   Future<CareTask?> getCareTask(String id);
 
-  /// Open (not done) tasks ordered for a Today-style list.
-  Future<List<CareTask>> listOpenTasksForToday();
+  /// Open tasks due on or before the end of the local calendar day.
+  Future<List<CareTask>> listOpenTasksForToday({DateTime? now});
+
+  /// All open (not done) tasks — used for reminder projection.
+  Future<List<CareTask>> listOpenCareTasks();
 
   Future<List<CareTask>> listCompletedTasks();
 

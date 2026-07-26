@@ -57,7 +57,7 @@ class CareReminderService {
     await _scheduler.cancelAll();
   }
 
-  /// Cancel all Bloom care reminders and reschedule from open SQLite tasks.
+  /// Cancel all Bloom care reminders and reschedule from every open SQLite task.
   Future<void> reconcile() async {
     final enabled = await _settings.getRemindersEnabled();
     await _scheduler.cancelAll();
@@ -65,7 +65,7 @@ class CareReminderService {
       return;
     }
 
-    final openTasks = await _care.listOpenTasksForToday();
+    final openTasks = await _care.listOpenCareTasks();
     final records = {
       for (final record in await _care.listUserPlantRecords())
         record.plant.id: record,
@@ -94,9 +94,6 @@ class CareReminderService {
       case ReminderAction.open:
         break;
     }
-    if (action != ReminderAction.open) {
-      onDataMutated?.call();
-    }
   }
 
   Future<void> completeTask(String taskId) async {
@@ -104,9 +101,10 @@ class CareReminderService {
     if (task == null) {
       return;
     }
-    final key = _actionKey('done', task);
+    final key = _actionKeyForDue('done', task.id, task.dueAt);
     if (await _hasEvent(task.userPlantId, key)) {
       await _scheduler.cancel(taskId);
+      _emitMutation();
       return;
     }
     if (!task.isDone) {
@@ -131,27 +129,29 @@ class CareReminderService {
       );
     }
     await _scheduler.cancel(taskId);
+    _emitMutation();
   }
 
   Future<void> snoozeTask(
     String taskId, {
     Duration delay = const Duration(hours: 1),
+    DateTime? until,
   }) async {
     final task = await _care.getCareTask(taskId);
     if (task == null || task.isDone) {
       return;
     }
-    final key = _actionKey('snooze', task);
+    final snoozedUntil = until ?? DateTime.now().add(delay);
+    final key = _actionKeyForDue('snooze', task.id, snoozedUntil);
     if (await _hasEvent(task.userPlantId, key)) {
       return;
     }
-    final snoozedUntil = DateTime.now().add(delay);
     await _care.upsertCareTask(
       CareTask(
         id: task.id,
         userPlantId: task.userPlantId,
         actionLabel: task.actionLabel,
-        urgency: CareUrgency.upcoming,
+        urgency: urgencyForDueAt(snoozedUntil),
         dueAt: snoozedUntil,
         isDone: false,
       ),
@@ -175,6 +175,7 @@ class CareReminderService {
         when: snoozedUntil,
       );
     }
+    _emitMutation();
   }
 
   Future<void> skipTask(String taskId) async {
@@ -182,9 +183,10 @@ class CareReminderService {
     if (task == null) {
       return;
     }
-    final key = _actionKey('skip', task);
+    final key = _actionKeyForDue('skip', task.id, task.dueAt);
     if (await _hasEvent(task.userPlantId, key)) {
       await _scheduler.cancel(taskId);
+      _emitMutation();
       return;
     }
     if (!task.isDone) {
@@ -209,6 +211,52 @@ class CareReminderService {
       );
     }
     await _scheduler.cancel(taskId);
+    _emitMutation();
+  }
+
+  Future<void> rescheduleTask(String taskId, DateTime dueAt) async {
+    final task = await _care.getCareTask(taskId);
+    if (task == null || task.isDone) {
+      return;
+    }
+    final key = _actionKeyForDue('reschedule', task.id, dueAt);
+    if (await _hasEvent(task.userPlantId, key)) {
+      return;
+    }
+    await _care.upsertCareTask(
+      CareTask(
+        id: task.id,
+        userPlantId: task.userPlantId,
+        actionLabel: task.actionLabel,
+        urgency: urgencyForDueAt(dueAt),
+        dueAt: dueAt,
+        isDone: false,
+      ),
+    );
+    await _care.addCareEvent(
+      CareEvent(
+        id: key,
+        userPlantId: task.userPlantId,
+        kind: CareActionKind.check,
+        label: '${task.actionLabel} rescheduled',
+        occurredAt: DateTime.now(),
+      ),
+    );
+    await _scheduler.cancel(taskId);
+    if (await _settings.getRemindersEnabled()) {
+      final record = await _care.getUserPlantRecord(task.userPlantId);
+      await _scheduler.scheduleCareReminder(
+        taskId: task.id,
+        title: '${record?.plant.displayName ?? 'Your plant'} needs care',
+        body: task.actionLabel,
+        when: dueAt,
+      );
+    }
+    _emitMutation();
+  }
+
+  void _emitMutation() {
+    onDataMutated?.call();
   }
 
   Future<bool> _hasEvent(String userPlantId, String eventId) async {
@@ -216,7 +264,21 @@ class CareReminderService {
     return events.any((event) => event.id == eventId);
   }
 
-  static String _actionKey(String action, CareTask task) {
-    return 'action-$action-${task.id}-${task.dueAt.millisecondsSinceEpoch}';
+  static String _actionKeyForDue(String action, String taskId, DateTime dueAt) {
+    return 'action-$action-$taskId-${dueAt.millisecondsSinceEpoch}';
+  }
+
+  /// Calendar-day urgency for a due timestamp.
+  static CareUrgency urgencyForDueAt(DateTime dueAt, {DateTime? now}) {
+    final current = now ?? DateTime.now();
+    final startToday = DateTime(current.year, current.month, current.day);
+    final startDue = DateTime(dueAt.year, dueAt.month, dueAt.day);
+    if (startDue.isBefore(startToday)) {
+      return CareUrgency.overdue;
+    }
+    if (startDue == startToday) {
+      return CareUrgency.dueToday;
+    }
+    return CareUrgency.upcoming;
   }
 }

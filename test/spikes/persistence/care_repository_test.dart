@@ -127,15 +127,23 @@ void main() {
       ),
     );
 
-    final before = await first.listOpenTasksForToday();
-    expect(before.map((t) => t.id), ['task-snake-water', 'task-upcoming']);
+    // Far-future upcoming stays in all-open, not in Today's end-of-day window.
+    final beforeToday = await first.listOpenTasksForToday();
+    expect(beforeToday.map((t) => t.id), ['task-snake-water']);
+    final beforeAll = await first.listOpenCareTasks();
+    expect(beforeAll.map((t) => t.id), ['task-snake-water', 'task-upcoming']);
     await first.close();
 
     final second = DriftCareRepository(BloomDatabase.file(file));
     addTearDown(second.close);
-    final after = await second.listOpenTasksForToday();
-    expect(after.map((t) => t.id), ['task-snake-water', 'task-upcoming']);
-    expect(after.first.actionLabel, 'Water');
+    final afterToday = await second.listOpenTasksForToday();
+    expect(afterToday.map((t) => t.id), ['task-snake-water']);
+    expect(afterToday.first.actionLabel, 'Water');
+    final afterAll = await second.listOpenCareTasks();
+    expect(
+      afterAll.map((t) => t.id),
+      containsAll(['task-snake-water', 'task-upcoming']),
+    );
   });
 
   test('migrates schema v1 to v3 without losing user plants', () async {

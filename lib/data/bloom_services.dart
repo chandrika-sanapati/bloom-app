@@ -74,7 +74,8 @@ class BloomServices {
       seeder: seeder,
       reminders: reminders,
     );
-    onMutated = services.notifyDataChanged;
+    // Reminder mutators already update schedules; only refresh listening UI.
+    onMutated = () => services.dataRevision.value++;
 
     await reminders.initialize();
     await reminders.reconcile();

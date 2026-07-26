@@ -192,7 +192,34 @@ class DriftCareRepository implements CareRepository {
   }
 
   @override
-  Future<List<CareTask>> listOpenTasksForToday() async {
+  Future<List<CareTask>> listOpenTasksForToday({DateTime? now}) async {
+    final current = now ?? DateTime.now();
+    final endOfDay = DateTime(
+      current.year,
+      current.month,
+      current.day,
+      23,
+      59,
+      59,
+      999,
+    );
+    final rows =
+        await (_db.select(_db.careTaskRows)
+              ..where(
+                (t) =>
+                    t.isDone.equals(false) &
+                    t.dueAt.isSmallerOrEqualValue(endOfDay),
+              )
+              ..orderBy([
+                (t) => OrderingTerm.asc(t.urgency),
+                (t) => OrderingTerm.asc(t.dueAt),
+              ]))
+            .get();
+    return rows.map(mapCareTask).toList();
+  }
+
+  @override
+  Future<List<CareTask>> listOpenCareTasks() async {
     final rows =
         await (_db.select(_db.careTaskRows)
               ..where((t) => t.isDone.equals(false))

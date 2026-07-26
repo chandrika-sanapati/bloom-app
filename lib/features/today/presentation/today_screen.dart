@@ -83,39 +83,148 @@ class _TodayScreenState extends State<TodayScreen> {
 
   Future<void> _setDone(FixtureCareTask task, bool isDone) async {
     final services = BloomScope.of(context).services;
-    final care = services.care;
-    final existing = await care.getCareTask(task.id);
+    if (isDone) {
+      await services.reminders.completeTask(task.id);
+      return;
+    }
+
+    final existing = await services.care.getCareTask(task.id);
     if (existing == null) {
       return;
     }
-    await care.upsertCareTask(
+    await services.care.upsertCareTask(
       domain.CareTask(
         id: existing.id,
         userPlantId: existing.userPlantId,
         actionLabel: existing.actionLabel,
         urgency: existing.urgency,
         dueAt: existing.dueAt,
-        isDone: isDone,
+        isDone: false,
       ),
     );
-    if (isDone) {
-      await care.addCareEvent(
-        domain.CareEvent(
-          id: 'event-${task.id}-${DateTime.now().millisecondsSinceEpoch}',
-          userPlantId: task.plantId,
-          kind: domain.CareActionKind.check,
-          label: '${task.actionLabel} done',
-          occurredAt: DateTime.now(),
-        ),
-      );
-    }
     services.notifyDataChanged();
   }
 
-  Future<void> _restore() async {
-    final services = BloomScope.of(context).services;
-    await services.seeder.restoreSampleTasks();
-    services.notifyDataChanged();
+  Future<void> _onMenuAction(
+    FixtureCareTask task,
+    CareTaskMenuAction action,
+  ) async {
+    switch (action) {
+      case CareTaskMenuAction.snooze:
+        await _snoozeTask(task);
+      case CareTaskMenuAction.skip:
+        await _skipTask(task);
+      case CareTaskMenuAction.reschedule:
+        await _rescheduleTask(task);
+    }
+  }
+
+  Future<void> _snoozeTask(FixtureCareTask task) async {
+    final choice = await showModalBottomSheet<_SnoozeChoice>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('Snooze 1 hour'),
+                onTap: () => Navigator.pop(context, _SnoozeChoice.oneHour),
+              ),
+              ListTile(
+                title: const Text('Snooze 3 hours'),
+                onTap: () => Navigator.pop(context, _SnoozeChoice.threeHours),
+              ),
+              ListTile(
+                title: const Text('Tomorrow morning'),
+                subtitle: const Text('9:00 AM'),
+                onTap: () =>
+                    Navigator.pop(context, _SnoozeChoice.tomorrowMorning),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (choice == null || !mounted) {
+      return;
+    }
+
+    final reminders = BloomScope.of(context).services.reminders;
+    switch (choice) {
+      case _SnoozeChoice.oneHour:
+        await reminders.snoozeTask(task.id);
+      case _SnoozeChoice.threeHours:
+        await reminders.snoozeTask(task.id, delay: const Duration(hours: 3));
+      case _SnoozeChoice.tomorrowMorning:
+        final now = DateTime.now();
+        final nextDay = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).add(const Duration(days: 1));
+        final tomorrowMorning = DateTime(
+          nextDay.year,
+          nextDay.month,
+          nextDay.day,
+          9,
+        );
+        await reminders.snoozeTask(task.id, until: tomorrowMorning);
+    }
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Snoozed')));
+  }
+
+  Future<void> _skipTask(FixtureCareTask task) async {
+    await BloomScope.of(context).services.reminders.skipTask(task.id);
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Skipped')));
+  }
+
+  Future<void> _rescheduleTask(FixtureCareTask task) async {
+    final now = DateTime.now();
+    final date = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(now.year, now.month, now.day),
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (date == null || !mounted) {
+      return;
+    }
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(now.add(const Duration(hours: 1))),
+    );
+    if (time == null || !mounted) {
+      return;
+    }
+
+    final dueAt = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+    await BloomScope.of(
+      context,
+    ).services.reminders.rescheduleTask(task.id, dueAt);
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Rescheduled')));
   }
 
   @override
@@ -142,7 +251,7 @@ class _TodayScreenState extends State<TodayScreen> {
           Text("Today's tasks", style: theme.textTheme.titleMedium),
           const SizedBox(height: BloomSpacing.x3),
           if (_open.isEmpty)
-            _AllCaughtUpCard(onReset: _restore)
+            const _AllCaughtUpCard()
           else
             ..._open.map(
               (task) => Padding(
@@ -152,6 +261,7 @@ class _TodayScreenState extends State<TodayScreen> {
                   isDone: false,
                   onOpenPlant: () => openPlantDetail(context, task.plantId),
                   onToggle: (_) => _setDone(task, true),
+                  onMenuAction: (action) => _onMenuAction(task, action),
                 ),
               ),
             ),
@@ -177,10 +287,10 @@ class _TodayScreenState extends State<TodayScreen> {
   }
 }
 
-class _AllCaughtUpCard extends StatelessWidget {
-  const _AllCaughtUpCard({required this.onReset});
+enum _SnoozeChoice { oneHour, threeHours, tomorrowMorning }
 
-  final Future<void> Function() onReset;
+class _AllCaughtUpCard extends StatelessWidget {
+  const _AllCaughtUpCard();
 
   @override
   Widget build(BuildContext context) {
@@ -200,14 +310,10 @@ class _AllCaughtUpCard extends StatelessWidget {
             Text('All done for today!', style: theme.textTheme.titleMedium),
             const SizedBox(height: BloomSpacing.x2),
             Text(
-              'Your plants are happy. Restore sample tasks to keep exploring.',
+              'Your plants are happy. Add more from Discover, or check '
+              'My Plants anytime.',
               style: theme.textTheme.bodySmall,
               textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: BloomSpacing.x4),
-            FilledButton.tonal(
-              onPressed: onReset,
-              child: const Text('Restore sample tasks'),
             ),
           ],
         ),

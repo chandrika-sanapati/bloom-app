@@ -518,14 +518,14 @@ lib/
 
 ## 6.3 Today and task actions
 
-- [ ] Calculate Overdue, Due today, Upcoming, and Completed states.
-- [ ] Mark Done with one tap.
-- [ ] Snooze without changing the underlying schedule unless confirmed.
-- [ ] Skip once.
-- [ ] Reschedule explicitly.
-- [ ] Add every action to care history.
-- [ ] Show an encouraging All caught up state.
-- [ ] Prevent duplicate events from repeated taps.
+- [x] Calculate Overdue, Due today, Upcoming, and Completed states.
+- [x] Mark Done with one tap.
+- [x] Snooze without changing the underlying schedule unless confirmed.
+- [x] Skip once.
+- [x] Reschedule explicitly.
+- [x] Add every action to care history.
+- [x] Show an encouraging All caught up state.
+- [x] Prevent duplicate events from repeated taps.
 
 ### Exit gate
 
