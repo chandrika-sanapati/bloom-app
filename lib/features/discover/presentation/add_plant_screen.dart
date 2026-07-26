@@ -14,9 +14,12 @@ import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class AddPlantScreen extends StatefulWidget {
-  const AddPlantScreen({required this.entry, super.key});
+  const AddPlantScreen({required this.entry, this.initialPhotoPath, super.key});
 
   final FixtureCatalogEntry entry;
+
+  /// Optional scan/capture path to prefill as the user plant photo.
+  final String? initialPhotoPath;
 
   @override
   State<AddPlantScreen> createState() => _AddPlantScreenState();
@@ -34,6 +37,29 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.entry.commonName);
     _planRows = _buildPlanRows(_environment);
+    final seed = widget.initialPhotoPath;
+    if (seed != null && seed.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _seedPhotoFromPath(seed);
+      });
+    }
+  }
+
+  Future<void> _seedPhotoFromPath(String sourcePath) async {
+    final stamp = DateTime.now().millisecondsSinceEpoch;
+    final stagingId = 'staging-${widget.entry.id}-$stamp';
+    try {
+      final path = await PlantPhotoActions.store.importPhoto(
+        userPlantId: stagingId,
+        sourcePath: sourcePath,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() => _photoPath = path);
+    } catch (_) {
+      // Keep add-plant usable if the temp capture file was cleared.
+    }
   }
 
   List<_EditablePlanRow> _buildPlanRows(PlantEnvironmentAnswers environment) {
@@ -84,9 +110,9 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
   Future<void> _save() async {
     final nickname = _nameController.text.trim();
     if (nickname.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Give this plant a name.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Give this plant a pet name.')),
+      );
       return;
     }
 
@@ -316,19 +342,24 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
             color: BloomColors.brandGreen,
             icon: Icons.spa_outlined,
           ),
-          const SizedBox(height: BloomSpacing.x4),
-          Text(entry.overview, style: theme.textTheme.bodyMedium),
           const SizedBox(height: BloomSpacing.x5),
-          Text('Nickname', style: theme.textTheme.titleMedium),
+          Text('Pet name', style: theme.textTheme.titleMedium),
+          const SizedBox(height: BloomSpacing.x1),
+          Text(
+            'Shown in Today and My Plants.',
+            style: theme.textTheme.bodySmall,
+          ),
           const SizedBox(height: BloomSpacing.x2),
           TextField(
             controller: _nameController,
             textCapitalization: TextCapitalization.words,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              hintText: 'Optional custom name',
+              hintText: 'e.g. Fernie — or keep the common name',
             ),
           ),
+          const SizedBox(height: BloomSpacing.x5),
+          Text(entry.overview, style: theme.textTheme.bodyMedium),
           const SizedBox(height: BloomSpacing.x5),
           Text('Your conditions', style: theme.textTheme.titleMedium),
           const SizedBox(height: BloomSpacing.x1),

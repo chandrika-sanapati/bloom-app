@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Ranked plant identification candidate from Pl@ntNet (or a fake for tests).
 class IdentifyCandidate {
   const IdentifyCandidate({
@@ -32,6 +34,20 @@ class IdentifyCandidate {
     }
     return '$pct% — low confidence';
   }
+
+  /// Strong green for high confidence; softer green then muted yellow for low.
+  Color get confidenceColor {
+    if (score >= 0.7) {
+      return const Color(0xFF2AAA8A);
+    }
+    if (score >= 0.35) {
+      return const Color(0xFF7BA17D);
+    }
+    return const Color(0xFFC4A35A);
+  }
+
+  Color get confidenceFill =>
+      confidenceColor.withValues(alpha: score >= 0.7 ? 0.16 : 0.12);
 }
 
 class IdentifyResult {

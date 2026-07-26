@@ -103,7 +103,10 @@ class _ScanPlantScreenState extends State<ScanPlantScreen> {
   Future<void> _confirm(IdentifyCandidate candidate) async {
     final entry = catalogEntryForCandidate(candidate);
     final nickname = await Navigator.of(context).push<String>(
-      MaterialPageRoute<String>(builder: (_) => AddPlantScreen(entry: entry)),
+      MaterialPageRoute<String>(
+        builder: (_) =>
+            AddPlantScreen(entry: entry, initialPhotoPath: _imagePath),
+      ),
     );
     if (!mounted || nickname == null) {
       return;
@@ -234,10 +237,7 @@ class _ScanPlantScreenState extends State<ScanPlantScreen> {
             ..._result!.candidates.map(
               (c) => Padding(
                 padding: const EdgeInsets.only(bottom: BloomSpacing.x3),
-                child: _CandidateTile(
-                  candidate: c,
-                  onTap: () => _confirm(c),
-                ),
+                child: _CandidateTile(candidate: c, onTap: () => _confirm(c)),
               ),
             ),
             TextButton(
@@ -260,11 +260,12 @@ class _CandidateTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final accent = candidate.confidenceColor;
     return Material(
-      color: BloomColors.card,
+      color: candidate.confidenceFill,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(BloomRadii.card),
-        side: const BorderSide(color: BloomColors.borderSubtle),
+        side: BorderSide(color: accent.withValues(alpha: 0.55)),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(BloomRadii.card),
@@ -273,6 +274,15 @@ class _CandidateTile extends StatelessWidget {
           padding: const EdgeInsets.all(BloomSpacing.x3),
           child: Row(
             children: [
+              Container(
+                width: 4,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: accent,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: BloomSpacing.x3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,13 +300,14 @@ class _CandidateTile extends StatelessWidget {
                     Text(
                       candidate.confidenceLabel,
                       style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.primary,
+                        color: accent,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right),
+              Icon(Icons.chevron_right, color: accent),
             ],
           ),
         ),
