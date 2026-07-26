@@ -34,6 +34,7 @@ class PlantCard extends StatelessWidget {
               child: PlantThumbnail(
                 plantKey: plant.id,
                 accent: plant.accent,
+                photoPath: plant.photoPath,
                 borderRadius: 0,
                 iconSize: 40,
                 semanticLabel: '${plant.commonName} photo',

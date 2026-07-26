@@ -31,7 +31,7 @@ class BloomDatabase extends _$BloomDatabase {
   BloomDatabase.defaults() : super(_openDefaults());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -59,6 +59,9 @@ class BloomDatabase extends _$BloomDatabase {
             carePlanItemRows.suggestedCadenceLabel,
           );
           await m.addColumn(carePlanItemRows, carePlanItemRows.isUserModified);
+        }
+        if (from < 6) {
+          await m.addColumn(userPlantRows, userPlantRows.photoPath);
         }
       },
     );

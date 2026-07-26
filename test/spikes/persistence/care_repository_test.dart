@@ -103,6 +103,26 @@ void main() {
     expect(events.first.label, 'Watered');
   });
 
+  test('persists user plant photo path', () async {
+    final db = BloomDatabase.memory();
+    final repo = DriftCareRepository(db);
+    addTearDown(repo.close);
+
+    await seedMinimalGraph(repo);
+    await repo.upsertUserPlant(
+      const UserPlant(
+        id: 'plant-snake',
+        speciesId: 'species-snake',
+        displayName: 'Snake Plant',
+        statusLabel: 'Needs water',
+        photoPath: '/tmp/plant-snake.jpg',
+      ),
+    );
+
+    final plant = await repo.getUserPlant('plant-snake');
+    expect(plant?.photoPath, '/tmp/plant-snake.jpg');
+  });
+
   test('persists environment answers on user plants', () async {
     final db = BloomDatabase.memory();
     final repo = DriftCareRepository(db);

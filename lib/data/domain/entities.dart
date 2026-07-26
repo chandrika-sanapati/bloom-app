@@ -37,6 +37,7 @@ class UserPlant {
     this.homeClimate,
     this.pottingSize,
     this.experienceLevel,
+    this.photoPath,
   });
 
   final String id;
@@ -48,6 +49,9 @@ class UserPlant {
   final HomeClimate? homeClimate;
   final PottingSize? pottingSize;
   final ExperienceLevel? experienceLevel;
+
+  /// Absolute local path to a user-chosen plant photo, if any.
+  final String? photoPath;
 
   PlantEnvironmentAnswers get environment => PlantEnvironmentAnswers(
     light: lightLevel ?? LightLevel.medium,

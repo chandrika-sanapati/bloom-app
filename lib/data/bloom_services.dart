@@ -8,6 +8,7 @@ import 'package:bloom/data/reminders/care_reminder_service.dart';
 import 'package:bloom/data/reminders/flutter_reminder_scheduler.dart';
 import 'package:bloom/data/reminders/recording_reminder_scheduler.dart';
 import 'package:bloom/data/reminders/reminder_scheduler.dart';
+import 'package:bloom/shared/plants/plant_photo_store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,12 +18,14 @@ class BloomServices {
     required this.settings,
     required this.seeder,
     required this.reminders,
+    this.photos = const PlantPhotoStore(),
   });
 
   final CareRepository care;
   final SettingsRepository settings;
   final FixtureSeeder seeder;
   final CareReminderService reminders;
+  final PlantPhotoStore photos;
 
   /// Bumped when collection/tasks change so shell tabs can refresh.
   final ValueNotifier<int> dataRevision = ValueNotifier(0);
@@ -33,18 +36,24 @@ class BloomServices {
     reminders.reconcile();
   }
 
-  /// Clears SQLite care data, preferences, and scheduled reminders.
+  /// Clears SQLite care data, preferences, photos, and scheduled reminders.
   /// Leaves an empty collection (does not reseed sample plants).
   Future<void> deleteAllLocalData() async {
+    final plants = await care.listUserPlants();
     await reminders.disableReminders();
     await care.deleteAllData();
     await settings.clearAll();
+    for (final plant in plants) {
+      await photos.deletePhoto(plant.photoPath);
+    }
     notifyDataChanged();
   }
 
   /// Removes one plant from the collection and reconciles reminders.
   Future<void> deleteUserPlant(String userPlantId) async {
+    final plant = await care.getUserPlant(userPlantId);
     await care.deleteUserPlant(userPlantId);
+    await photos.deletePhoto(plant?.photoPath);
     notifyDataChanged();
   }
 

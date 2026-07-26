@@ -65,6 +65,7 @@ class _TodayScreenState extends State<TodayScreen> {
             accent: Color(
               records[task.userPlantId]?.species.accentArgb ?? 0xFF2AAA8A,
             ),
+            photoPath: records[task.userPlantId]?.plant.photoPath,
           ),
       ];
       _completed = [
@@ -75,6 +76,7 @@ class _TodayScreenState extends State<TodayScreen> {
             accent: Color(
               records[task.userPlantId]?.species.accentArgb ?? 0xFF2AAA8A,
             ),
+            photoPath: records[task.userPlantId]?.plant.photoPath,
           ),
       ];
       _loading = false;

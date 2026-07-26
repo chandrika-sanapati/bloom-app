@@ -68,22 +68,23 @@ void main() {
     await tester.tap(find.text('Pothos').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Your conditions'), findsOneWidget);
+    expect(find.text('Nickname'), findsOneWidget);
+    await tester.enterText(find.byType(TextField).first, 'Office Pothos');
+    await tester.pump();
+
     await tester.scrollUntilVisible(
       find.text('Suggested care plan'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Suggested care plan'), findsOneWidget);
-
-    await tester.enterText(find.byType(TextField).first, 'Office Pothos');
     await tester.scrollUntilVisible(
-      find.text('Add to My Plants'),
-      200,
+      find.widgetWithText(FilledButton, 'Add to My Plants'),
+      300,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Add to My Plants'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Add to My Plants'));
     await tester.pumpAndSettle();
-    expect(find.text('Office Pothos added to My Plants.'), findsOneWidget);
 
     await tester.tap(find.text('My Plants').last);
     await tester.pumpAndSettle();

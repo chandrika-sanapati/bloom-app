@@ -38,6 +38,7 @@ UserPlant mapUserPlant(UserPlantRow row) {
     experienceLevel: PlantEnvironmentAnswers.experienceFromWire(
       row.experienceLevel,
     ),
+    photoPath: row.photoPath,
   );
 }
 

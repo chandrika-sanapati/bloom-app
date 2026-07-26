@@ -530,6 +530,17 @@ class $UserPlantRowsTable extends UserPlantRows
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _photoPathMeta = const VerificationMeta(
+    'photoPath',
+  );
+  @override
+  late final GeneratedColumn<String> photoPath = GeneratedColumn<String>(
+    'photo_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -541,6 +552,7 @@ class $UserPlantRowsTable extends UserPlantRows
     homeClimate,
     pottingSize,
     experienceLevel,
+    photoPath,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -628,6 +640,12 @@ class $UserPlantRowsTable extends UserPlantRows
         ),
       );
     }
+    if (data.containsKey('photo_path')) {
+      context.handle(
+        _photoPathMeta,
+        photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta),
+      );
+    }
     return context;
   }
 
@@ -673,6 +691,10 @@ class $UserPlantRowsTable extends UserPlantRows
         DriftSqlType.string,
         data['${effectivePrefix}experience_level'],
       ),
+      photoPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}photo_path'],
+      ),
     );
   }
 
@@ -692,6 +714,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
   final String? homeClimate;
   final String? pottingSize;
   final String? experienceLevel;
+  final String? photoPath;
   const UserPlantRow({
     required this.id,
     required this.speciesId,
@@ -702,6 +725,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
     this.homeClimate,
     this.pottingSize,
     this.experienceLevel,
+    this.photoPath,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -724,6 +748,9 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
     }
     if (!nullToAbsent || experienceLevel != null) {
       map['experience_level'] = Variable<String>(experienceLevel);
+    }
+    if (!nullToAbsent || photoPath != null) {
+      map['photo_path'] = Variable<String>(photoPath);
     }
     return map;
   }
@@ -749,6 +776,9 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
       experienceLevel: experienceLevel == null && nullToAbsent
           ? const Value.absent()
           : Value(experienceLevel),
+      photoPath: photoPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoPath),
     );
   }
 
@@ -767,6 +797,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
       homeClimate: serializer.fromJson<String?>(json['homeClimate']),
       pottingSize: serializer.fromJson<String?>(json['pottingSize']),
       experienceLevel: serializer.fromJson<String?>(json['experienceLevel']),
+      photoPath: serializer.fromJson<String?>(json['photoPath']),
     );
   }
   @override
@@ -782,6 +813,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
       'homeClimate': serializer.toJson<String?>(homeClimate),
       'pottingSize': serializer.toJson<String?>(pottingSize),
       'experienceLevel': serializer.toJson<String?>(experienceLevel),
+      'photoPath': serializer.toJson<String?>(photoPath),
     };
   }
 
@@ -795,6 +827,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
     Value<String?> homeClimate = const Value.absent(),
     Value<String?> pottingSize = const Value.absent(),
     Value<String?> experienceLevel = const Value.absent(),
+    Value<String?> photoPath = const Value.absent(),
   }) => UserPlantRow(
     id: id ?? this.id,
     speciesId: speciesId ?? this.speciesId,
@@ -807,6 +840,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
     experienceLevel: experienceLevel.present
         ? experienceLevel.value
         : this.experienceLevel,
+    photoPath: photoPath.present ? photoPath.value : this.photoPath,
   );
   UserPlantRow copyWithCompanion(UserPlantRowsCompanion data) {
     return UserPlantRow(
@@ -831,6 +865,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
       experienceLevel: data.experienceLevel.present
           ? data.experienceLevel.value
           : this.experienceLevel,
+      photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
     );
   }
 
@@ -845,7 +880,8 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
           ..write('lightLevel: $lightLevel, ')
           ..write('homeClimate: $homeClimate, ')
           ..write('pottingSize: $pottingSize, ')
-          ..write('experienceLevel: $experienceLevel')
+          ..write('experienceLevel: $experienceLevel, ')
+          ..write('photoPath: $photoPath')
           ..write(')'))
         .toString();
   }
@@ -861,6 +897,7 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
     homeClimate,
     pottingSize,
     experienceLevel,
+    photoPath,
   );
   @override
   bool operator ==(Object other) =>
@@ -874,7 +911,8 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
           other.lightLevel == this.lightLevel &&
           other.homeClimate == this.homeClimate &&
           other.pottingSize == this.pottingSize &&
-          other.experienceLevel == this.experienceLevel);
+          other.experienceLevel == this.experienceLevel &&
+          other.photoPath == this.photoPath);
 }
 
 class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
@@ -887,6 +925,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
   final Value<String?> homeClimate;
   final Value<String?> pottingSize;
   final Value<String?> experienceLevel;
+  final Value<String?> photoPath;
   final Value<int> rowid;
   const UserPlantRowsCompanion({
     this.id = const Value.absent(),
@@ -898,6 +937,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     this.homeClimate = const Value.absent(),
     this.pottingSize = const Value.absent(),
     this.experienceLevel = const Value.absent(),
+    this.photoPath = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   UserPlantRowsCompanion.insert({
@@ -910,6 +950,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     this.homeClimate = const Value.absent(),
     this.pottingSize = const Value.absent(),
     this.experienceLevel = const Value.absent(),
+    this.photoPath = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        speciesId = Value(speciesId),
@@ -925,6 +966,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     Expression<String>? homeClimate,
     Expression<String>? pottingSize,
     Expression<String>? experienceLevel,
+    Expression<String>? photoPath,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -937,6 +979,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
       if (homeClimate != null) 'home_climate': homeClimate,
       if (pottingSize != null) 'potting_size': pottingSize,
       if (experienceLevel != null) 'experience_level': experienceLevel,
+      if (photoPath != null) 'photo_path': photoPath,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -951,6 +994,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     Value<String?>? homeClimate,
     Value<String?>? pottingSize,
     Value<String?>? experienceLevel,
+    Value<String?>? photoPath,
     Value<int>? rowid,
   }) {
     return UserPlantRowsCompanion(
@@ -963,6 +1007,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
       homeClimate: homeClimate ?? this.homeClimate,
       pottingSize: pottingSize ?? this.pottingSize,
       experienceLevel: experienceLevel ?? this.experienceLevel,
+      photoPath: photoPath ?? this.photoPath,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -997,6 +1042,9 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     if (experienceLevel.present) {
       map['experience_level'] = Variable<String>(experienceLevel.value);
     }
+    if (photoPath.present) {
+      map['photo_path'] = Variable<String>(photoPath.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1015,6 +1063,7 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
           ..write('homeClimate: $homeClimate, ')
           ..write('pottingSize: $pottingSize, ')
           ..write('experienceLevel: $experienceLevel, ')
+          ..write('photoPath: $photoPath, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2729,6 +2778,7 @@ typedef $$UserPlantRowsTableCreateCompanionBuilder =
       Value<String?> homeClimate,
       Value<String?> pottingSize,
       Value<String?> experienceLevel,
+      Value<String?> photoPath,
       Value<int> rowid,
     });
 typedef $$UserPlantRowsTableUpdateCompanionBuilder =
@@ -2742,6 +2792,7 @@ typedef $$UserPlantRowsTableUpdateCompanionBuilder =
       Value<String?> homeClimate,
       Value<String?> pottingSize,
       Value<String?> experienceLevel,
+      Value<String?> photoPath,
       Value<int> rowid,
     });
 
@@ -2875,6 +2926,11 @@ class $$UserPlantRowsTableFilterComposer
 
   ColumnFilters<String> get experienceLevel => $composableBuilder(
     column: $table.experienceLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get photoPath => $composableBuilder(
+    column: $table.photoPath,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3026,6 +3082,11 @@ class $$UserPlantRowsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get photoPath => $composableBuilder(
+    column: $table.photoPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$PlantSpeciesRowsTableOrderingComposer get speciesId {
     final $$PlantSpeciesRowsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -3094,6 +3155,9 @@ class $$UserPlantRowsTableAnnotationComposer
     column: $table.experienceLevel,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get photoPath =>
+      $composableBuilder(column: $table.photoPath, builder: (column) => column);
 
   $$PlantSpeciesRowsTableAnnotationComposer get speciesId {
     final $$PlantSpeciesRowsTableAnnotationComposer composer = $composerBuilder(
@@ -3238,6 +3302,7 @@ class $$UserPlantRowsTableTableManager
                 Value<String?> homeClimate = const Value.absent(),
                 Value<String?> pottingSize = const Value.absent(),
                 Value<String?> experienceLevel = const Value.absent(),
+                Value<String?> photoPath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserPlantRowsCompanion(
                 id: id,
@@ -3249,6 +3314,7 @@ class $$UserPlantRowsTableTableManager
                 homeClimate: homeClimate,
                 pottingSize: pottingSize,
                 experienceLevel: experienceLevel,
+                photoPath: photoPath,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3262,6 +3328,7 @@ class $$UserPlantRowsTableTableManager
                 Value<String?> homeClimate = const Value.absent(),
                 Value<String?> pottingSize = const Value.absent(),
                 Value<String?> experienceLevel = const Value.absent(),
+                Value<String?> photoPath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserPlantRowsCompanion.insert(
                 id: id,
@@ -3273,6 +3340,7 @@ class $$UserPlantRowsTableTableManager
                 homeClimate: homeClimate,
                 pottingSize: pottingSize,
                 experienceLevel: experienceLevel,
+                photoPath: photoPath,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

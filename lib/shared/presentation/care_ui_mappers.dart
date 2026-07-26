@@ -7,6 +7,7 @@ FixtureCareTask toFixtureTask({
   required domain.CareTask task,
   required String plantName,
   required Color accent,
+  String? photoPath,
 }) {
   return FixtureCareTask(
     id: task.id,
@@ -17,6 +18,7 @@ FixtureCareTask toFixtureTask({
       task.isDone ? domain.CareUrgency.done : task.urgency,
     ),
     accent: accent,
+    photoPath: photoPath,
   );
 }
 
@@ -29,6 +31,7 @@ FixturePlant toFixturePlant(domain.UserPlantRecord record) {
     statusLabel: record.plant.statusLabel,
     accent: Color(record.species.accentArgb),
     overview: record.species.overview,
+    photoPath: record.plant.photoPath,
   );
 }
 

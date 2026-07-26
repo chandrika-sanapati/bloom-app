@@ -48,6 +48,7 @@ class DriftCareRepository implements CareRepository {
             homeClimate: Value(plant.homeClimate?.name),
             pottingSize: Value(plant.pottingSize?.name),
             experienceLevel: Value(plant.experienceLevel?.name),
+            photoPath: Value(plant.photoPath),
           ),
         );
   }

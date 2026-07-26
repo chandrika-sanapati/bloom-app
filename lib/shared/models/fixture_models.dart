@@ -14,6 +14,7 @@ class FixtureCareTask {
     required this.actionLabel,
     required this.urgency,
     required this.accent,
+    this.photoPath,
   });
 
   final String id;
@@ -22,6 +23,7 @@ class FixtureCareTask {
   final String actionLabel;
   final CareUrgency urgency;
   final Color accent;
+  final String? photoPath;
 }
 
 class FixturePlant {
@@ -33,6 +35,7 @@ class FixturePlant {
     required this.statusLabel,
     required this.accent,
     required this.overview,
+    this.photoPath,
   });
 
   final String id;
@@ -42,6 +45,7 @@ class FixturePlant {
   final String statusLabel;
   final Color accent;
   final String overview;
+  final String? photoPath;
 }
 
 class FixtureCatalogEntry {

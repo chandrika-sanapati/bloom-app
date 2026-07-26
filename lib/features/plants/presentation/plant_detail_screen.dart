@@ -6,6 +6,7 @@ import 'package:bloom/data/domain/entities.dart' as domain;
 import 'package:bloom/shared/care/care_plan_merge.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
+import 'package:bloom/shared/plants/plant_photo_actions.dart';
 import 'package:bloom/shared/presentation/care_ui_mappers.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
 import 'package:bloom/shared/widgets/care_task_row.dart';
@@ -74,6 +75,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
             task: task,
             plantName: record.plant.displayName,
             accent: accent,
+            photoPath: record.plant.photoPath,
           ),
       ];
       _history = events.map(toFixtureHistoryEvent).toList();
@@ -109,6 +111,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
         homeClimate: record.plant.homeClimate,
         pottingSize: record.plant.pottingSize,
         experienceLevel: record.plant.experienceLevel,
+        photoPath: record.plant.photoPath,
       ),
     );
     services.notifyDataChanged();
@@ -118,6 +121,79 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Nickname updated.')));
+    await _reload();
+  }
+
+  Future<void> _editPhoto() async {
+    final record = _record;
+    if (record == null) {
+      return;
+    }
+    final source = await PlantPhotoActions.chooseSource(context);
+    if (source == null || !mounted) {
+      return;
+    }
+    final path = await PlantPhotoActions.pickAndImport(
+      context: context,
+      userPlantId: record.plant.id,
+      source: source,
+      previousPath: record.plant.photoPath,
+    );
+    if (path == null || !mounted) {
+      return;
+    }
+    final services = BloomScope.of(context).services;
+    await services.care.upsertUserPlant(
+      domain.UserPlant(
+        id: record.plant.id,
+        speciesId: record.plant.speciesId,
+        displayName: record.plant.displayName,
+        statusLabel: record.plant.statusLabel,
+        notes: record.plant.notes,
+        lightLevel: record.plant.lightLevel,
+        homeClimate: record.plant.homeClimate,
+        pottingSize: record.plant.pottingSize,
+        experienceLevel: record.plant.experienceLevel,
+        photoPath: path,
+      ),
+    );
+    services.notifyDataChanged();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Photo updated.')));
+    await _reload();
+  }
+
+  Future<void> _removePhoto() async {
+    final record = _record;
+    if (record == null || record.plant.photoPath == null) {
+      return;
+    }
+    final services = BloomScope.of(context).services;
+    await PlantPhotoActions.store.deletePhoto(record.plant.photoPath);
+    await services.care.upsertUserPlant(
+      domain.UserPlant(
+        id: record.plant.id,
+        speciesId: record.plant.speciesId,
+        displayName: record.plant.displayName,
+        statusLabel: record.plant.statusLabel,
+        notes: record.plant.notes,
+        lightLevel: record.plant.lightLevel,
+        homeClimate: record.plant.homeClimate,
+        pottingSize: record.plant.pottingSize,
+        experienceLevel: record.plant.experienceLevel,
+      ),
+    );
+    services.notifyDataChanged();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Photo removed.')));
     await _reload();
   }
 
@@ -401,11 +477,30 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               child: PlantThumbnail(
                 plantKey: plant.id,
                 accent: plant.accent,
+                photoPath: plant.photoPath,
                 height: 160,
                 borderRadius: BloomRadii.card,
                 iconSize: 64,
                 semanticLabel: '${plant.commonName} photo',
               ),
+            ),
+            const SizedBox(height: BloomSpacing.x3),
+            Wrap(
+              spacing: BloomSpacing.x2,
+              children: [
+                TextButton.icon(
+                  onPressed: _editPhoto,
+                  icon: const Icon(Icons.add_a_photo_outlined),
+                  label: Text(
+                    plant.photoPath == null ? 'Add photo' : 'Change photo',
+                  ),
+                ),
+                if (plant.photoPath != null)
+                  TextButton(
+                    onPressed: _removePhoto,
+                    child: const Text('Remove photo'),
+                  ),
+              ],
             ),
             const SizedBox(height: BloomSpacing.x4),
             Row(

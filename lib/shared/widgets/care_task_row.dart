@@ -54,6 +54,7 @@ class CareTaskRow extends StatelessWidget {
                     PlantThumbnail(
                       plantKey: task.plantId,
                       accent: task.accent,
+                      photoPath: task.photoPath,
                       width: 56,
                       height: 56,
                       icon: Icons.eco_outlined,

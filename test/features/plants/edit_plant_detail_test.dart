@@ -32,7 +32,12 @@ void main() {
 
     await tester.tap(find.text('About').hitTestable());
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Edit'));
+    await tester.scrollUntilVisible(
+      find.text('Edit'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Edit').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Edit care plan'), findsOneWidget);
 

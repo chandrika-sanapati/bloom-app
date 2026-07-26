@@ -7,6 +7,7 @@ import 'package:bloom/data/domain/plant_environment.dart';
 import 'package:bloom/shared/care/care_plan_merge.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
+import 'package:bloom/shared/plants/plant_photo_actions.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
 import 'package:bloom/shared/widgets/plant_thumbnail.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
   late final TextEditingController _nameController;
   late List<_EditablePlanRow> _planRows;
   var _environment = PlantEnvironmentAnswers.defaults;
+  String? _photoPath;
   var _saving = false;
 
   @override
@@ -48,6 +50,25 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
       _environment = next;
       _planRows = _buildPlanRows(next);
     });
+  }
+
+  Future<void> _pickPhoto() async {
+    final source = await PlantPhotoActions.chooseSource(context);
+    if (source == null || !mounted) {
+      return;
+    }
+    final stamp = DateTime.now().millisecondsSinceEpoch;
+    final stagingId = 'staging-${widget.entry.id}-$stamp';
+    final path = await PlantPhotoActions.pickAndImport(
+      context: context,
+      userPlantId: stagingId,
+      source: source,
+      previousPath: _photoPath,
+    );
+    if (!mounted || path == null) {
+      return;
+    }
+    setState(() => _photoPath = path);
   }
 
   @override
@@ -87,6 +108,17 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
           accentArgb: entry.accent.toARGB32(),
         ),
       );
+      var photoPath = _photoPath;
+      if (photoPath != null) {
+        photoPath = await PlantPhotoActions.store.importPhoto(
+          userPlantId: plantId,
+          sourcePath: photoPath,
+        );
+        if (_photoPath != null && _photoPath != photoPath) {
+          await PlantPhotoActions.store.deletePhoto(_photoPath);
+        }
+      }
+
       await care.upsertUserPlant(
         domain.UserPlant(
           id: plantId,
@@ -97,6 +129,7 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
           homeClimate: _environment.climate,
           pottingSize: _environment.potting,
           experienceLevel: _environment.experience,
+          photoPath: photoPath,
         ),
       );
       final planItems = <domain.CarePlanItem>[];
@@ -175,11 +208,34 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
             child: PlantThumbnail(
               plantKey: entry.id,
               accent: entry.accent,
+              photoPath: _photoPath,
               height: 140,
               borderRadius: BloomRadii.card,
               iconSize: 56,
               semanticLabel: '${entry.commonName} photo',
             ),
+          ),
+          const SizedBox(height: BloomSpacing.x3),
+          Wrap(
+            spacing: BloomSpacing.x2,
+            children: [
+              TextButton.icon(
+                onPressed: _saving ? null : _pickPhoto,
+                icon: const Icon(Icons.add_a_photo_outlined),
+                label: Text(_photoPath == null ? 'Add photo' : 'Change photo'),
+              ),
+              if (_photoPath != null)
+                TextButton(
+                  onPressed: _saving
+                      ? null
+                      : () async {
+                          final path = _photoPath;
+                          setState(() => _photoPath = null);
+                          await PlantPhotoActions.store.deletePhoto(path);
+                        },
+                  child: const Text('Remove photo'),
+                ),
+            ],
           ),
           const SizedBox(height: BloomSpacing.x4),
           Text(entry.commonName, style: theme.textTheme.titleLarge),

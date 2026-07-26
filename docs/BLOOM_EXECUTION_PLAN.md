@@ -504,7 +504,7 @@ lib/
 - [x] Seed the approved plant catalog.
 - [x] Implement common/scientific-name search.
 - [x] Add a plant manually.
-- [x] Add a nickname (user plant photo still open).
+- [x] Add a nickname and optional user plant photo.
 - [x] Show empty and populated collection states.
 - [x] Open plant details from the collection.
 
@@ -576,7 +576,7 @@ lib/
 
 - [ ] Request `POST_NOTIFICATIONS` through a Flutter plugin only after the first plan is confirmed, with Android manifest/runtime configuration where required.
 - [ ] Request camera access through a Flutter plugin only at Scan, with Android manifest/runtime configuration where required.
-- [ ] Use a Flutter picker plugin backed by Android Photo Picker instead of broad photo-library permission.
+- [x] Use a Flutter picker plugin backed by Android Photo Picker instead of broad photo-library permission.
 - [ ] Explain the effect of denial without pressuring users.
 - [ ] Provide manual alternatives after denial.
 - [ ] Verify the final manifest contains no unused permissions.
