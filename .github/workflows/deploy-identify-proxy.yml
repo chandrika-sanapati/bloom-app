@@ -1,0 +1,68 @@
+# Deploy Bloom identify proxy when Worker sources change.
+# Requires repo secrets:
+#   CLOUDFLARE_API_TOKEN  — Workers Edit (and Account read)
+#   CLOUDFLARE_ACCOUNT_ID — from Cloudflare dashboard / `wrangler whoami`
+#
+# PlantNet key stays a Wrangler secret on the Worker (set once locally):
+#   npx wrangler secret put PLANTNET_API_KEY
+# CI does not overwrite Worker secrets.
+
+name: Deploy identify proxy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/identify-proxy/**'
+      - '.github/workflows/deploy-identify-proxy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-identify-proxy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Cloudflare Worker
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/identify-proxy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: services/identify-proxy/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: services/identify-proxy
+          command: deploy
+
+      - name: Smoke health
+        run: |
+          set -euo pipefail
+          URL='https://bloom-identify-proxy.bloom-app.workers.dev/health'
+          for i in 1 2 3 4 5; do
+            if curl -fsS "$URL" | grep -q '"ok":true'; then
+              echo "health ok"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "health check failed for $URL" >&2
+          exit 1

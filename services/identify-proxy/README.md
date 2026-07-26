@@ -48,18 +48,42 @@ Then:
 
 ## Deploy to Cloudflare
 
+### One-time secrets (local)
+
 ```bash
-npx wrangler login
+npx wrangler login   # or CLOUDFLARE_API_TOKEN
 npx wrangler secret put PLANTNET_API_KEY
 # optional closed-beta gate:
 npx wrangler secret put BLOOM_APP_TOKEN
+```
+
+Worker secrets are **not** rewritten by CI. Set them once; later deploys keep them.
+
+### CI (GitHub Actions)
+
+Workflow: [`.github/workflows/deploy-identify-proxy.yml`](../../.github/workflows/deploy-identify-proxy.yml).
+
+On every push to `main` that touches `services/identify-proxy/**` (or manual **Run workflow**), GitHub deploys the Worker.
+
+Add repository secrets (Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+|---|---|
+| `CLOUDFLARE_API_TOKEN` | API token with **Edit Cloudflare Workers** |
+| `CLOUDFLARE_ACCOUNT_ID` | From `npx wrangler whoami` or the Cloudflare dashboard URL |
+
+### Manual deploy
+
+```bash
 npm run deploy
 ```
+
+Production URL: `https://bloom-identify-proxy.bloom-app.workers.dev`
 
 Set Flutter:
 
 ```bash
-BLOOM_IDENTIFY_PROXY_URL=https://bloom-identify-proxy.<your-subdomain>.workers.dev
+BLOOM_IDENTIFY_PROXY_URL=https://bloom-identify-proxy.bloom-app.workers.dev
 BLOOM_PLANTNET_API_KEY=
 BLOOM_IDENTIFY_APP_TOKEN=<same as Worker secret if used>
 ```
