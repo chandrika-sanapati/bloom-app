@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloom/data/domain/care_repository.dart';
 import 'package:bloom/data/domain/entities.dart';
+import 'package:bloom/data/domain/plant_environment.dart';
 import 'package:bloom/data/local/drift/bloom_database.dart';
 import 'package:bloom/data/local/drift/drift_care_repository.dart';
 import 'package:drift/native.dart';
@@ -100,6 +101,33 @@ void main() {
     final events = await repo.listCareEvents('plant-snake');
     expect(events, hasLength(1));
     expect(events.first.label, 'Watered');
+  });
+
+  test('persists environment answers on user plants', () async {
+    final db = BloomDatabase.memory();
+    final repo = DriftCareRepository(db);
+    addTearDown(repo.close);
+
+    await seedMinimalGraph(repo);
+    await repo.upsertUserPlant(
+      const UserPlant(
+        id: 'plant-snake',
+        speciesId: 'species-snake',
+        displayName: 'Snake Plant',
+        statusLabel: 'Needs water',
+        lightLevel: LightLevel.low,
+        homeClimate: HomeClimate.humid,
+        pottingSize: PottingSize.small,
+        experienceLevel: ExperienceLevel.novice,
+      ),
+    );
+
+    final plant = await repo.getUserPlant('plant-snake');
+    expect(plant?.lightLevel, LightLevel.low);
+    expect(plant?.homeClimate, HomeClimate.humid);
+    expect(plant?.pottingSize, PottingSize.small);
+    expect(plant?.experienceLevel, ExperienceLevel.novice);
+    expect(plant?.environment.light, LightLevel.low);
   });
 
   test('recreates Today open-task state after close and reopen', () async {

@@ -486,6 +486,50 @@ class $UserPlantRowsTable extends UserPlantRows
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _lightLevelMeta = const VerificationMeta(
+    'lightLevel',
+  );
+  @override
+  late final GeneratedColumn<String> lightLevel = GeneratedColumn<String>(
+    'light_level',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _homeClimateMeta = const VerificationMeta(
+    'homeClimate',
+  );
+  @override
+  late final GeneratedColumn<String> homeClimate = GeneratedColumn<String>(
+    'home_climate',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _pottingSizeMeta = const VerificationMeta(
+    'pottingSize',
+  );
+  @override
+  late final GeneratedColumn<String> pottingSize = GeneratedColumn<String>(
+    'potting_size',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _experienceLevelMeta = const VerificationMeta(
+    'experienceLevel',
+  );
+  @override
+  late final GeneratedColumn<String> experienceLevel = GeneratedColumn<String>(
+    'experience_level',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -493,6 +537,10 @@ class $UserPlantRowsTable extends UserPlantRows
     displayName,
     statusLabel,
     notes,
+    lightLevel,
+    homeClimate,
+    pottingSize,
+    experienceLevel,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -547,6 +595,39 @@ class $UserPlantRowsTable extends UserPlantRows
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
     }
+    if (data.containsKey('light_level')) {
+      context.handle(
+        _lightLevelMeta,
+        lightLevel.isAcceptableOrUnknown(data['light_level']!, _lightLevelMeta),
+      );
+    }
+    if (data.containsKey('home_climate')) {
+      context.handle(
+        _homeClimateMeta,
+        homeClimate.isAcceptableOrUnknown(
+          data['home_climate']!,
+          _homeClimateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('potting_size')) {
+      context.handle(
+        _pottingSizeMeta,
+        pottingSize.isAcceptableOrUnknown(
+          data['potting_size']!,
+          _pottingSizeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('experience_level')) {
+      context.handle(
+        _experienceLevelMeta,
+        experienceLevel.isAcceptableOrUnknown(
+          data['experience_level']!,
+          _experienceLevelMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -576,6 +657,22 @@ class $UserPlantRowsTable extends UserPlantRows
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       ),
+      lightLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}light_level'],
+      ),
+      homeClimate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}home_climate'],
+      ),
+      pottingSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}potting_size'],
+      ),
+      experienceLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}experience_level'],
+      ),
     );
   }
 
@@ -591,12 +688,20 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
   final String displayName;
   final String statusLabel;
   final String? notes;
+  final String? lightLevel;
+  final String? homeClimate;
+  final String? pottingSize;
+  final String? experienceLevel;
   const UserPlantRow({
     required this.id,
     required this.speciesId,
     required this.displayName,
     required this.statusLabel,
     this.notes,
+    this.lightLevel,
+    this.homeClimate,
+    this.pottingSize,
+    this.experienceLevel,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -607,6 +712,18 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
     map['status_label'] = Variable<String>(statusLabel);
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || lightLevel != null) {
+      map['light_level'] = Variable<String>(lightLevel);
+    }
+    if (!nullToAbsent || homeClimate != null) {
+      map['home_climate'] = Variable<String>(homeClimate);
+    }
+    if (!nullToAbsent || pottingSize != null) {
+      map['potting_size'] = Variable<String>(pottingSize);
+    }
+    if (!nullToAbsent || experienceLevel != null) {
+      map['experience_level'] = Variable<String>(experienceLevel);
     }
     return map;
   }
@@ -620,6 +737,18 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      lightLevel: lightLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lightLevel),
+      homeClimate: homeClimate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(homeClimate),
+      pottingSize: pottingSize == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pottingSize),
+      experienceLevel: experienceLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(experienceLevel),
     );
   }
 
@@ -634,6 +763,10 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
       displayName: serializer.fromJson<String>(json['displayName']),
       statusLabel: serializer.fromJson<String>(json['statusLabel']),
       notes: serializer.fromJson<String?>(json['notes']),
+      lightLevel: serializer.fromJson<String?>(json['lightLevel']),
+      homeClimate: serializer.fromJson<String?>(json['homeClimate']),
+      pottingSize: serializer.fromJson<String?>(json['pottingSize']),
+      experienceLevel: serializer.fromJson<String?>(json['experienceLevel']),
     );
   }
   @override
@@ -645,6 +778,10 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
       'displayName': serializer.toJson<String>(displayName),
       'statusLabel': serializer.toJson<String>(statusLabel),
       'notes': serializer.toJson<String?>(notes),
+      'lightLevel': serializer.toJson<String?>(lightLevel),
+      'homeClimate': serializer.toJson<String?>(homeClimate),
+      'pottingSize': serializer.toJson<String?>(pottingSize),
+      'experienceLevel': serializer.toJson<String?>(experienceLevel),
     };
   }
 
@@ -654,12 +791,22 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
     String? displayName,
     String? statusLabel,
     Value<String?> notes = const Value.absent(),
+    Value<String?> lightLevel = const Value.absent(),
+    Value<String?> homeClimate = const Value.absent(),
+    Value<String?> pottingSize = const Value.absent(),
+    Value<String?> experienceLevel = const Value.absent(),
   }) => UserPlantRow(
     id: id ?? this.id,
     speciesId: speciesId ?? this.speciesId,
     displayName: displayName ?? this.displayName,
     statusLabel: statusLabel ?? this.statusLabel,
     notes: notes.present ? notes.value : this.notes,
+    lightLevel: lightLevel.present ? lightLevel.value : this.lightLevel,
+    homeClimate: homeClimate.present ? homeClimate.value : this.homeClimate,
+    pottingSize: pottingSize.present ? pottingSize.value : this.pottingSize,
+    experienceLevel: experienceLevel.present
+        ? experienceLevel.value
+        : this.experienceLevel,
   );
   UserPlantRow copyWithCompanion(UserPlantRowsCompanion data) {
     return UserPlantRow(
@@ -672,6 +819,18 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
           ? data.statusLabel.value
           : this.statusLabel,
       notes: data.notes.present ? data.notes.value : this.notes,
+      lightLevel: data.lightLevel.present
+          ? data.lightLevel.value
+          : this.lightLevel,
+      homeClimate: data.homeClimate.present
+          ? data.homeClimate.value
+          : this.homeClimate,
+      pottingSize: data.pottingSize.present
+          ? data.pottingSize.value
+          : this.pottingSize,
+      experienceLevel: data.experienceLevel.present
+          ? data.experienceLevel.value
+          : this.experienceLevel,
     );
   }
 
@@ -682,14 +841,27 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
           ..write('speciesId: $speciesId, ')
           ..write('displayName: $displayName, ')
           ..write('statusLabel: $statusLabel, ')
-          ..write('notes: $notes')
+          ..write('notes: $notes, ')
+          ..write('lightLevel: $lightLevel, ')
+          ..write('homeClimate: $homeClimate, ')
+          ..write('pottingSize: $pottingSize, ')
+          ..write('experienceLevel: $experienceLevel')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, speciesId, displayName, statusLabel, notes);
+  int get hashCode => Object.hash(
+    id,
+    speciesId,
+    displayName,
+    statusLabel,
+    notes,
+    lightLevel,
+    homeClimate,
+    pottingSize,
+    experienceLevel,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -698,7 +870,11 @@ class UserPlantRow extends DataClass implements Insertable<UserPlantRow> {
           other.speciesId == this.speciesId &&
           other.displayName == this.displayName &&
           other.statusLabel == this.statusLabel &&
-          other.notes == this.notes);
+          other.notes == this.notes &&
+          other.lightLevel == this.lightLevel &&
+          other.homeClimate == this.homeClimate &&
+          other.pottingSize == this.pottingSize &&
+          other.experienceLevel == this.experienceLevel);
 }
 
 class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
@@ -707,6 +883,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
   final Value<String> displayName;
   final Value<String> statusLabel;
   final Value<String?> notes;
+  final Value<String?> lightLevel;
+  final Value<String?> homeClimate;
+  final Value<String?> pottingSize;
+  final Value<String?> experienceLevel;
   final Value<int> rowid;
   const UserPlantRowsCompanion({
     this.id = const Value.absent(),
@@ -714,6 +894,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     this.displayName = const Value.absent(),
     this.statusLabel = const Value.absent(),
     this.notes = const Value.absent(),
+    this.lightLevel = const Value.absent(),
+    this.homeClimate = const Value.absent(),
+    this.pottingSize = const Value.absent(),
+    this.experienceLevel = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   UserPlantRowsCompanion.insert({
@@ -722,6 +906,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     required String displayName,
     required String statusLabel,
     this.notes = const Value.absent(),
+    this.lightLevel = const Value.absent(),
+    this.homeClimate = const Value.absent(),
+    this.pottingSize = const Value.absent(),
+    this.experienceLevel = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        speciesId = Value(speciesId),
@@ -733,6 +921,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     Expression<String>? displayName,
     Expression<String>? statusLabel,
     Expression<String>? notes,
+    Expression<String>? lightLevel,
+    Expression<String>? homeClimate,
+    Expression<String>? pottingSize,
+    Expression<String>? experienceLevel,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -741,6 +933,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
       if (displayName != null) 'display_name': displayName,
       if (statusLabel != null) 'status_label': statusLabel,
       if (notes != null) 'notes': notes,
+      if (lightLevel != null) 'light_level': lightLevel,
+      if (homeClimate != null) 'home_climate': homeClimate,
+      if (pottingSize != null) 'potting_size': pottingSize,
+      if (experienceLevel != null) 'experience_level': experienceLevel,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -751,6 +947,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     Value<String>? displayName,
     Value<String>? statusLabel,
     Value<String?>? notes,
+    Value<String?>? lightLevel,
+    Value<String?>? homeClimate,
+    Value<String?>? pottingSize,
+    Value<String?>? experienceLevel,
     Value<int>? rowid,
   }) {
     return UserPlantRowsCompanion(
@@ -759,6 +959,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
       displayName: displayName ?? this.displayName,
       statusLabel: statusLabel ?? this.statusLabel,
       notes: notes ?? this.notes,
+      lightLevel: lightLevel ?? this.lightLevel,
+      homeClimate: homeClimate ?? this.homeClimate,
+      pottingSize: pottingSize ?? this.pottingSize,
+      experienceLevel: experienceLevel ?? this.experienceLevel,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -781,6 +985,18 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (lightLevel.present) {
+      map['light_level'] = Variable<String>(lightLevel.value);
+    }
+    if (homeClimate.present) {
+      map['home_climate'] = Variable<String>(homeClimate.value);
+    }
+    if (pottingSize.present) {
+      map['potting_size'] = Variable<String>(pottingSize.value);
+    }
+    if (experienceLevel.present) {
+      map['experience_level'] = Variable<String>(experienceLevel.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -795,6 +1011,10 @@ class UserPlantRowsCompanion extends UpdateCompanion<UserPlantRow> {
           ..write('displayName: $displayName, ')
           ..write('statusLabel: $statusLabel, ')
           ..write('notes: $notes, ')
+          ..write('lightLevel: $lightLevel, ')
+          ..write('homeClimate: $homeClimate, ')
+          ..write('pottingSize: $pottingSize, ')
+          ..write('experienceLevel: $experienceLevel, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2381,6 +2601,10 @@ typedef $$UserPlantRowsTableCreateCompanionBuilder =
       required String displayName,
       required String statusLabel,
       Value<String?> notes,
+      Value<String?> lightLevel,
+      Value<String?> homeClimate,
+      Value<String?> pottingSize,
+      Value<String?> experienceLevel,
       Value<int> rowid,
     });
 typedef $$UserPlantRowsTableUpdateCompanionBuilder =
@@ -2390,6 +2614,10 @@ typedef $$UserPlantRowsTableUpdateCompanionBuilder =
       Value<String> displayName,
       Value<String> statusLabel,
       Value<String?> notes,
+      Value<String?> lightLevel,
+      Value<String?> homeClimate,
+      Value<String?> pottingSize,
+      Value<String?> experienceLevel,
       Value<int> rowid,
     });
 
@@ -2503,6 +2731,26 @@ class $$UserPlantRowsTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lightLevel => $composableBuilder(
+    column: $table.lightLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get homeClimate => $composableBuilder(
+    column: $table.homeClimate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pottingSize => $composableBuilder(
+    column: $table.pottingSize,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2634,6 +2882,26 @@ class $$UserPlantRowsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get lightLevel => $composableBuilder(
+    column: $table.lightLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get homeClimate => $composableBuilder(
+    column: $table.homeClimate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pottingSize => $composableBuilder(
+    column: $table.pottingSize,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$PlantSpeciesRowsTableOrderingComposer get speciesId {
     final $$PlantSpeciesRowsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -2682,6 +2950,26 @@ class $$UserPlantRowsTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get lightLevel => $composableBuilder(
+    column: $table.lightLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get homeClimate => $composableBuilder(
+    column: $table.homeClimate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pottingSize => $composableBuilder(
+    column: $table.pottingSize,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get experienceLevel => $composableBuilder(
+    column: $table.experienceLevel,
+    builder: (column) => column,
+  );
 
   $$PlantSpeciesRowsTableAnnotationComposer get speciesId {
     final $$PlantSpeciesRowsTableAnnotationComposer composer = $composerBuilder(
@@ -2822,6 +3110,10 @@ class $$UserPlantRowsTableTableManager
                 Value<String> displayName = const Value.absent(),
                 Value<String> statusLabel = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> lightLevel = const Value.absent(),
+                Value<String?> homeClimate = const Value.absent(),
+                Value<String?> pottingSize = const Value.absent(),
+                Value<String?> experienceLevel = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserPlantRowsCompanion(
                 id: id,
@@ -2829,6 +3121,10 @@ class $$UserPlantRowsTableTableManager
                 displayName: displayName,
                 statusLabel: statusLabel,
                 notes: notes,
+                lightLevel: lightLevel,
+                homeClimate: homeClimate,
+                pottingSize: pottingSize,
+                experienceLevel: experienceLevel,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2838,6 +3134,10 @@ class $$UserPlantRowsTableTableManager
                 required String displayName,
                 required String statusLabel,
                 Value<String?> notes = const Value.absent(),
+                Value<String?> lightLevel = const Value.absent(),
+                Value<String?> homeClimate = const Value.absent(),
+                Value<String?> pottingSize = const Value.absent(),
+                Value<String?> experienceLevel = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserPlantRowsCompanion.insert(
                 id: id,
@@ -2845,6 +3145,10 @@ class $$UserPlantRowsTableTableManager
                 displayName: displayName,
                 statusLabel: statusLabel,
                 notes: notes,
+                lightLevel: lightLevel,
+                homeClimate: homeClimate,
+                pottingSize: pottingSize,
+                experienceLevel: experienceLevel,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

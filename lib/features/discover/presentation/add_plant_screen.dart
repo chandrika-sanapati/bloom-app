@@ -3,6 +3,7 @@ import 'package:bloom/app/theme/bloom_colors.dart';
 import 'package:bloom/app/theme/bloom_radii.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/data/domain/entities.dart' as domain;
+import 'package:bloom/data/domain/plant_environment.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
@@ -21,15 +22,31 @@ class AddPlantScreen extends StatefulWidget {
 class _AddPlantScreenState extends State<AddPlantScreen> {
   late final TextEditingController _nameController;
   late List<_EditablePlanRow> _planRows;
+  var _environment = PlantEnvironmentAnswers.defaults;
   var _saving = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.entry.commonName);
-    _planRows = BloomFixtures.suggestedCarePlan(
+    _planRows = _buildPlanRows(_environment);
+  }
+
+  List<_EditablePlanRow> _buildPlanRows(PlantEnvironmentAnswers environment) {
+    return BloomFixtures.suggestedCarePlan(
       widget.entry,
+      environment: environment,
     ).map(_EditablePlanRow.fromFixture).toList();
+  }
+
+  void _setEnvironment(PlantEnvironmentAnswers next) {
+    for (final row in _planRows) {
+      row.dispose();
+    }
+    setState(() {
+      _environment = next;
+      _planRows = _buildPlanRows(next);
+    });
   }
 
   @override
@@ -75,6 +92,10 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
           speciesId: speciesId,
           displayName: nickname,
           statusLabel: 'Just added',
+          lightLevel: _environment.light,
+          homeClimate: _environment.climate,
+          pottingSize: _environment.potting,
+          experienceLevel: _environment.experience,
         ),
       );
       await care.replaceCarePlan(
@@ -179,6 +200,90 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
             ),
           ),
           const SizedBox(height: BloomSpacing.x5),
+          Text('Your conditions', style: theme.textTheme.titleMedium),
+          const SizedBox(height: BloomSpacing.x1),
+          Text(
+            'Suggested for typical indoor conditions — edit to match your home.',
+            style: theme.textTheme.bodySmall,
+          ),
+          const SizedBox(height: BloomSpacing.x3),
+          _EnvironmentSection(
+            title: 'Light',
+            child: Wrap(
+              spacing: BloomSpacing.x2,
+              runSpacing: BloomSpacing.x2,
+              children: [
+                for (final value in LightLevel.values)
+                  ChoiceChip(
+                    label: Text(lightLevelLabel(value)),
+                    selected: _environment.light == value,
+                    onSelected: (_) =>
+                        _setEnvironment(_environment.copyWith(light: value)),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: BloomSpacing.x3),
+          _EnvironmentSection(
+            title: 'Home climate',
+            child: Wrap(
+              spacing: BloomSpacing.x2,
+              runSpacing: BloomSpacing.x2,
+              children: [
+                for (final value in HomeClimate.values)
+                  ChoiceChip(
+                    label: Text(homeClimateLabel(value)),
+                    selected: _environment.climate == value,
+                    onSelected: (_) =>
+                        _setEnvironment(_environment.copyWith(climate: value)),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: BloomSpacing.x3),
+          _EnvironmentSection(
+            title: 'Pot size',
+            child: Wrap(
+              spacing: BloomSpacing.x2,
+              runSpacing: BloomSpacing.x2,
+              children: [
+                for (final value in PottingSize.values)
+                  ChoiceChip(
+                    label: Text(pottingSizeLabel(value)),
+                    selected: _environment.potting == value,
+                    onSelected: (_) =>
+                        _setEnvironment(_environment.copyWith(potting: value)),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: BloomSpacing.x3),
+          _EnvironmentSection(
+            title: 'Experience',
+            child: Wrap(
+              spacing: BloomSpacing.x2,
+              runSpacing: BloomSpacing.x2,
+              children: [
+                for (final value in ExperienceLevel.values)
+                  ChoiceChip(
+                    label: Text(experienceLevelLabel(value)),
+                    selected: _environment.experience == value,
+                    onSelected: (_) => _setEnvironment(
+                      _environment.copyWith(experience: value),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (_environment.experience == ExperienceLevel.novice) ...[
+            const SizedBox(height: BloomSpacing.x3),
+            Text(
+              'When unsure, wait and check the soil rather than watering on a '
+              'fixed day. Bloom does not diagnose pests or disease.',
+              style: theme.textTheme.bodySmall,
+            ),
+          ],
+          const SizedBox(height: BloomSpacing.x5),
           Text('Suggested care plan', style: theme.textTheme.titleMedium),
           const SizedBox(height: BloomSpacing.x1),
           Text(
@@ -243,6 +348,25 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
       CareActionKind.check => domain.CareActionKind.check,
       CareActionKind.light => domain.CareActionKind.light,
     };
+  }
+}
+
+class _EnvironmentSection extends StatelessWidget {
+  const _EnvironmentSection({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: BloomSpacing.x2),
+        child,
+      ],
+    );
   }
 }
 

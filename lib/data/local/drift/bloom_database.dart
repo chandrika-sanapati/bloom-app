@@ -31,7 +31,7 @@ class BloomDatabase extends _$BloomDatabase {
   BloomDatabase.defaults() : super(_openDefaults());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -46,6 +46,12 @@ class BloomDatabase extends _$BloomDatabase {
         if (from < 3) {
           await m.addColumn(plantSpeciesRows, plantSpeciesRows.overview);
           await m.addColumn(plantSpeciesRows, plantSpeciesRows.accentArgb);
+        }
+        if (from < 4) {
+          await m.addColumn(userPlantRows, userPlantRows.lightLevel);
+          await m.addColumn(userPlantRows, userPlantRows.homeClimate);
+          await m.addColumn(userPlantRows, userPlantRows.pottingSize);
+          await m.addColumn(userPlantRows, userPlantRows.experienceLevel);
         }
       },
     );

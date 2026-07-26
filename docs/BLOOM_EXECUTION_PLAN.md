@@ -510,7 +510,7 @@ lib/
 
 ## 6.2 Care-plan creation
 
-- [ ] Capture the minimum environment answers.
+- [x] Capture the minimum environment answers.
 - [x] Generate a suggested plan from catalog rules.
 - [x] Let users review and edit every schedule.
 - [ ] Mark whether each rule is default or user-modified.

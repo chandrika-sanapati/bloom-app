@@ -104,6 +104,10 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
         displayName: next,
         statusLabel: record.plant.statusLabel,
         notes: record.plant.notes,
+        lightLevel: record.plant.lightLevel,
+        homeClimate: record.plant.homeClimate,
+        pottingSize: record.plant.pottingSize,
+        experienceLevel: record.plant.experienceLevel,
       ),
     );
     services.notifyDataChanged();

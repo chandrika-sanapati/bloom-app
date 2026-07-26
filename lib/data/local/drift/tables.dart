@@ -21,6 +21,10 @@ class UserPlantRows extends Table {
   TextColumn get displayName => text()();
   TextColumn get statusLabel => text()();
   TextColumn get notes => text().nullable()();
+  TextColumn get lightLevel => text().nullable()();
+  TextColumn get homeClimate => text().nullable()();
+  TextColumn get pottingSize => text().nullable()();
+  TextColumn get experienceLevel => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

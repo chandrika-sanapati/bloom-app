@@ -1,5 +1,7 @@
 // Local-first domain entities. No persistence-package imports.
 
+import 'package:bloom/data/domain/plant_environment.dart';
+
 enum PlantDifficulty { easy, moderate }
 
 enum CareUrgency { overdue, dueToday, upcoming, done }
@@ -31,6 +33,10 @@ class UserPlant {
     required this.displayName,
     required this.statusLabel,
     this.notes,
+    this.lightLevel,
+    this.homeClimate,
+    this.pottingSize,
+    this.experienceLevel,
   });
 
   final String id;
@@ -38,6 +44,17 @@ class UserPlant {
   final String displayName;
   final String statusLabel;
   final String? notes;
+  final LightLevel? lightLevel;
+  final HomeClimate? homeClimate;
+  final PottingSize? pottingSize;
+  final ExperienceLevel? experienceLevel;
+
+  PlantEnvironmentAnswers get environment => PlantEnvironmentAnswers(
+    light: lightLevel ?? LightLevel.medium,
+    climate: homeClimate ?? HomeClimate.average,
+    potting: pottingSize ?? PottingSize.medium,
+    experience: experienceLevel ?? ExperienceLevel.someExperience,
+  );
 }
 
 class CarePlanItem {

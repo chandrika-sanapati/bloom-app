@@ -1,4 +1,5 @@
 import 'package:bloom/data/domain/entities.dart';
+import 'package:bloom/data/domain/plant_environment.dart';
 import 'package:bloom/data/local/drift/bloom_database.dart';
 
 PlantDifficulty difficultyFromDb(int value) => PlantDifficulty.values[value];
@@ -31,6 +32,12 @@ UserPlant mapUserPlant(UserPlantRow row) {
     displayName: row.displayName,
     statusLabel: row.statusLabel,
     notes: row.notes,
+    lightLevel: PlantEnvironmentAnswers.lightFromWire(row.lightLevel),
+    homeClimate: PlantEnvironmentAnswers.climateFromWire(row.homeClimate),
+    pottingSize: PlantEnvironmentAnswers.pottingFromWire(row.pottingSize),
+    experienceLevel: PlantEnvironmentAnswers.experienceFromWire(
+      row.experienceLevel,
+    ),
   );
 }
 

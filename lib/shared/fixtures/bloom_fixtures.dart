@@ -1,4 +1,6 @@
 import 'package:bloom/app/theme/bloom_colors.dart';
+import 'package:bloom/data/domain/plant_environment.dart';
+import 'package:bloom/shared/care/care_plan_adjuster.dart';
 import 'package:bloom/shared/fixtures/bloom_catalog.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:flutter/material.dart';
@@ -91,9 +93,13 @@ abstract final class BloomFixtures {
   static List<FixtureCatalogEntry> get catalog => BloomCatalog.entries;
 
   static List<FixtureCarePlanItem> suggestedCarePlan(
-    FixtureCatalogEntry entry,
-  ) {
-    return BloomCatalog.suggestedCarePlan(entry);
+    FixtureCatalogEntry entry, {
+    PlantEnvironmentAnswers environment = PlantEnvironmentAnswers.defaults,
+  }) {
+    return CarePlanAdjuster.adjust(
+      base: BloomCatalog.suggestedCarePlan(entry),
+      environment: environment,
+    );
   }
 
   static List<FixtureCarePlanItem> carePlanForPlant(String plantId) {
