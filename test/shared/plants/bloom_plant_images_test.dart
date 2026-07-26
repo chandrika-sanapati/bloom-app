@@ -21,6 +21,11 @@ void main() {
       BloomPlantImages.assetFor('Rubber Plant'),
       'assets/plants/rubber.jpg',
     );
+    expect(BloomPlantImages.assetFor('catalog-zz'), 'assets/plants/zz.jpg');
+    expect(
+      BloomPlantImages.assetFor('Money Plant'),
+      'assets/plants/pothos.jpg',
+    );
   });
 
   test('returns null for unknown keys', () {

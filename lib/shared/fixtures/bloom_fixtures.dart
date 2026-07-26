@@ -1,4 +1,5 @@
 import 'package:bloom/app/theme/bloom_colors.dart';
+import 'package:bloom/shared/fixtures/bloom_catalog.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:flutter/material.dart';
 
@@ -87,187 +88,19 @@ abstract final class BloomFixtures {
     ),
   ];
 
-  static const catalog = <FixtureCatalogEntry>[
-    FixtureCatalogEntry(
-      id: 'catalog-snake',
-      commonName: 'Snake Plant',
-      scientificName: 'Dracaena trifasciata',
-      difficulty: PlantDifficulty.easy,
-      accent: Color(0xFF6B8F71),
-      overview:
-          'A hardy houseplant with stiff, upright leaves. Let the soil dry '
-          'between drinks.',
-    ),
-    FixtureCatalogEntry(
-      id: 'catalog-pothos',
-      commonName: 'Pothos',
-      scientificName: 'Epipremnum aureum',
-      difficulty: PlantDifficulty.easy,
-      accent: Color(0xFF7BA17D),
-      overview:
-          'A trailing vine that tolerates lower light. Water when the top of '
-          'the soil feels dry.',
-    ),
-    FixtureCatalogEntry(
-      id: 'catalog-aloe',
-      commonName: 'Aloe Vera',
-      scientificName: 'Aloe barbadensis',
-      difficulty: PlantDifficulty.easy,
-      accent: Color(0xFF9BB89A),
-      overview:
-          'A succulent that stores water in thick leaves. Prefer bright light '
-          'and infrequent watering.',
-    ),
-    FixtureCatalogEntry(
-      id: 'catalog-monstera',
-      commonName: 'Monstera',
-      scientificName: 'Monstera deliciosa',
-      difficulty: PlantDifficulty.moderate,
-      accent: Color(0xFF4F7F57),
-      overview:
-          'Famous for split leaves. Likes bright indirect light and watering '
-          'when the top of the soil has dried out.',
-    ),
-    FixtureCatalogEntry(
-      id: 'catalog-rubber',
-      commonName: 'Rubber Plant',
-      scientificName: 'Ficus elastica',
-      difficulty: PlantDifficulty.moderate,
-      accent: Color(0xFF5C7A6A),
-      overview:
-          'A bold indoor tree with thick, shiny leaves. Prefers bright '
-          'indirect light and moderate watering.',
-    ),
-    FixtureCatalogEntry(
-      id: 'catalog-lily',
-      commonName: 'Peace Lily',
-      scientificName: 'Spathiphyllum',
-      difficulty: PlantDifficulty.easy,
-      accent: Color(0xFF8FAE8B),
-      overview:
-          'Known for glossy leaves and white blooms. Enjoys evenly moist soil '
-          'and medium light.',
-    ),
-  ];
-
-  static const carePlans = <String, List<FixtureCarePlanItem>>{
-    'plant-snake': [
-      FixtureCarePlanItem(
-        kind: CareActionKind.water,
-        title: 'Water',
-        cadenceLabel: 'When soil is fully dry — often every 2–3 weeks',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.light,
-        title: 'Light',
-        cadenceLabel: 'Low to bright indirect light',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.fertilise,
-        title: 'Fertilise',
-        cadenceLabel: 'Light feed in spring and summer (suggested)',
-      ),
-    ],
-    'plant-lily': [
-      FixtureCarePlanItem(
-        kind: CareActionKind.water,
-        title: 'Water',
-        cadenceLabel: 'Keep soil lightly moist; water when leaves droop',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.light,
-        title: 'Light',
-        cadenceLabel: 'Medium, indirect light',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.prune,
-        title: 'Prune',
-        cadenceLabel: 'Remove spent blooms and yellow leaves as needed',
-      ),
-    ],
-    'plant-rubber': [
-      FixtureCarePlanItem(
-        kind: CareActionKind.water,
-        title: 'Water',
-        cadenceLabel: 'When the top soil feels dry',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.light,
-        title: 'Light',
-        cadenceLabel: 'Bright indirect light',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.fertilise,
-        title: 'Fertilise',
-        cadenceLabel: 'Monthly in growing season (suggested)',
-      ),
-    ],
-    'plant-monstera': [
-      FixtureCarePlanItem(
-        kind: CareActionKind.water,
-        title: 'Water',
-        cadenceLabel: 'When the top of the soil has dried out',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.light,
-        title: 'Light',
-        cadenceLabel: 'Bright indirect light',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.check,
-        title: 'Support',
-        cadenceLabel: 'Provide a stake or moss pole as it climbs',
-      ),
-    ],
-    'catalog-pothos': [
-      FixtureCarePlanItem(
-        kind: CareActionKind.water,
-        title: 'Water',
-        cadenceLabel: 'When the top of the soil feels dry',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.light,
-        title: 'Light',
-        cadenceLabel: 'Low to bright indirect light',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.prune,
-        title: 'Prune',
-        cadenceLabel: 'Trim long vines to keep shape',
-      ),
-    ],
-    'catalog-aloe': [
-      FixtureCarePlanItem(
-        kind: CareActionKind.water,
-        title: 'Water',
-        cadenceLabel: 'Sparingly — only when soil is fully dry',
-      ),
-      FixtureCarePlanItem(
-        kind: CareActionKind.light,
-        title: 'Light',
-        cadenceLabel: 'Bright light; some direct sun is fine',
-      ),
-    ],
-  };
+  static List<FixtureCatalogEntry> get catalog => BloomCatalog.entries;
 
   static List<FixtureCarePlanItem> suggestedCarePlan(
     FixtureCatalogEntry entry,
   ) {
-    final plantKey = entry.id.replaceFirst('catalog-', 'plant-');
-    return carePlans[plantKey] ??
-        carePlans[entry.id] ??
-        const [
-          FixtureCarePlanItem(
-            kind: CareActionKind.water,
-            title: 'Water',
-            cadenceLabel: 'When the top of the soil feels dry',
-          ),
-          FixtureCarePlanItem(
-            kind: CareActionKind.light,
-            title: 'Light',
-            cadenceLabel: 'Bright indirect light',
-          ),
-        ];
+    return BloomCatalog.suggestedCarePlan(entry);
+  }
+
+  static List<FixtureCarePlanItem> carePlanForPlant(String plantId) {
+    final catalogKey = plantId.startsWith('plant-')
+        ? plantId.replaceFirst('plant-', 'catalog-')
+        : plantId;
+    return BloomCatalog.carePlans[catalogKey] ?? const [];
   }
 
   static final history = <FixtureCareHistoryEvent>[
@@ -340,10 +173,6 @@ abstract final class BloomFixtures {
 
   static List<FixtureCareTask> tasksForPlant(String plantId) {
     return tasks.where((task) => task.plantId == plantId).toList();
-  }
-
-  static List<FixtureCarePlanItem> carePlanForPlant(String plantId) {
-    return carePlans[plantId] ?? const [];
   }
 
   static List<FixtureCareHistoryEvent> historyForPlant(String plantId) {

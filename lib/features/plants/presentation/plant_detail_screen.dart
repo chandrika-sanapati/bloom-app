@@ -25,9 +25,11 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
   var _loading = true;
   var _started = false;
   FixturePlant? _plant;
+  domain.UserPlantRecord? _record;
   List<FixtureCareTask> _openTasks = const [];
   List<FixtureCareHistoryEvent> _history = const [];
   List<FixtureCarePlanItem> _carePlan = const [];
+  List<domain.CarePlanItem> _domainPlan = const [];
 
   @override
   void didChangeDependencies() {
@@ -46,6 +48,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
       if (mounted) {
         setState(() {
           _plant = null;
+          _record = null;
           _loading = false;
         });
       }
@@ -62,6 +65,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     }
 
     setState(() {
+      _record = record;
       _plant = toFixturePlant(record);
       _openTasks = [
         for (final task in tasks.where((t) => !t.isDone))
@@ -72,9 +76,157 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
           ),
       ];
       _history = events.map(toFixtureHistoryEvent).toList();
+      _domainPlan = plan;
       _carePlan = plan.map(toFixturePlanItem).toList();
       _loading = false;
     });
+  }
+
+  Future<void> _editNickname() async {
+    final record = _record;
+    if (record == null) {
+      return;
+    }
+    final next = await showDialog<String>(
+      context: context,
+      builder: (context) =>
+          _NicknameDialog(initialValue: record.plant.displayName),
+    );
+    if (next == null || next.isEmpty || !mounted) {
+      return;
+    }
+
+    final services = BloomScope.of(context).services;
+    await services.care.upsertUserPlant(
+      domain.UserPlant(
+        id: record.plant.id,
+        speciesId: record.plant.speciesId,
+        displayName: next,
+        statusLabel: record.plant.statusLabel,
+        notes: record.plant.notes,
+      ),
+    );
+    services.notifyDataChanged();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Nickname updated.')));
+    await _reload();
+  }
+
+  Future<void> _editCarePlan() async {
+    if (_domainPlan.isEmpty) {
+      return;
+    }
+    final rows = [
+      for (final item in _domainPlan)
+        (
+          item: item,
+          controller: TextEditingController(text: item.cadenceLabel),
+        ),
+    ];
+
+    final saved = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Edit care plan')),
+            body: ListView(
+              padding: const EdgeInsets.all(BloomSpacing.screenMargin),
+              children: [
+                Text(
+                  'Suggested for typical indoor conditions — edit to match '
+                  'your home. No exact volumes.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: BloomSpacing.x4),
+                Card(
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < rows.length; i++) ...[
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: BloomFixtures.careActionColor(
+                              toFixtureActionKind(rows[i].item.kind),
+                            ).withValues(alpha: 0.15),
+                            child: Icon(
+                              BloomFixtures.careActionIcon(
+                                toFixtureActionKind(rows[i].item.kind),
+                              ),
+                              color: BloomFixtures.careActionColor(
+                                toFixtureActionKind(rows[i].item.kind),
+                              ),
+                            ),
+                          ),
+                          title: Text(rows[i].item.title),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(
+                              top: BloomSpacing.x2,
+                            ),
+                            child: TextField(
+                              controller: rows[i].controller,
+                              decoration: const InputDecoration(
+                                isDense: true,
+                                border: OutlineInputBorder(),
+                                labelText: 'Cadence',
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (i != rows.length - 1) const Divider(height: 1),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: BloomSpacing.x6),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Save care plan'),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    final cadences = [for (final row in rows) row.controller.text.trim()];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (final row in rows) {
+        row.controller.dispose();
+      }
+    });
+    if (saved != true || !mounted) {
+      return;
+    }
+
+    final services = BloomScope.of(context).services;
+    await services.care.replaceCarePlan(
+      userPlantId: widget.plantId,
+      items: [
+        for (var i = 0; i < _domainPlan.length; i++)
+          domain.CarePlanItem(
+            id: _domainPlan[i].id,
+            userPlantId: widget.plantId,
+            kind: _domainPlan[i].kind,
+            title: _domainPlan[i].title,
+            cadenceLabel: cadences[i].isEmpty
+                ? _domainPlan[i].cadenceLabel
+                : cadences[i],
+            sortOrder: i,
+          ),
+      ],
+    );
+    services.notifyDataChanged();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Care plan updated.')));
+    await _reload();
   }
 
   Future<void> _setTaskDone(FixtureCareTask task, bool isDone) async {
@@ -207,6 +359,11 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Edit nickname',
+            onPressed: _editNickname,
+            icon: const Icon(Icons.edit_outlined),
+          ),
           IconButton(
             tooltip: 'Remove plant',
             onPressed: _confirmDeletePlant,
@@ -349,13 +506,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Care plan editing UI comes next.'),
-                        ),
-                      );
-                    },
+                    onPressed: _editCarePlan,
                     child: const Text('Edit'),
                   ),
                 ],
@@ -393,6 +544,57 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _NicknameDialog extends StatefulWidget {
+  const _NicknameDialog({required this.initialValue});
+
+  final String initialValue;
+
+  @override
+  State<_NicknameDialog> createState() => _NicknameDialogState();
+}
+
+class _NicknameDialogState extends State<_NicknameDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Edit nickname'),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        textCapitalization: TextCapitalization.words,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Plant nickname',
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, _controller.text.trim()),
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }

@@ -501,20 +501,20 @@ lib/
 
 ## 6.1 Plant collection and search
 
-- [ ] Seed the approved plant catalog.
-- [ ] Implement common/scientific-name search.
-- [ ] Add a plant manually.
-- [ ] Add a nickname and photo.
-- [ ] Show empty and populated collection states.
-- [ ] Open plant details from the collection.
+- [x] Seed the approved plant catalog.
+- [x] Implement common/scientific-name search.
+- [x] Add a plant manually.
+- [x] Add a nickname (user plant photo still open).
+- [x] Show empty and populated collection states.
+- [x] Open plant details from the collection.
 
 ## 6.2 Care-plan creation
 
 - [ ] Capture the minimum environment answers.
-- [ ] Generate a suggested plan from catalog rules.
-- [ ] Let users review and edit every schedule.
+- [x] Generate a suggested plan from catalog rules.
+- [x] Let users review and edit every schedule.
 - [ ] Mark whether each rule is default or user-modified.
-- [ ] Confirm the plan before scheduling reminders.
+- [x] Confirm the plan before scheduling reminders.
 
 ## 6.3 Today and task actions
 

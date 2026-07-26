@@ -1,28 +1,10 @@
-/// Resolves bundled placeholder photos for the starter catalog species.
+import 'package:bloom/shared/fixtures/bloom_catalog.dart';
+
+/// Resolves bundled placeholder photos for catalog species.
 abstract final class BloomPlantImages {
   static const assetDirectory = 'assets/plants';
 
-  static const slugs = <String>{
-    'snake',
-    'pothos',
-    'aloe',
-    'monstera',
-    'rubber',
-    'lily',
-  };
-
-  static const _aliases = <String, String>{
-    'snake': 'snake',
-    'snake-plant': 'snake',
-    'pothos': 'pothos',
-    'aloe': 'aloe',
-    'aloe-vera': 'aloe',
-    'monstera': 'monstera',
-    'rubber': 'rubber',
-    'rubber-plant': 'rubber',
-    'lily': 'lily',
-    'peace-lily': 'lily',
-  };
+  static Set<String> get slugs => BloomCatalog.imageSlugs;
 
   /// Returns `assets/plants/{slug}.jpg` for known plant/catalog/species ids
   /// or common names; otherwise `null`.
@@ -58,17 +40,28 @@ abstract final class BloomPlantImages {
       }
     }
 
+    value = value.replaceAll(RegExp(r'[\s_]+'), '-');
+    // Normalize curly apostrophes from authored copy.
+    value = value.replaceAll('’', "'").replaceAll("'", '');
+
+    final aliases = BloomCatalog.imageAliases;
+    if (aliases.containsKey(value)) {
+      return aliases[value];
+    }
+    if (slugs.contains(value)) {
+      return value;
+    }
+
     // task ids look like snake-water — keep the species token.
     final dash = value.indexOf('-');
-    if (dash > 0 && !_aliases.containsKey(value) && !slugs.contains(value)) {
+    if (dash > 0) {
       final head = value.substring(0, dash);
-      if (slugs.contains(head) || _aliases.containsKey(head)) {
-        value = head;
+      if (aliases.containsKey(head) || slugs.contains(head)) {
+        return aliases[head] ?? head;
       }
     }
 
-    value = value.replaceAll(RegExp(r'[\s_]+'), '-');
-    final slug = _aliases[value] ?? (slugs.contains(value) ? value : null);
-    return slug;
+    // Multi-token common names already hyphenated above.
+    return aliases[value];
   }
 }
