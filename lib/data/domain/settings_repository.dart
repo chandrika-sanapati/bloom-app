@@ -8,6 +8,11 @@ abstract interface class SettingsRepository {
 
   Future<void> setRemindersEnabled(bool enabled);
 
+  /// True after the first-plan reminder prompt (accept or decline).
+  Future<bool> getHasPromptedCareReminders();
+
+  Future<void> setHasPromptedCareReminders(bool value);
+
   Future<bool> getHasSeededSampleData();
 
   Future<void> setHasSeededSampleData(bool value);

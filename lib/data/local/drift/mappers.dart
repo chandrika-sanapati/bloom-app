@@ -52,6 +52,8 @@ CarePlanItem mapCarePlanItem(CarePlanItemRow row) {
     sortOrder: row.sortOrder,
     suggestedCadenceLabel: row.suggestedCadenceLabel,
     isUserModified: row.isUserModified,
+    sourceUrl: row.sourceUrl,
+    careContentVersion: row.careContentVersion,
   );
 }
 

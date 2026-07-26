@@ -1,7 +1,7 @@
 # Bloom Technical Spike Sequence
 
-**Status:** Spike 1 adopted. Spike 2 wired (hardware reboot/OEM/TZ gates still open). Spike 3 (camera) **blocked** — Phase 2 deferred scanning until an ID provider is Adopted. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md), [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md), [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
-**Last reviewed:** 2026-07-25
+**Status:** Spike 1 adopted. Spike 2 wired (hardware reboot/OEM/TZ gates still open — runbook [`spikes/REMINDERS_HARDWARE_SMOKE.md`](./spikes/REMINDERS_HARDWARE_SMOKE.md)). Spike 3 (camera) **blocked** — Phase 2 deferred scanning until an ID provider is Adopted. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md), [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md), [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
+**Last reviewed:** 2026-07-26
 
 These spikes prove architecture-changing assumptions with disposable code. Each spike must record the selected approach, rejected alternatives, evidence, and unresolved risks before production implementation begins.
 

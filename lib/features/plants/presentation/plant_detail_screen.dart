@@ -305,6 +305,8 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
             cadenceLabel: cadence,
             suggestedCadenceLabel: suggested,
           ),
+          sourceUrl: previous.sourceUrl,
+          careContentVersion: previous.careContentVersion,
         ),
       );
     }
@@ -645,7 +647,17 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                           ),
                         ),
                         title: Text(_carePlan[i].title),
-                        subtitle: Text(_carePlan[i].cadenceLabel),
+                        subtitle: Text(
+                          [
+                            _carePlan[i].cadenceLabel,
+                            if (i < _domainPlan.length &&
+                                _domainPlan[i].careContentVersion != null)
+                              'Content ${_domainPlan[i].careContentVersion}',
+                          ].join('\n'),
+                        ),
+                        isThreeLine:
+                            i < _domainPlan.length &&
+                            _domainPlan[i].careContentVersion != null,
                         trailing: i < _domainPlan.length &&
                                 _domainPlan[i].isUserModified
                             ? Text(

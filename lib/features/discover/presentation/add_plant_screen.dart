@@ -2,6 +2,7 @@ import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/theme/bloom_colors.dart';
 import 'package:bloom/app/theme/bloom_radii.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
+import 'package:bloom/data/bloom_services.dart';
 import 'package:bloom/data/domain/entities.dart' as domain;
 import 'package:bloom/data/domain/plant_environment.dart';
 import 'package:bloom/shared/care/care_plan_merge.dart';
@@ -152,6 +153,8 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
               cadenceLabel: cadence,
               suggestedCadenceLabel: suggested,
             ),
+            sourceUrl: row.sourceUrl,
+            careContentVersion: row.careContentVersion,
           ),
         );
       }
@@ -182,12 +185,74 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
       if (!mounted) {
         return;
       }
+      await _maybePromptCareReminders(scope.services);
+      if (!mounted) {
+        return;
+      }
       Navigator.of(context).pop(nickname);
     } finally {
       if (mounted) {
         setState(() => _saving = false);
       }
     }
+  }
+
+  /// Asks once after the first confirmed care plan (Phase 8 permission-in-context).
+  Future<void> _maybePromptCareReminders(BloomServices services) async {
+    final settings = services.settings;
+    if (await settings.getHasPromptedCareReminders()) {
+      return;
+    }
+    if (await settings.getRemindersEnabled()) {
+      await settings.setHasPromptedCareReminders(true);
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+
+    final enable = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Get care reminders?'),
+          content: const Text(
+            'Bloom can schedule gentle, inexact care windows for open tasks. '
+            'You can change this anytime in Settings.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Not now'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Enable reminders'),
+            ),
+          ],
+        );
+      },
+    );
+
+    await settings.setHasPromptedCareReminders(true);
+    if (enable != true || !mounted) {
+      return;
+    }
+
+    final granted = await services.reminders.enableReminders();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          granted
+              ? 'Care reminders enabled for open tasks.'
+              : 'Reminders stay off until notification permission is granted '
+                    'in Settings.',
+        ),
+      ),
+    );
   }
 
   @override
@@ -441,6 +506,8 @@ class _EditablePlanRow {
     required this.title,
     required String cadence,
     required this.suggestedCadence,
+    this.sourceUrl,
+    this.careContentVersion,
   }) : cadenceController = TextEditingController(text: cadence);
 
   factory _EditablePlanRow.fromFixture(FixtureCarePlanItem item) {
@@ -449,12 +516,16 @@ class _EditablePlanRow {
       title: item.title,
       cadence: item.cadenceLabel,
       suggestedCadence: item.cadenceLabel,
+      sourceUrl: item.sourceUrl,
+      careContentVersion: item.careContentVersion,
     );
   }
 
   final CareActionKind kind;
   final String title;
   final String suggestedCadence;
+  final String? sourceUrl;
+  final String? careContentVersion;
   final TextEditingController cadenceController;
 
   void dispose() => cadenceController.dispose();

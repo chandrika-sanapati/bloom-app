@@ -20,6 +20,13 @@ class RecordingReminderScheduler implements ReminderScheduler {
   @override
   Future<bool> requestPermission() async => permissionGranted;
 
+  var prepareForReconcileCalls = 0;
+
+  @override
+  Future<void> prepareForReconcile() async {
+    prepareForReconcileCalls += 1;
+  }
+
   @override
   Future<void> scheduleCareReminder({
     required String taskId,

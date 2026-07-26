@@ -42,6 +42,8 @@ class CarePlanItemRows extends Table {
   TextColumn get suggestedCadenceLabel => text().nullable()();
   BoolColumn get isUserModified =>
       boolean().withDefault(const Constant(false))();
+  TextColumn get sourceUrl => text().nullable()();
+  TextColumn get careContentVersion => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

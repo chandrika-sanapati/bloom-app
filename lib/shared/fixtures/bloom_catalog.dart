@@ -1,10 +1,11 @@
+import 'package:bloom/shared/care/bloom_care_content.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:flutter/material.dart';
 
 /// Curated v1 Discover catalog (~40 houseplants). Bloom-authored plans;
 /// qualitative cadences only — no exact volumes or toxicity claims.
 abstract final class BloomCatalog {
-  static const careContentVersion = '2026.07';
+  static const careContentVersion = BloomCareContent.version;
 
   static const entries = <FixtureCatalogEntry>[
     FixtureCatalogEntry(
@@ -1045,7 +1046,8 @@ abstract final class BloomCatalog {
   static List<FixtureCarePlanItem> suggestedCarePlan(
     FixtureCatalogEntry entry,
   ) {
-    return carePlans[entry.id] ??
+    final raw =
+        carePlans[entry.id] ??
         const [
           FixtureCarePlanItem(
             kind: CareActionKind.water,
@@ -1058,6 +1060,19 @@ abstract final class BloomCatalog {
             cadenceLabel: 'Bright indirect light',
           ),
         ];
+    return [for (final item in raw) withProvenance(item)];
+  }
+
+  /// Stamps interim source + content version when a rule omits them.
+  static FixtureCarePlanItem withProvenance(FixtureCarePlanItem item) {
+    return FixtureCarePlanItem(
+      kind: item.kind,
+      title: item.title,
+      cadenceLabel: item.cadenceLabel,
+      sourceUrl: item.sourceUrl ?? BloomCareContent.interimSourceUrl,
+      careContentVersion:
+          item.careContentVersion ?? BloomCareContent.version,
+    );
   }
 
   static const imageSlugs = <String>{

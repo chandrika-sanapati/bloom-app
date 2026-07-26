@@ -32,13 +32,7 @@ class FlutterReminderScheduler implements ReminderScheduler {
     bool listenForActions = true,
   }) async {
     _onAction = onAction;
-    tz_data.initializeTimeZones();
-    try {
-      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
-    } on Object {
-      tz.setLocalLocation(tz.UTC);
-    }
+    await _refreshLocalTimezone();
 
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const initSettings = InitializationSettings(android: android);
@@ -82,6 +76,19 @@ class FlutterReminderScheduler implements ReminderScheduler {
         >();
     final granted = await androidPlugin?.requestNotificationsPermission();
     return granted ?? false;
+  }
+
+  @override
+  Future<void> prepareForReconcile() => _refreshLocalTimezone();
+
+  Future<void> _refreshLocalTimezone() async {
+    tz_data.initializeTimeZones();
+    try {
+      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
+    } on Object {
+      tz.setLocalLocation(tz.UTC);
+    }
   }
 
   @override

@@ -62,8 +62,10 @@ Run on API 36 emulator first, then API 26 and one physical device before accepti
 
 ### Still open hardware gates
 
+Run [`REMINDERS_HARDWARE_SMOKE.md`](./REMINDERS_HARDWARE_SMOKE.md) on emulator + one physical device:
+
 - OEM battery restrictions on a physical device.
-- Timezone change and DST transition acceptance.
+- Timezone change and DST transition acceptance (app refreshes `tz.local` on every reconcile/resume).
 - Missed/duplicate rate vs PRD threshold after device testing.
 
 ## Accept criteria status

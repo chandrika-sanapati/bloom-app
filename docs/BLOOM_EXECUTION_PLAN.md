@@ -251,7 +251,7 @@ Candidates to measure: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify) 
 - [x] Select a licensed and reviewable taxonomy source (**locked: GBIF** — see [`phase2/CARE_CONTENT_DECISION.md`](./phase2/CARE_CONTENT_DECISION.md)).
 - [x] Select or author a licensed care-content source (**locked: Bloom-authored plans with cited public sources**).
 - [x] Start with a curated catalog of approximately 30–50 common houseplants (40-species list shared with ID benchmark).
-- [ ] Give every care rule a source and content version (catalog authoring remaining).
+- [x] Give every care rule a source and content version (interim RHS houseplants URL + `2026.07`; species-level URLs remain for horticultural authoring).
 - [x] Define which environmental answers influence the schedule.
 - [x] Avoid unsupported exact quantities.
 - [x] Define cautious language for uncertainty and exceptions.
@@ -574,7 +574,7 @@ lib/
 
 ## 8.1 Permissions
 
-- [ ] Request `POST_NOTIFICATIONS` through a Flutter plugin only after the first plan is confirmed, with Android manifest/runtime configuration where required.
+- [x] Request `POST_NOTIFICATIONS` through a Flutter plugin only after the first plan is confirmed, with Android manifest/runtime configuration where required.
 - [ ] Request camera access through a Flutter plugin only at Scan, with Android manifest/runtime configuration where required.
 - [x] Use a Flutter picker plugin backed by Android Photo Picker instead of broad photo-library permission.
 - [ ] Explain the effect of denial without pressuring users.

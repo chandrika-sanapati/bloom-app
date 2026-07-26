@@ -30,6 +30,9 @@ abstract final class CarePlanMerge {
             sortOrder: i,
             suggestedCadenceLabel: suggested,
             isUserModified: true,
+            sourceUrl: suggestion.sourceUrl ?? previous.sourceUrl,
+            careContentVersion:
+                suggestion.careContentVersion ?? previous.careContentVersion,
           ),
         );
         continue;
@@ -45,6 +48,8 @@ abstract final class CarePlanMerge {
           sortOrder: i,
           suggestedCadenceLabel: suggested,
           isUserModified: false,
+          sourceUrl: suggestion.sourceUrl,
+          careContentVersion: suggestion.careContentVersion,
         ),
       );
     }
@@ -62,6 +67,8 @@ abstract final class CarePlanMerge {
             sortOrder: merged.length,
             suggestedCadenceLabel: leftover.suggestedCadenceLabel,
             isUserModified: true,
+            sourceUrl: leftover.sourceUrl,
+            careContentVersion: leftover.careContentVersion,
           ),
         );
       }

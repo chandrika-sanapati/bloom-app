@@ -85,6 +85,9 @@ void main() {
     );
     await tester.tap(find.widgetWithText(FilledButton, 'Add to My Plants'));
     await tester.pumpAndSettle();
+    expect(find.text('Get care reminders?'), findsOneWidget);
+    await tester.tap(find.text('Not now'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('My Plants').last);
     await tester.pumpAndSettle();
@@ -99,9 +102,19 @@ void main() {
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
     expect(find.text('Care reminders'), findsOneWidget);
+    expect(find.text('Battery restrictions'), findsOneWidget);
     expect(find.textContaining('Metric'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Delete all local data'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Delete all local data'), findsOneWidget);
-    expect(find.text('Bloom'), findsOneWidget);
-    expect(find.byType(Image), findsWidgets);
+    await tester.scrollUntilVisible(
+      find.text('About Bloom'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('About Bloom'), findsOneWidget);
   });
 }

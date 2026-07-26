@@ -8,6 +8,8 @@ class SharedPreferencesSettingsRepository implements SettingsRepository {
 
   static const _unitsKey = 'bloom.settings.units';
   static const _remindersKey = 'bloom.settings.reminders_enabled';
+  static const _remindersPromptedKey =
+      'bloom.settings.has_prompted_care_reminders';
   static const _seededKey = 'bloom.settings.has_seeded_sample_data';
 
   @override
@@ -30,6 +32,16 @@ class SharedPreferencesSettingsRepository implements SettingsRepository {
   }
 
   @override
+  Future<bool> getHasPromptedCareReminders() async {
+    return _prefs.getBool(_remindersPromptedKey) ?? false;
+  }
+
+  @override
+  Future<void> setHasPromptedCareReminders(bool value) async {
+    await _prefs.setBool(_remindersPromptedKey, value);
+  }
+
+  @override
   Future<bool> getHasSeededSampleData() async {
     return _prefs.getBool(_seededKey) ?? false;
   }
@@ -43,6 +55,7 @@ class SharedPreferencesSettingsRepository implements SettingsRepository {
   Future<void> clearAll() async {
     await _prefs.remove(_unitsKey);
     await _prefs.remove(_remindersKey);
+    await _prefs.remove(_remindersPromptedKey);
     await _prefs.remove(_seededKey);
   }
 }

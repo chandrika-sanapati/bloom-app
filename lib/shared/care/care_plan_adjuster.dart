@@ -15,6 +15,8 @@ abstract final class CarePlanAdjuster {
           kind: item.kind,
           title: item.title,
           cadenceLabel: _adjustCadence(item, environment),
+          sourceUrl: item.sourceUrl,
+          careContentVersion: item.careContentVersion,
         ),
     ];
   }

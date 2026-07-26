@@ -1,5 +1,7 @@
 import 'package:bloom/data/bloom_services.dart';
+import 'package:bloom/data/domain/entities.dart';
 import 'package:bloom/data/local/drift/bloom_database.dart';
+import 'package:bloom/data/reminders/care_reminder_service.dart';
 import 'package:bloom/data/reminders/recording_reminder_scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,9 +32,37 @@ void main() {
     await services.reminders.reconcile();
     final firstCount = scheduler.scheduled.length;
     expect(firstCount, greaterThan(0));
+    expect(scheduler.prepareForReconcileCalls, greaterThan(0));
 
+    final prepareCalls = scheduler.prepareForReconcileCalls;
     await services.reminders.reconcile();
     expect(scheduler.scheduled.length, firstCount);
+    expect(scheduler.prepareForReconcileCalls, greaterThan(prepareCalls));
+  });
+
+  test('urgency follows calendar day across late-evening offsets', () {
+    final now = DateTime(2026, 7, 26, 23, 30);
+    expect(
+      CareReminderService.urgencyForDueAt(
+        DateTime(2026, 7, 26, 8),
+        now: now,
+      ),
+      CareUrgency.dueToday,
+    );
+    expect(
+      CareReminderService.urgencyForDueAt(
+        DateTime(2026, 7, 25, 23, 0),
+        now: now,
+      ),
+      CareUrgency.overdue,
+    );
+    expect(
+      CareReminderService.urgencyForDueAt(
+        DateTime(2026, 7, 27, 1, 0),
+        now: now,
+      ),
+      CareUrgency.upcoming,
+    );
   });
 
   test('done action is idempotent and cancels reminder', () async {

@@ -7,6 +7,9 @@ abstract interface class ReminderScheduler {
 
   Future<bool> requestPermission();
 
+  /// Refresh local timezone / DST tables before rescheduling.
+  Future<void> prepareForReconcile();
+
   Future<void> scheduleCareReminder({
     required String taskId,
     required String title,

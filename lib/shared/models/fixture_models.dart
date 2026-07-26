@@ -71,6 +71,8 @@ class FixtureCarePlanItem {
     required this.kind,
     required this.title,
     required this.cadenceLabel,
+    this.sourceUrl,
+    this.careContentVersion,
   });
 
   final CareActionKind kind;
@@ -78,6 +80,12 @@ class FixtureCarePlanItem {
 
   /// Relative guidance only — no exact volumes.
   final String cadenceLabel;
+
+  /// Public reviewable source; null means use catalog interim default.
+  final String? sourceUrl;
+
+  /// Content version string (e.g. `2026.07`); null means catalog default.
+  final String? careContentVersion;
 }
 
 class FixtureCareHistoryEvent {

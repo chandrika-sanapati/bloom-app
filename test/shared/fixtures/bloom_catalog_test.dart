@@ -1,3 +1,4 @@
+import 'package:bloom/shared/care/bloom_care_content.dart';
 import 'package:bloom/shared/fixtures/bloom_catalog.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/plants/bloom_plant_images.dart';
@@ -12,6 +13,10 @@ void main() {
       final plan = BloomCatalog.suggestedCarePlan(entry);
       expect(plan, isNotEmpty, reason: entry.id);
       expect(plan.first.kind.name, anyOf('water', 'light'));
+      for (final item in plan) {
+        expect(item.sourceUrl, BloomCareContent.interimSourceUrl);
+        expect(item.careContentVersion, BloomCareContent.version);
+      }
       expect(
         BloomPlantImages.assetFor(entry.id),
         isNotNull,

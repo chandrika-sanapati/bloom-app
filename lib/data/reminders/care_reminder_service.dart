@@ -58,7 +58,11 @@ class CareReminderService {
   }
 
   /// Cancel all Bloom care reminders and reschedule from every open SQLite task.
+  ///
+  /// Refreshes the scheduler timezone first so reboot / TZ / DST changes do not
+  /// keep stale `tz.local` when projecting due times.
   Future<void> reconcile() async {
+    await _scheduler.prepareForReconcile();
     final enabled = await _settings.getRemindersEnabled();
     await _scheduler.cancelAll();
     if (!enabled) {

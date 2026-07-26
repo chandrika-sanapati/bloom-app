@@ -57,7 +57,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             content: Text(
               granted
                   ? 'Care reminders enabled for open tasks.'
-                  : 'Notification permission was not granted.',
+                  : 'Notification permission was not granted. You can enable '
+                        'it later in system settings for Bloom.',
             ),
           ),
         );
@@ -188,10 +189,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 secondary: const Icon(Icons.notifications_outlined),
                 title: const Text('Care reminders'),
                 subtitle: const Text(
-                  'Schedule inexact care windows from open tasks. Permission is requested here.',
+                  'Schedule inexact care windows from open tasks. '
+                  'Permission is requested when you turn this on, or after '
+                  'you add your first plant.',
                 ),
                 value: _remindersEnabled,
                 onChanged: interactive ? _onRemindersChanged : null,
+              ),
+              const ListTile(
+                leading: Icon(Icons.battery_saver_outlined),
+                title: Text('Battery restrictions'),
+                subtitle: Text(
+                  'Some phones pause background apps. If reminders are late, '
+                  'check system battery settings for Bloom.',
+                ),
               ),
             ],
           ),

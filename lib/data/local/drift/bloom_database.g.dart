@@ -1165,6 +1165,28 @@ class $CarePlanItemRowsTable extends CarePlanItemRows
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _sourceUrlMeta = const VerificationMeta(
+    'sourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> sourceUrl = GeneratedColumn<String>(
+    'source_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _careContentVersionMeta =
+      const VerificationMeta('careContentVersion');
+  @override
+  late final GeneratedColumn<String> careContentVersion =
+      GeneratedColumn<String>(
+        'care_content_version',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1175,6 +1197,8 @@ class $CarePlanItemRowsTable extends CarePlanItemRows
     sortOrder,
     suggestedCadenceLabel,
     isUserModified,
+    sourceUrl,
+    careContentVersion,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1257,6 +1281,21 @@ class $CarePlanItemRowsTable extends CarePlanItemRows
         ),
       );
     }
+    if (data.containsKey('source_url')) {
+      context.handle(
+        _sourceUrlMeta,
+        sourceUrl.isAcceptableOrUnknown(data['source_url']!, _sourceUrlMeta),
+      );
+    }
+    if (data.containsKey('care_content_version')) {
+      context.handle(
+        _careContentVersionMeta,
+        careContentVersion.isAcceptableOrUnknown(
+          data['care_content_version']!,
+          _careContentVersionMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1298,6 +1337,14 @@ class $CarePlanItemRowsTable extends CarePlanItemRows
         DriftSqlType.bool,
         data['${effectivePrefix}is_user_modified'],
       )!,
+      sourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_url'],
+      ),
+      careContentVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}care_content_version'],
+      ),
     );
   }
 
@@ -1316,6 +1363,8 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
   final int sortOrder;
   final String? suggestedCadenceLabel;
   final bool isUserModified;
+  final String? sourceUrl;
+  final String? careContentVersion;
   const CarePlanItemRow({
     required this.id,
     required this.userPlantId,
@@ -1325,6 +1374,8 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
     required this.sortOrder,
     this.suggestedCadenceLabel,
     required this.isUserModified,
+    this.sourceUrl,
+    this.careContentVersion,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1339,6 +1390,12 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
       map['suggested_cadence_label'] = Variable<String>(suggestedCadenceLabel);
     }
     map['is_user_modified'] = Variable<bool>(isUserModified);
+    if (!nullToAbsent || sourceUrl != null) {
+      map['source_url'] = Variable<String>(sourceUrl);
+    }
+    if (!nullToAbsent || careContentVersion != null) {
+      map['care_content_version'] = Variable<String>(careContentVersion);
+    }
     return map;
   }
 
@@ -1354,6 +1411,12 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
           ? const Value.absent()
           : Value(suggestedCadenceLabel),
       isUserModified: Value(isUserModified),
+      sourceUrl: sourceUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceUrl),
+      careContentVersion: careContentVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(careContentVersion),
     );
   }
 
@@ -1373,6 +1436,10 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
         json['suggestedCadenceLabel'],
       ),
       isUserModified: serializer.fromJson<bool>(json['isUserModified']),
+      sourceUrl: serializer.fromJson<String?>(json['sourceUrl']),
+      careContentVersion: serializer.fromJson<String?>(
+        json['careContentVersion'],
+      ),
     );
   }
   @override
@@ -1389,6 +1456,8 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
         suggestedCadenceLabel,
       ),
       'isUserModified': serializer.toJson<bool>(isUserModified),
+      'sourceUrl': serializer.toJson<String?>(sourceUrl),
+      'careContentVersion': serializer.toJson<String?>(careContentVersion),
     };
   }
 
@@ -1401,6 +1470,8 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
     int? sortOrder,
     Value<String?> suggestedCadenceLabel = const Value.absent(),
     bool? isUserModified,
+    Value<String?> sourceUrl = const Value.absent(),
+    Value<String?> careContentVersion = const Value.absent(),
   }) => CarePlanItemRow(
     id: id ?? this.id,
     userPlantId: userPlantId ?? this.userPlantId,
@@ -1412,6 +1483,10 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
         ? suggestedCadenceLabel.value
         : this.suggestedCadenceLabel,
     isUserModified: isUserModified ?? this.isUserModified,
+    sourceUrl: sourceUrl.present ? sourceUrl.value : this.sourceUrl,
+    careContentVersion: careContentVersion.present
+        ? careContentVersion.value
+        : this.careContentVersion,
   );
   CarePlanItemRow copyWithCompanion(CarePlanItemRowsCompanion data) {
     return CarePlanItemRow(
@@ -1431,6 +1506,10 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
       isUserModified: data.isUserModified.present
           ? data.isUserModified.value
           : this.isUserModified,
+      sourceUrl: data.sourceUrl.present ? data.sourceUrl.value : this.sourceUrl,
+      careContentVersion: data.careContentVersion.present
+          ? data.careContentVersion.value
+          : this.careContentVersion,
     );
   }
 
@@ -1444,7 +1523,9 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
           ..write('cadenceLabel: $cadenceLabel, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('suggestedCadenceLabel: $suggestedCadenceLabel, ')
-          ..write('isUserModified: $isUserModified')
+          ..write('isUserModified: $isUserModified, ')
+          ..write('sourceUrl: $sourceUrl, ')
+          ..write('careContentVersion: $careContentVersion')
           ..write(')'))
         .toString();
   }
@@ -1459,6 +1540,8 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
     sortOrder,
     suggestedCadenceLabel,
     isUserModified,
+    sourceUrl,
+    careContentVersion,
   );
   @override
   bool operator ==(Object other) =>
@@ -1471,7 +1554,9 @@ class CarePlanItemRow extends DataClass implements Insertable<CarePlanItemRow> {
           other.cadenceLabel == this.cadenceLabel &&
           other.sortOrder == this.sortOrder &&
           other.suggestedCadenceLabel == this.suggestedCadenceLabel &&
-          other.isUserModified == this.isUserModified);
+          other.isUserModified == this.isUserModified &&
+          other.sourceUrl == this.sourceUrl &&
+          other.careContentVersion == this.careContentVersion);
 }
 
 class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
@@ -1483,6 +1568,8 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
   final Value<int> sortOrder;
   final Value<String?> suggestedCadenceLabel;
   final Value<bool> isUserModified;
+  final Value<String?> sourceUrl;
+  final Value<String?> careContentVersion;
   final Value<int> rowid;
   const CarePlanItemRowsCompanion({
     this.id = const Value.absent(),
@@ -1493,6 +1580,8 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
     this.sortOrder = const Value.absent(),
     this.suggestedCadenceLabel = const Value.absent(),
     this.isUserModified = const Value.absent(),
+    this.sourceUrl = const Value.absent(),
+    this.careContentVersion = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CarePlanItemRowsCompanion.insert({
@@ -1504,6 +1593,8 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
     required int sortOrder,
     this.suggestedCadenceLabel = const Value.absent(),
     this.isUserModified = const Value.absent(),
+    this.sourceUrl = const Value.absent(),
+    this.careContentVersion = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        userPlantId = Value(userPlantId),
@@ -1520,6 +1611,8 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
     Expression<int>? sortOrder,
     Expression<String>? suggestedCadenceLabel,
     Expression<bool>? isUserModified,
+    Expression<String>? sourceUrl,
+    Expression<String>? careContentVersion,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1532,6 +1625,9 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
       if (suggestedCadenceLabel != null)
         'suggested_cadence_label': suggestedCadenceLabel,
       if (isUserModified != null) 'is_user_modified': isUserModified,
+      if (sourceUrl != null) 'source_url': sourceUrl,
+      if (careContentVersion != null)
+        'care_content_version': careContentVersion,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1545,6 +1641,8 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
     Value<int>? sortOrder,
     Value<String?>? suggestedCadenceLabel,
     Value<bool>? isUserModified,
+    Value<String?>? sourceUrl,
+    Value<String?>? careContentVersion,
     Value<int>? rowid,
   }) {
     return CarePlanItemRowsCompanion(
@@ -1557,6 +1655,8 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
       suggestedCadenceLabel:
           suggestedCadenceLabel ?? this.suggestedCadenceLabel,
       isUserModified: isUserModified ?? this.isUserModified,
+      sourceUrl: sourceUrl ?? this.sourceUrl,
+      careContentVersion: careContentVersion ?? this.careContentVersion,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1590,6 +1690,12 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
     if (isUserModified.present) {
       map['is_user_modified'] = Variable<bool>(isUserModified.value);
     }
+    if (sourceUrl.present) {
+      map['source_url'] = Variable<String>(sourceUrl.value);
+    }
+    if (careContentVersion.present) {
+      map['care_content_version'] = Variable<String>(careContentVersion.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1607,6 +1713,8 @@ class CarePlanItemRowsCompanion extends UpdateCompanion<CarePlanItemRow> {
           ..write('sortOrder: $sortOrder, ')
           ..write('suggestedCadenceLabel: $suggestedCadenceLabel, ')
           ..write('isUserModified: $isUserModified, ')
+          ..write('sourceUrl: $sourceUrl, ')
+          ..write('careContentVersion: $careContentVersion, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3501,6 +3609,8 @@ typedef $$CarePlanItemRowsTableCreateCompanionBuilder =
       required int sortOrder,
       Value<String?> suggestedCadenceLabel,
       Value<bool> isUserModified,
+      Value<String?> sourceUrl,
+      Value<String?> careContentVersion,
       Value<int> rowid,
     });
 typedef $$CarePlanItemRowsTableUpdateCompanionBuilder =
@@ -3513,6 +3623,8 @@ typedef $$CarePlanItemRowsTableUpdateCompanionBuilder =
       Value<int> sortOrder,
       Value<String?> suggestedCadenceLabel,
       Value<bool> isUserModified,
+      Value<String?> sourceUrl,
+      Value<String?> careContentVersion,
       Value<int> rowid,
     });
 
@@ -3592,6 +3704,16 @@ class $$CarePlanItemRowsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get sourceUrl => $composableBuilder(
+    column: $table.sourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get careContentVersion => $composableBuilder(
+    column: $table.careContentVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$UserPlantRowsTableFilterComposer get userPlantId {
     final $$UserPlantRowsTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -3660,6 +3782,16 @@ class $$CarePlanItemRowsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get sourceUrl => $composableBuilder(
+    column: $table.sourceUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get careContentVersion => $composableBuilder(
+    column: $table.careContentVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$UserPlantRowsTableOrderingComposer get userPlantId {
     final $$UserPlantRowsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -3717,6 +3849,14 @@ class $$CarePlanItemRowsTableAnnotationComposer
 
   GeneratedColumn<bool> get isUserModified => $composableBuilder(
     column: $table.isUserModified,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceUrl =>
+      $composableBuilder(column: $table.sourceUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get careContentVersion => $composableBuilder(
+    column: $table.careContentVersion,
     builder: (column) => column,
   );
 
@@ -3782,6 +3922,8 @@ class $$CarePlanItemRowsTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 Value<String?> suggestedCadenceLabel = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<String?> careContentVersion = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CarePlanItemRowsCompanion(
                 id: id,
@@ -3792,6 +3934,8 @@ class $$CarePlanItemRowsTableTableManager
                 sortOrder: sortOrder,
                 suggestedCadenceLabel: suggestedCadenceLabel,
                 isUserModified: isUserModified,
+                sourceUrl: sourceUrl,
+                careContentVersion: careContentVersion,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3804,6 +3948,8 @@ class $$CarePlanItemRowsTableTableManager
                 required int sortOrder,
                 Value<String?> suggestedCadenceLabel = const Value.absent(),
                 Value<bool> isUserModified = const Value.absent(),
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<String?> careContentVersion = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CarePlanItemRowsCompanion.insert(
                 id: id,
@@ -3814,6 +3960,8 @@ class $$CarePlanItemRowsTableTableManager
                 sortOrder: sortOrder,
                 suggestedCadenceLabel: suggestedCadenceLabel,
                 isUserModified: isUserModified,
+                sourceUrl: sourceUrl,
+                careContentVersion: careContentVersion,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -106,7 +106,8 @@ abstract final class BloomFixtures {
     final catalogKey = plantId.startsWith('plant-')
         ? plantId.replaceFirst('plant-', 'catalog-')
         : plantId;
-    return BloomCatalog.carePlans[catalogKey] ?? const [];
+    final raw = BloomCatalog.carePlans[catalogKey] ?? const [];
+    return [for (final item in raw) BloomCatalog.withProvenance(item)];
   }
 
   static final history = <FixtureCareHistoryEvent>[

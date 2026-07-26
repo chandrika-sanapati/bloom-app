@@ -71,6 +71,8 @@ class CarePlanItem {
     required this.sortOrder,
     this.suggestedCadenceLabel,
     this.isUserModified = false,
+    this.sourceUrl,
+    this.careContentVersion,
   });
 
   final String id;
@@ -84,6 +86,8 @@ class CarePlanItem {
   /// catalog-merged. Used to detect edits and protect user changes.
   final String? suggestedCadenceLabel;
   final bool isUserModified;
+  final String? sourceUrl;
+  final String? careContentVersion;
 }
 
 class CareTask {
