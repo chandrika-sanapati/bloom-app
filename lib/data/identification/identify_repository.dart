@@ -14,8 +14,10 @@ abstract class IdentifyRepository {
 
 /// Resolves the identify backend from compile-time dart-defines.
 ///
-/// Production: pass `--dart-define=BLOOM_IDENTIFY_PROXY_URL=https://…`
-/// so the API key never ships in the APK.
+/// Production / preferred: `--dart-define=BLOOM_IDENTIFY_PROXY_URL=https://…`
+/// (proxy origin only; app calls `{url}/v1/identify`). Keep the PlantNet key
+/// on the Worker. Optional `--dart-define=BLOOM_IDENTIFY_APP_TOKEN=…` when the
+/// proxy enforces a Bearer token.
 ///
 /// Closed-beta debug only: `--dart-define=BLOOM_PLANTNET_API_KEY=…`
 /// (do not use in store builds).
@@ -24,10 +26,14 @@ abstract class IdentifyRepository {
 IdentifyRepository resolveIdentifyRepository({
   String proxyUrl = const String.fromEnvironment('BLOOM_IDENTIFY_PROXY_URL'),
   String apiKey = const String.fromEnvironment('BLOOM_PLANTNET_API_KEY'),
+  String appToken = const String.fromEnvironment('BLOOM_IDENTIFY_APP_TOKEN'),
 }) {
   final trimmedProxy = proxyUrl.trim();
   if (trimmedProxy.isNotEmpty) {
-    return PlantNetIdentifyClient.proxy(baseUrl: trimmedProxy);
+    return PlantNetIdentifyClient.proxy(
+      baseUrl: trimmedProxy,
+      appToken: appToken.trim().isEmpty ? null : appToken.trim(),
+    );
   }
   final trimmedKey = apiKey.trim();
   if (trimmedKey.isNotEmpty) {

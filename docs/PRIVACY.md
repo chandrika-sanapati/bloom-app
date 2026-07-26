@@ -39,7 +39,7 @@ Denying a permission does not delete your plants. Manual search and local care t
 
 - **Android / Google Play services** — OS notification delivery and Photo Picker behavior follow the device platform.
 - **Bundled catalog imagery** — royalty-free / Creative Commons placeholders; see in-app **Attribution**.
-- **Pl@ntNet** — when you tap **Identify** on Scan, the photo is sent for species ranking. Production builds must use a Bloom-controlled proxy so the vendor API key stays off-device. Bloom does not keep raw identify uploads by default; ranked names/scores may be shown briefly in the app session. Without a configured proxy (or debug key), the app shows demo sample results and does not upload.
+- **Pl@ntNet** — when you tap **Identify** on Scan, the photo is sent for species ranking. Production builds must use the Bloom identify proxy ([`services/identify-proxy`](../services/identify-proxy)) so the vendor API key stays off-device. The proxy does not retain raw uploads (request-scoped forward only). Ranked names/scores may be shown briefly in the app session. Without a configured proxy (or debug key), the app shows demo sample results and does not upload.
 
 ## Retention and deletion
 

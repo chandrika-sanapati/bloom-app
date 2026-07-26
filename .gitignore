@@ -33,5 +33,9 @@ android/key.properties
 .env*
 !.env.example
 
+# Node services (identify proxy, etc.)
+**/node_modules/
+**/.wrangler/
+
 # Build symbols
 app.*.symbols

@@ -51,9 +51,11 @@ Accept when duplicate and missed-task rates remain below the PRD threshold acros
 
 **Unlocked** — provider **Pl@ntNet Adopted** ([`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md)). Discover → Scan uses `image_picker` (camera + gallery), client/parser under `lib/data/identification/`, and confirm → Add plant. Manual search remains on every failure path.
 
+Proxy scaffold: [`services/identify-proxy/`](../services/identify-proxy/) (`POST /v1/identify`, Worker secrets, rate limit). App calls `{BLOOM_IDENTIFY_PROXY_URL}/v1/identify`.
+
 Still open before store release:
 
-1. Deploy Bloom identify proxy (`BLOOM_IDENTIFY_PROXY_URL`); never ship `BLOOM_PLANTNET_API_KEY` in release APKs.
+1. Deploy the Worker (`wrangler secret put` + `npm run deploy`); set app `BLOOM_IDENTIFY_PROXY_URL` — never ship `BLOOM_PLANTNET_API_KEY` in release APKs.
 2. Hardware smoke: activity recreation during picker, permission denial, offline/timeout/429.
 3. Closed-beta quality smoke vs PRD top-1/top-3; fill [`phase2/benchmark_scores.csv`](./phase2/benchmark_scores.csv).
 4. Confirm upload copies strip EXIF/GPS (picker already uses `requestFullMetadata: false` + resize/quality).

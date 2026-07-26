@@ -1,0 +1,4 @@
+# Copy to `.dev.vars` for local `npm run dev` (gitignored).
+PLANTNET_API_KEY=
+# Optional: same value as Flutter --dart-define=BLOOM_IDENTIFY_APP_TOKEN
+BLOOM_APP_TOKEN=

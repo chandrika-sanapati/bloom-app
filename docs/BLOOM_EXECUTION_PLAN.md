@@ -540,14 +540,14 @@ lib/
 
 ## 7.1 Backend proxy
 
-- [ ] Create `POST /v1/identify`.
-- [ ] Authenticate or attest legitimate app requests as appropriate.
-- [ ] Add per-device/IP rate limiting and abuse controls.
-- [ ] Keep vendor credentials only on the server.
-- [ ] Delete uploaded images immediately after inference unless explicit retention consent exists.
-- [ ] Store minimal operational logs.
-- [ ] Map vendor taxonomy IDs to Bloom canonical species IDs.
-- [ ] Define provider outage and quota behavior.
+- [x] Create `POST /v1/identify` ([`services/identify-proxy/`](../services/identify-proxy/)).
+- [x] Authenticate or attest legitimate app requests as appropriate (optional `BLOOM_APP_TOKEN` Bearer).
+- [x] Add per-device/IP rate limiting and abuse controls (per-IP hourly cap in Worker).
+- [x] Keep vendor credentials only on the server (`wrangler secret` / `.dev.vars`).
+- [x] Delete uploaded images immediately after inference unless explicit retention consent exists (no durable write; request-scoped only).
+- [x] Store minimal operational logs (status + byte size; no image bytes/keys).
+- [x] Map vendor taxonomy IDs to Bloom canonical species IDs (app-side `catalog_match.dart`).
+- [x] Define provider outage and quota behavior (502 / 429 mapped to user-facing errors).
 
 ## 7.2 App integration
 

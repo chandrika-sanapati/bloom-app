@@ -16,20 +16,27 @@ class PlantNetIdentifyClient implements IdentifyRepository {
     required this.endpoint,
     required this._httpClient,
     this.apiKeyQueryParam,
+    this.appToken,
   });
 
   /// Calls a Bloom-controlled proxy that accepts multipart `images` and
   /// forwards to Pl@ntNet with the server-held key.
+  ///
+  /// [baseUrl] is the proxy origin (e.g. `https://bloom-identify…workers.dev`
+  /// or `http://10.0.2.2:8787` on the Android emulator). Requests go to
+  /// `{baseUrl}/v1/identify`.
   factory PlantNetIdentifyClient.proxy({
     required String baseUrl,
     http.Client? client,
+    String? appToken,
   }) {
-    final normalized = baseUrl.endsWith('/')
-        ? '${baseUrl}identify'
-        : '$baseUrl/identify';
+    final root = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
     return PlantNetIdentifyClient._(
-      endpoint: Uri.parse(normalized),
+      endpoint: Uri.parse('$root/v1/identify'),
       httpClient: client ?? http.Client(),
+      appToken: appToken,
     );
   }
 
@@ -48,6 +55,7 @@ class PlantNetIdentifyClient implements IdentifyRepository {
 
   final Uri endpoint;
   final String? apiKeyQueryParam;
+  final String? appToken;
   final http.Client _httpClient;
 
   @override
@@ -80,6 +88,10 @@ class PlantNetIdentifyClient implements IdentifyRepository {
           );
 
     final request = http.MultipartRequest('POST', uri);
+    final token = appToken?.trim();
+    if (token != null && token.isNotEmpty) {
+      request.headers['authorization'] = 'Bearer $token';
+    }
     final filename = p.basename(imagePath);
     request.files.add(
       await http.MultipartFile.fromPath(

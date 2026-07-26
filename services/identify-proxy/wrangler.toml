@@ -1,0 +1,12 @@
+name = "bloom-identify-proxy"
+main = "src/index.ts"
+compatibility_date = "2026-07-01"
+
+# Secrets (set via `wrangler secret put`, never commit):
+#   PLANTNET_API_KEY
+#   BLOOM_APP_TOKEN   (optional shared client token for closed beta)
+
+[vars]
+PLANTNET_PROJECT = "all"
+RATE_LIMIT_PER_HOUR = "60"
+MAX_UPLOAD_BYTES = "5242880"
