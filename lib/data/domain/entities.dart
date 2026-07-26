@@ -65,6 +65,8 @@ class CarePlanItem {
     required this.title,
     required this.cadenceLabel,
     required this.sortOrder,
+    this.suggestedCadenceLabel,
+    this.isUserModified = false,
   });
 
   final String id;
@@ -73,6 +75,11 @@ class CarePlanItem {
   final String title;
   final String cadenceLabel;
   final int sortOrder;
+
+  /// Catalog/environment suggestion captured when the item was created or last
+  /// catalog-merged. Used to detect edits and protect user changes.
+  final String? suggestedCadenceLabel;
+  final bool isUserModified;
 }
 
 class CareTask {

@@ -155,6 +155,8 @@ class DriftCareRepository implements CareRepository {
                 title: item.title,
                 cadenceLabel: item.cadenceLabel,
                 sortOrder: item.sortOrder,
+                suggestedCadenceLabel: Value(item.suggestedCadenceLabel),
+                isUserModified: Value(item.isUserModified),
               ),
             );
       }

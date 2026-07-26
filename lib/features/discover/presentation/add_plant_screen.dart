@@ -4,6 +4,7 @@ import 'package:bloom/app/theme/bloom_radii.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/data/domain/entities.dart' as domain;
 import 'package:bloom/data/domain/plant_environment.dart';
+import 'package:bloom/shared/care/care_plan_merge.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
@@ -98,22 +99,30 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
           experienceLevel: _environment.experience,
         ),
       );
-      await care.replaceCarePlan(
-        userPlantId: plantId,
-        items: [
-          for (var i = 0; i < _planRows.length; i++)
-            domain.CarePlanItem(
-              id: 'plan-$plantId-$i',
-              userPlantId: plantId,
-              kind: _actionKind(_planRows[i].kind),
-              title: _planRows[i].title,
-              cadenceLabel: _planRows[i].cadenceController.text.trim().isEmpty
-                  ? _planRows[i].title
-                  : _planRows[i].cadenceController.text.trim(),
-              sortOrder: i,
+      final planItems = <domain.CarePlanItem>[];
+      for (var i = 0; i < _planRows.length; i++) {
+        final row = _planRows[i];
+        final cadence = row.cadenceController.text.trim().isEmpty
+            ? row.title
+            : row.cadenceController.text.trim();
+        final suggested = row.suggestedCadence;
+        planItems.add(
+          domain.CarePlanItem(
+            id: 'plan-$plantId-$i',
+            userPlantId: plantId,
+            kind: _actionKind(row.kind),
+            title: row.title,
+            cadenceLabel: cadence,
+            sortOrder: i,
+            suggestedCadenceLabel: suggested,
+            isUserModified: CarePlanMerge.isModifiedRelativeToSuggestion(
+              cadenceLabel: cadence,
+              suggestedCadenceLabel: suggested,
             ),
-        ],
-      );
+          ),
+        );
+      }
+      await care.replaceCarePlan(userPlantId: plantId, items: planItems);
 
       _EditablePlanRow? waterRow;
       for (final row in _planRows) {
@@ -375,6 +384,7 @@ class _EditablePlanRow {
     required this.kind,
     required this.title,
     required String cadence,
+    required this.suggestedCadence,
   }) : cadenceController = TextEditingController(text: cadence);
 
   factory _EditablePlanRow.fromFixture(FixtureCarePlanItem item) {
@@ -382,11 +392,13 @@ class _EditablePlanRow {
       kind: item.kind,
       title: item.title,
       cadence: item.cadenceLabel,
+      suggestedCadence: item.cadenceLabel,
     );
   }
 
   final CareActionKind kind;
   final String title;
+  final String suggestedCadence;
   final TextEditingController cadenceController;
 
   void dispose() => cadenceController.dispose();

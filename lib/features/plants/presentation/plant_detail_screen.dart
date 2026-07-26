@@ -3,6 +3,7 @@ import 'package:bloom/app/theme/bloom_colors.dart';
 import 'package:bloom/app/theme/bloom_radii.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/data/domain/entities.dart' as domain;
+import 'package:bloom/shared/care/care_plan_merge.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/presentation/care_ui_mappers.dart';
@@ -207,21 +208,33 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     }
 
     final services = BloomScope.of(context).services;
+    final nextPlan = <domain.CarePlanItem>[];
+    for (var i = 0; i < _domainPlan.length; i++) {
+      final previous = _domainPlan[i];
+      final cadence = cadences[i].isEmpty
+          ? previous.cadenceLabel
+          : cadences[i];
+      final suggested =
+          previous.suggestedCadenceLabel ?? previous.cadenceLabel;
+      nextPlan.add(
+        domain.CarePlanItem(
+          id: previous.id,
+          userPlantId: widget.plantId,
+          kind: previous.kind,
+          title: previous.title,
+          cadenceLabel: cadence,
+          sortOrder: i,
+          suggestedCadenceLabel: suggested,
+          isUserModified: CarePlanMerge.isModifiedRelativeToSuggestion(
+            cadenceLabel: cadence,
+            suggestedCadenceLabel: suggested,
+          ),
+        ),
+      );
+    }
     await services.care.replaceCarePlan(
       userPlantId: widget.plantId,
-      items: [
-        for (var i = 0; i < _domainPlan.length; i++)
-          domain.CarePlanItem(
-            id: _domainPlan[i].id,
-            userPlantId: widget.plantId,
-            kind: _domainPlan[i].kind,
-            title: _domainPlan[i].title,
-            cadenceLabel: cadences[i].isEmpty
-                ? _domainPlan[i].cadenceLabel
-                : cadences[i],
-            sortOrder: i,
-          ),
-      ],
+      items: nextPlan,
     );
     services.notifyDataChanged();
     if (!mounted) {
@@ -538,6 +551,15 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                         ),
                         title: Text(_carePlan[i].title),
                         subtitle: Text(_carePlan[i].cadenceLabel),
+                        trailing: i < _domainPlan.length &&
+                                _domainPlan[i].isUserModified
+                            ? Text(
+                                'Edited',
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: BloomColors.labelTertiary,
+                                ),
+                              )
+                            : null,
                       ),
                       if (i != _carePlan.length - 1) const Divider(height: 1),
                     ],

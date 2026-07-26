@@ -58,6 +58,8 @@ class FixtureSeeder {
               title: planItems[i].title,
               cadenceLabel: planItems[i].cadenceLabel,
               sortOrder: i,
+              suggestedCadenceLabel: planItems[i].cadenceLabel,
+              isUserModified: false,
             ),
         ],
       );

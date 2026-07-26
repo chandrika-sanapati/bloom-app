@@ -38,6 +38,9 @@ class CarePlanItemRows extends Table {
   TextColumn get title => text()();
   TextColumn get cadenceLabel => text()();
   IntColumn get sortOrder => integer()();
+  TextColumn get suggestedCadenceLabel => text().nullable()();
+  BoolColumn get isUserModified =>
+      boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

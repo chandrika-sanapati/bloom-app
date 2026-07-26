@@ -67,6 +67,12 @@ void main() {
 
     await tester.tap(find.text('Pothos').hitTestable());
     await tester.pumpAndSettle();
+    expect(find.text('Your conditions'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Suggested care plan'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Suggested care plan'), findsOneWidget);
 
     await tester.enterText(find.byType(TextField).first, 'Office Pothos');

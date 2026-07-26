@@ -49,5 +49,6 @@ void main() {
     expect(plant?.displayName, 'Living Room Lily');
     final plan = await services.care.getCarePlan('plant-lily');
     expect(plan.first.cadenceLabel, 'Water when leaves droop');
+    expect(plan.first.isUserModified, isTrue);
   });
 }

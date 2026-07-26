@@ -49,6 +49,8 @@ CarePlanItem mapCarePlanItem(CarePlanItemRow row) {
     title: row.title,
     cadenceLabel: row.cadenceLabel,
     sortOrder: row.sortOrder,
+    suggestedCadenceLabel: row.suggestedCadenceLabel,
+    isUserModified: row.isUserModified,
   );
 }
 

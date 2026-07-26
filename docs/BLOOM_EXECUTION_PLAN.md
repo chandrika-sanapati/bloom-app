@@ -483,7 +483,7 @@ lib/
 
 - [ ] The SQLite-backed local data layer owns plants, plans, tasks, and events; repositories expose it to feature layers.
 - [ ] Notifications are projections of persisted tasks and are scheduled through a Flutter plugin with Android-native configuration where required.
-- [ ] User-edited schedules are never silently overwritten by catalog updates.
+- [x] User-edited schedules are never silently overwritten by catalog updates.
 - [ ] Every care action has a stable ID to prevent duplicates.
 - [ ] Catalog data has a version and migration strategy.
 - [ ] Raw identification photos are not retained by default.
@@ -513,7 +513,7 @@ lib/
 - [x] Capture the minimum environment answers.
 - [x] Generate a suggested plan from catalog rules.
 - [x] Let users review and edit every schedule.
-- [ ] Mark whether each rule is default or user-modified.
+- [x] Mark whether each rule is default or user-modified.
 - [x] Confirm the plan before scheduling reminders.
 
 ## 6.3 Today and task actions
