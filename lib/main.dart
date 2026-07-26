@@ -12,6 +12,9 @@ Future<void> main() async {
     await Supabase.initialize(
       url: AuthConfig.supabaseUrl.trim(),
       publishableKey: AuthConfig.supabaseAnonKey.trim(),
+      authOptions: const FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.pkce,
+      ),
     );
   }
   final services = await BloomServices.bootstrap();

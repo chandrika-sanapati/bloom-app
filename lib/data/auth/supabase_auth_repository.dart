@@ -64,17 +64,20 @@ class SupabaseAuthRepository implements AuthRepository {
       final response = await _client.auth.signUp(
         email: email.trim(),
         password: password,
+        emailRedirectTo: AuthConfig.emailRedirectTo,
       );
       final user = _mapUser(response.user);
       if (user == null) {
         throw const BloomAuthException(
-          'Check your email to confirm the account, then sign in.',
+          'Check your email to confirm the account, then open the link on '
+          'this phone.',
         );
       }
       // Email-confirm projects return a user with no session until confirmed.
       if (_client.auth.currentSession == null) {
         throw const BloomAuthException(
-          'Account created. Confirm your email, then sign in.',
+          'Account created. Open the confirmation email on this phone — '
+          'it should return you to Bloom.',
         );
       }
       return user;

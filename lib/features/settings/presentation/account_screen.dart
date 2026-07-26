@@ -132,7 +132,8 @@ class _AccountScreenState extends State<AccountScreen> {
             children: [
               Text(
                 'Optional — Bloom works fully offline without an account. '
-                'Sign-in is for identity only; plants stay on this device for now.',
+                'Sign-in is for identity only; plants stay on this device for now. '
+                'If email confirmation is on, open the link on this phone.',
                 style: theme.textTheme.bodySmall,
               ),
               const SizedBox(height: BloomSpacing.x5),

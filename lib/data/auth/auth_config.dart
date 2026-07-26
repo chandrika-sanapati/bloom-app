@@ -10,6 +10,9 @@ abstract final class AuthConfig {
     'BLOOM_GOOGLE_SERVER_CLIENT_ID',
   );
 
+  /// Must match Supabase Authentication → URL configuration (Site URL + Redirect URLs).
+  static const emailRedirectTo = 'io.supabase.bloom://login-callback/';
+
   static bool get isConfigured =>
       supabaseUrl.trim().isNotEmpty && supabaseAnonKey.trim().isNotEmpty;
 
