@@ -30,16 +30,18 @@ Denying a permission does not delete your plants. Manual search and local care t
 
 ## What Bloom does not do today
 
-- No mandatory account or cloud sync
+- No mandatory account (sign-in is optional)
+- No cloud sync of plants or care data (local storage remains the source of truth)
 - No advertising SDKs
 - No analytics or crash-reporting SDKs in the current build
 - No sale of personal data
 
 ## Third parties
 
-- **Android / Google Play services** — OS notification delivery and Photo Picker behavior follow the device platform.
+- **Android / Google Play services** — OS notification delivery and Photo Picker behavior follow the device platform. Google Sign-In may be used if you choose Continue with Google.
 - **Bundled catalog imagery** — royalty-free / Creative Commons placeholders; see in-app **Attribution**.
 - **Pl@ntNet** — when you tap **Identify** on Scan, the photo is sent for species ranking. Production builds must use the Bloom identify proxy so the vendor API key stays off-device. The proxy does not retain raw uploads (request-scoped forward only). Ranked names/scores may be shown briefly in the app session. Without a configured proxy (or debug key), the app shows demo sample results and does not upload.
+- **Supabase** — if you sign in, email/auth tokens are processed by Supabase Auth. Bloom does not upload your plant collection to Supabase in the current build.
 
 ## Retention and deletion
 

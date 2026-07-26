@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Mirror the fast GitHub CI checks so format/analyze failures never reach main.
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+if command -v fvm >/dev/null 2>&1 && [[ -f .fvmrc ]]; then
+  DART=(fvm dart)
+  FLUTTER=(fvm flutter)
+elif command -v flutter >/dev/null 2>&1; then
+  DART=(dart)
+  FLUTTER=(flutter)
+else
+  echo "pre-commit: flutter/dart not found (install FVM or Flutter)." >&2
+  exit 1
+fi
+
+echo "pre-commit: dart format (lib test)…"
+if ! "${DART[@]}" format --output=none --set-exit-if-changed lib test; then
+  echo >&2
+  echo "pre-commit: formatting differs from dart format." >&2
+  echo "Fix with:  ${DART[*]} format lib test && git add -u lib test" >&2
+  exit 1
+fi
+
+echo "pre-commit: flutter analyze…"
+"${FLUTTER[@]}" analyze --no-fatal-infos
+
+echo "pre-commit: ok"

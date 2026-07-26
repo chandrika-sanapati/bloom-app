@@ -2,6 +2,7 @@ import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/data/domain/measurement_units.dart';
 import 'package:bloom/features/settings/presentation/about_bloom_screen.dart';
+import 'package:bloom/features/settings/presentation/account_screen.dart';
 import 'package:bloom/shared/legal/bloom_legal.dart';
 import 'package:bloom/shared/legal/markdown_document_screen.dart';
 import 'package:bloom/shared/widgets/bloom_logo.dart';
@@ -185,6 +186,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: theme.textTheme.bodySmall,
           ),
           const SizedBox(height: BloomSpacing.x6),
+          _SettingsSection(
+            title: 'Account',
+            children: [
+              ListTile(
+                leading: const Icon(Icons.person_outline),
+                title: const Text('Sign in'),
+                subtitle: Text(
+                  BloomScope.of(context).services.auth.currentUser?.label ??
+                      'Optional — plants stay on this device',
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: interactive
+                    ? () async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const AccountScreen(),
+                          ),
+                        );
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      }
+                    : null,
+              ),
+            ],
+          ),
           _SettingsSection(
             title: 'Reminders',
             children: [

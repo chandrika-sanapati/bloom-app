@@ -30,7 +30,13 @@ brew install --cask android-studio android-commandlinetools
 fvm install
 fvm flutter pub get
 fvm flutter doctor -v
+./tool/install-git-hooks.sh
 ```
+
+`install-git-hooks.sh` points this clone at [`.githooks/`](.githooks/) so every
+`git commit` runs the same fast checks as CI (`dart format` + `flutter analyze`)
+before the commit is created. Full `flutter test` / APK build stay in CI and the
+commands below.
 
 The Android toolchain must be healthy. Xcode and CocoaPods are not required for
 the Android-first phase.
@@ -71,9 +77,16 @@ After changing Drift tables under `lib/data/local/drift/`, regenerate code:
 fvm dart run build_runner build
 ```
 
+## Optional account (Supabase)
+
+See [docs/AUTH_SUPABASE.md](docs/AUTH_SUPABASE.md). Add `BLOOM_SUPABASE_*` (and Google
+Web client ID) to `.env`, then `./tool/run_dev.sh`. Sign-in is optional under
+Settings → Sign in.
+
 ## Product documents
 
 - [Execution plan](docs/BLOOM_EXECUTION_PLAN.md)
+- [Supabase auth setup](docs/AUTH_SUPABASE.md)
 - [Product requirements](docs/PRD.md)
 - [Design system](docs/DESIGN.md)
 - [Figma source and vision pack](docs/design/FIGMA_SOURCE.md)

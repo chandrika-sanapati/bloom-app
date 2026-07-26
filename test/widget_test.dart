@@ -101,8 +101,14 @@ void main() {
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
+    expect(find.text('Sign in'), findsOneWidget);
     expect(find.text('Care reminders'), findsOneWidget);
     expect(find.text('Battery restrictions'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Units'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.textContaining('Metric'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Delete all local data'),

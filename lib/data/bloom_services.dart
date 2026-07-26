@@ -1,3 +1,7 @@
+import 'package:bloom/data/auth/auth_config.dart';
+import 'package:bloom/data/auth/auth_repository.dart';
+import 'package:bloom/data/auth/disabled_auth_repository.dart';
+import 'package:bloom/data/auth/supabase_auth_repository.dart';
 import 'package:bloom/data/domain/care_repository.dart';
 import 'package:bloom/data/domain/settings_repository.dart';
 import 'package:bloom/data/identification/identify_repository.dart';
@@ -20,14 +24,17 @@ class BloomServices {
     required this.seeder,
     required this.reminders,
     IdentifyRepository? identify,
+    AuthRepository? auth,
     this.photos = const PlantPhotoStore(),
-  }) : identify = identify ?? resolveIdentifyRepository();
+  }) : identify = identify ?? resolveIdentifyRepository(),
+       auth = auth ?? resolveAuthRepository();
 
   final CareRepository care;
   final SettingsRepository settings;
   final FixtureSeeder seeder;
   final CareReminderService reminders;
   final IdentifyRepository identify;
+  final AuthRepository auth;
   final PlantPhotoStore photos;
 
   /// Bumped when collection/tasks change so shell tabs can refresh.
@@ -65,6 +72,7 @@ class BloomServices {
     SharedPreferences? preferences,
     ReminderScheduler? reminderScheduler,
     IdentifyRepository? identify,
+    AuthRepository? auth,
     bool seedSampleData = false,
   }) async {
     final db = database ?? BloomDatabase.defaults();
@@ -90,6 +98,7 @@ class BloomServices {
       seeder: seeder,
       reminders: reminders,
       identify: identify ?? resolveIdentifyRepository(),
+      auth: auth ?? resolveAuthRepository(),
     );
     // Reminder mutators already update schedules; only refresh listening UI.
     onMutated = () => services.dataRevision.value++;
@@ -108,6 +117,7 @@ class BloomServices {
     SharedPreferences? preferences,
     RecordingReminderScheduler? scheduler,
     IdentifyRepository? identify,
+    AuthRepository? auth,
     bool seedSampleData = true,
   }) {
     return bootstrap(
@@ -115,7 +125,15 @@ class BloomServices {
       preferences: preferences,
       reminderScheduler: scheduler ?? RecordingReminderScheduler(),
       identify: identify,
+      auth: auth ?? DisabledAuthRepository(),
       seedSampleData: seedSampleData,
     );
   }
+}
+
+AuthRepository resolveAuthRepository() {
+  if (!AuthConfig.isConfigured) {
+    return DisabledAuthRepository();
+  }
+  return SupabaseAuthRepository();
 }

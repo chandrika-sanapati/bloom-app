@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 if [[ ! -f .env ]]; then
-  echo "Missing .env — copy .env.example to .env and configure identify settings." >&2
+  echo "Missing .env — copy .env.example to .env and configure identify/auth." >&2
   exit 1
 fi
 
@@ -15,17 +15,22 @@ source .env
 set +a
 
 DEFINES=()
-if [[ -n "${BLOOM_IDENTIFY_PROXY_URL:-}" ]]; then
-  DEFINES+=(--dart-define="BLOOM_IDENTIFY_PROXY_URL=${BLOOM_IDENTIFY_PROXY_URL}")
-fi
-if [[ -n "${BLOOM_IDENTIFY_APP_TOKEN:-}" ]]; then
-  DEFINES+=(--dart-define="BLOOM_IDENTIFY_APP_TOKEN=${BLOOM_IDENTIFY_APP_TOKEN}")
-fi
-if [[ -n "${BLOOM_PLANTNET_API_KEY:-}" ]]; then
-  DEFINES+=(--dart-define="BLOOM_PLANTNET_API_KEY=${BLOOM_PLANTNET_API_KEY}")
-fi
+add_define() {
+  local name="$1"
+  local value="${!name:-}"
+  if [[ -n "$value" ]]; then
+    DEFINES+=(--dart-define="${name}=${value}")
+  fi
+}
 
-if [[ ${#DEFINES[@]} -eq 0 ]]; then
+add_define BLOOM_IDENTIFY_PROXY_URL
+add_define BLOOM_IDENTIFY_APP_TOKEN
+add_define BLOOM_PLANTNET_API_KEY
+add_define BLOOM_SUPABASE_URL
+add_define BLOOM_SUPABASE_ANON_KEY
+add_define BLOOM_GOOGLE_SERVER_CLIENT_ID
+
+if [[ -z "${BLOOM_IDENTIFY_PROXY_URL:-}" && -z "${BLOOM_PLANTNET_API_KEY:-}" ]]; then
   echo "Warning: no identify dart-defines set — Scan will use demo results." >&2
 fi
 
