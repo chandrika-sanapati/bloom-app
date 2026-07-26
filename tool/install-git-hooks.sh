@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 git config core.hooksPath .githooks
-chmod +x .githooks/pre-commit
+chmod +x .githooks/pre-commit .githooks/commit-msg
 echo "Git hooks installed (core.hooksPath=.githooks)."
-echo "Pre-commit will run: dart format check + flutter analyze."
+echo "Pre-commit: dart format check + flutter analyze."
+echo "Commit-msg: strip Cursor Co-authored-by / Made-with trailers."

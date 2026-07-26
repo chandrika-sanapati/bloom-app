@@ -1,0 +1,10 @@
+---
+description: Never add Cursor attribution trailers to commits or PRs
+alwaysApply: true
+---
+
+# No Cursor attribution in git
+
+Never add `Co-authored-by: Cursor`, `Made-with: Cursor`, or any Cursor/agent attribution trailer to commits, pull requests, or code comments.
+
+When committing, use only the subject/body you write. Do not pass `--trailer` for Cursor. If a trailer still appears, strip it before pushing (the repo `commit-msg` hook should remove it).
