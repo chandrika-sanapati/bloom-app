@@ -1,6 +1,9 @@
 import 'package:bloom/app/bloom_scope.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/data/domain/measurement_units.dart';
+import 'package:bloom/features/settings/presentation/about_bloom_screen.dart';
+import 'package:bloom/shared/legal/bloom_legal.dart';
+import 'package:bloom/shared/legal/markdown_document_screen.dart';
 import 'package:bloom/shared/widgets/bloom_logo.dart';
 import 'package:flutter/material.dart';
 
@@ -177,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Center(child: BloomLogo(size: 88, showWordmark: true)),
           const SizedBox(height: BloomSpacing.x2),
           Text(
-            'Placeholder brand mark',
+            'Local-first plant care',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall,
           ),
@@ -221,10 +224,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _SettingsSection(
             title: 'Trust',
             children: [
-              const ListTile(
-                leading: Icon(Icons.privacy_tip_outlined),
-                title: Text('Privacy'),
-                subtitle: Text('Local-first; policy copy comes later'),
+              ListTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: const Text('Privacy'),
+                subtitle: const Text(
+                  'What Bloom stores on this device and how to delete it',
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: interactive
+                    ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const MarkdownDocumentScreen(
+                              title: 'Privacy',
+                              assetPath: BloomLegal.privacyAssetPath,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
               ),
               ListTile(
                 leading: Icon(
@@ -236,14 +254,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   style: TextStyle(color: theme.colorScheme.error),
                 ),
                 subtitle: const Text(
-                  'Remove plants, history, tasks, and preferences',
+                  'Remove plants, history, tasks, photos, and preferences',
                 ),
                 onTap: interactive ? _confirmDeleteAll : null,
               ),
-              const ListTile(
-                leading: Icon(Icons.info_outline),
-                title: Text('About Bloom'),
-                subtitle: Text('Version 1.0.0+1'),
+              ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: const Text('About Bloom'),
+                subtitle: Text(
+                  'Version ${BloomLegal.versionLabel} · support & attribution',
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: interactive
+                    ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const AboutBloomScreen(),
+                          ),
+                        );
+                      }
+                    : null,
               ),
             ],
           ),

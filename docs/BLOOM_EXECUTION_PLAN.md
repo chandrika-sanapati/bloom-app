@@ -342,11 +342,11 @@ Candidates to measure: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify) 
 
 ### Settings and trust
 
-- [ ] Reminder preferences
+- [x] Reminder preferences
 - [ ] Permission status
-- [ ] Privacy policy
+- [x] Privacy policy
 - [x] Delete all local data
-- [ ] About, version, support, and attribution
+- [x] About, version, support, and attribution
 
 ## 3.4 Prototype validation
 
@@ -583,11 +583,11 @@ lib/
 
 ## 8.2 Privacy
 
-- [ ] Document every data type collected, transmitted, stored, and shared.
-- [ ] Include every third-party SDK and provider.
-- [ ] Publish a public privacy policy.
-- [ ] Link the privacy policy from inside the app.
-- [ ] Document retention and deletion.
+- [x] Document every data type collected, transmitted, stored, and shared.
+- [x] Include every third-party SDK and provider.
+- [ ] Publish a public privacy policy (in-app + [`PRIVACY.md`](./PRIVACY.md) ready; public URL still needed for Play).
+- [x] Link the privacy policy from inside the app.
+- [x] Document retention and deletion.
 - [x] Implement Delete all local data.
 - [ ] Strip EXIF/GPS before upload.
 - [ ] Confirm TLS and server-side secret handling.
@@ -820,6 +820,7 @@ Record decisions as they happen.
 
 | Date | Decision | Evidence/rationale | Owner | Revisit when |
 |---|---|---|---|---|
+| 2026-07-26 | Ship in-app privacy policy + provisional support email `chandrika.sanapati@gmail.com` | Local-first data inventory matches current binary; public store identity remains provisional; Play privacy URL still required before listing | Product owner | Final developer name/support email cleared, or a public privacy URL is published |
 | 2026-07-25 | Defer camera identification until the published Pl@ntNet vs plant.id benchmark is measured and Adopted | Kit and scoring helper are ready; no completed score corpus yet. V1 add-plant stays search-first; Spike 3 stays closed until Adopt | Product owner | Owner fills [`phase2/benchmark_scores.csv`](./phase2/benchmark_scores.csv) and records Adopt for a passing provider |
 | 2026-07-25 | Lock care stack: GBIF taxonomy + Bloom-authored schedules with cited sources; no toxicity; horticultural review required before closed beta | Matches v1 content rules; rejects quantitative/toxicity datasets that fight scope | Product owner | Catalog authoring or beta review proves a source change is required |
 | 2026-07-25 | Phase 2 ID benchmark measures Pl@ntNet and Kindwise plant.id against a 40-species houseplant corpus | Two maintained APIs with clear commercial paths; kit records quality, latency, cost, and retention terms before any camera spike | Engineering | Benchmark scores complete → flip Defer to Adopt or keep Defer with evidence |
