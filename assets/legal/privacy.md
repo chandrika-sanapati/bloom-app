@@ -23,8 +23,8 @@ Bloom is a **local-first** houseplant care app. Your plants, care plans, tasks, 
 ## Permissions
 
 - **Notifications** — requested when you enable care reminders (after adding a plant or in Settings). Used only to schedule inexact care windows for open tasks.
-- **Camera** — used only if you choose **Take photo** for a plant photo. Not used for plant identification in the current search-first build.
-- **Photo picker / gallery** — used only if you choose a gallery image for a plant photo. Bloom uses the system Photo Picker where available and does not request broad media-library access for that flow.
+- **Camera** — used if you choose **Take photo** for a plant photo or for **Scan a plant** identification.
+- **Photo picker / gallery** — used if you choose a gallery image for a plant photo or for identification. Bloom uses the system Photo Picker where available and does not request broad media-library access for that flow.
 
 Denying a permission does not delete your plants. Manual search and local care tracking remain available.
 
@@ -33,15 +33,13 @@ Denying a permission does not delete your plants. Manual search and local care t
 - No mandatory account or cloud sync
 - No advertising SDKs
 - No analytics or crash-reporting SDKs in the current build
-- No plant-identification upload (camera identification is deferred until a provider is Adopted)
 - No sale of personal data
 
 ## Third parties
 
 - **Android / Google Play services** — OS notification delivery and Photo Picker behavior follow the device platform.
 - **Bundled catalog imagery** — royalty-free / Creative Commons placeholders; see in-app **Attribution**.
-
-When identification is later enabled, images would be sent only through a Bloom-controlled backend proxy with vendor credentials kept off-device. That flow is **not** active in this build.
+- **Pl@ntNet** — when you tap **Identify** on Scan, the photo is sent for species ranking. Production builds must use a Bloom-controlled proxy so the vendor API key stays off-device. Bloom does not keep raw identify uploads by default; ranked names/scores may be shown briefly in the app session. Without a configured proxy (or debug key), the app shows demo sample results and does not upload.
 
 ## Retention and deletion
 

@@ -2,6 +2,7 @@ import 'package:bloom/app/theme/bloom_colors.dart';
 import 'package:bloom/app/theme/bloom_radii.dart';
 import 'package:bloom/app/theme/bloom_spacing.dart';
 import 'package:bloom/features/discover/presentation/add_plant_screen.dart';
+import 'package:bloom/features/discover/presentation/scan_plant_screen.dart';
 import 'package:bloom/shared/fixtures/bloom_fixtures.dart';
 import 'package:bloom/shared/models/fixture_models.dart';
 import 'package:bloom/shared/widgets/bloom_status_chip.dart';
@@ -40,6 +41,18 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   Future<void> _openAddPlant(FixtureCatalogEntry entry) async {
     final nickname = await Navigator.of(context).push<String>(
       MaterialPageRoute<String>(builder: (_) => AddPlantScreen(entry: entry)),
+    );
+    if (!mounted || nickname == null) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('$nickname added to My Plants.')));
+  }
+
+  Future<void> _openScan() async {
+    final nickname = await Navigator.of(context).push<String>(
+      MaterialPageRoute<String>(builder: (_) => const ScanPlantScreen()),
     );
     if (!mounted || nickname == null) {
       return;
@@ -89,18 +102,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               ),
               title: const Text('Scan a plant'),
               subtitle: const Text(
-                'Camera identification will land here after the technical spike.',
+                'Identify with a photo (Pl@ntNet). Search stays available.',
               ),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Scanning is not wired yet. Use search for now.',
-                    ),
-                  ),
-                );
-              },
+              onTap: _openScan,
             ),
           ),
           const SizedBox(height: BloomSpacing.x5),

@@ -1,6 +1,6 @@
 # Bloom Technical Spike Sequence
 
-**Status:** Spike 1 adopted. Spike 2 wired (hardware reboot/OEM/TZ gates still open — runbook [`spikes/REMINDERS_HARDWARE_SMOKE.md`](./spikes/REMINDERS_HARDWARE_SMOKE.md)). Spike 3 (camera) **blocked** — Phase 2 deferred scanning until an ID provider is Adopted. See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md), [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md), [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
+**Status:** Spike 1 adopted. Spike 2 wired (hardware reboot/OEM/TZ gates still open — runbook [`spikes/REMINDERS_HARDWARE_SMOKE.md`](./spikes/REMINDERS_HARDWARE_SMOKE.md)). Spike 3 (camera) **open** — provider **Pl@ntNet Adopted** ([`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md)). See [`spikes/PERSISTENCE_SPIKE.md`](./spikes/PERSISTENCE_SPIKE.md), [`spikes/REMINDERS_SPIKE.md`](./spikes/REMINDERS_SPIKE.md).
 **Last reviewed:** 2026-07-26
 
 These spikes prove architecture-changing assumptions with disposable code. Each spike must record the selected approach, rejected alternatives, evidence, and unresolved risks before production implementation begins.
@@ -49,21 +49,14 @@ Accept when duplicate and missed-task rates remain below the PRD threshold acros
 
 ## Spike 3 — Camera and identification
 
-**Do not begin** until [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md) records **Adopt** for a passing provider. Phase 2 currently **defers** scanning (search-first v1). When unlocked, it may proceed once shared persistence contracts remain stable.
+**Unlocked** — provider **Pl@ntNet Adopted** ([`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md)). Discover → Scan uses `image_picker` (camera + gallery), client/parser under `lib/data/identification/`, and confirm → Add plant. Manual search remains on every failure path.
 
-Evaluate the official Flutter `camera` and `image_picker` packages. Confirm that gallery import uses Android Photo Picker on supported versions. Evaluate a maintained compressor that writes a resized upload copy with EXIF retention disabled.
+Still open before store release:
 
-Prove:
-
-1. Capture a photo and import an existing image without broad media permission.
-2. Recover when Android destroys the activity during image selection.
-3. Correct orientation, resize, compress, and verify the upload copy contains no EXIF/GPS metadata.
-4. Send the processed image only to a backend proxy.
-5. Return ranked candidates with confidence data and stable taxonomy identifiers.
-6. Handle permission denial, offline state, timeout, rate limit, malformed response, and cancellation.
-7. Confirm raw photos are deleted unless the user explicitly chooses to retain one for their plant.
-
-Accept when the approved provider meets the PRD benchmark, no secret is present in the APK, and all failure states preserve manual search.
+1. Deploy Bloom identify proxy (`BLOOM_IDENTIFY_PROXY_URL`); never ship `BLOOM_PLANTNET_API_KEY` in release APKs.
+2. Hardware smoke: activity recreation during picker, permission denial, offline/timeout/429.
+3. Closed-beta quality smoke vs PRD top-1/top-3; fill [`phase2/benchmark_scores.csv`](./phase2/benchmark_scores.csv).
+4. Confirm upload copies strip EXIF/GPS (picker already uses `requestFullMetadata: false` + resize/quality).
 
 ## Decision order
 

@@ -1,6 +1,6 @@
 # Bloom Flutter App & Case Study — Execution Plan
 
-**Status:** Phase 2 camera-blocking gates closed (care locked; scanning deferred); app foundation continues search-first  
+**Status:** Phase 6 care loop closed; Pl@ntNet Adopted for camera ID; Spike 3/Phase 7 identification in progress  
 **Last updated:** 2026-07-25
 
 **Primary goal:** Publish a focused, trustworthy Bloom app on Google Play, then rebuild the portfolio case study around evidence from the working product.  
@@ -243,7 +243,7 @@ Measure each candidate provider (owner run; currently **deferred** without score
 - [ ] Image retention and training terms
 - [ ] Taxonomy identifiers and care-data compatibility
 
-Candidates to measure: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify) and [Kindwise plant.id](https://www.kindwise.com/plant-id). **2026-07-25 decision: defer scanning** until scores are filled and a provider is Adopted. Kit + rollup: [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md), `dart run docs/phase2/summarize_benchmark_scores.dart`.
+Candidates measured for cost/terms: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify) and [Kindwise plant.id](https://www.kindwise.com/plant-id). **2026-07-26 decision: Adopt Pl@ntNet** (cheaper free tier + Pro path; GBIF ids). Kit: [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
 
 ## 2.4 Care-content feasibility
 
@@ -260,7 +260,7 @@ Candidates to measure: [Pl@ntNet API](https://my.plantnet.org/doc/api/identify) 
 ### Exit gate
 
 - [ ] Core prototype tasks are understandable without coaching (recruitment tracker ready; sessions owner-owned).
-- [x] One identification approach passes the agreed benchmark or scanning is deferred (**deferred** — see [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md)).
+- [x] One identification approach passes the agreed benchmark or scanning is deferred (**Adopt Pl@ntNet** — cost/terms provisional; quality smoke during Spike 3 — see [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md)).
 - [x] Care-content ownership, sourcing, and limitations are documented (**locked**).
 
 ---
@@ -820,8 +820,9 @@ Record decisions as they happen.
 
 | Date | Decision | Evidence/rationale | Owner | Revisit when |
 |---|---|---|---|---|
+| 2026-07-26 | Adopt Pl@ntNet for camera identification (Kindwise plant.id fallback) | Free 500 IDs/day vs plant.id €0.05/credit after 100-trial; Pro ~€0.005/ID vs ~€0.015–0.05; GBIF ids align with care taxonomy; EU-hosted | Product owner | Closed-beta quality smoke fails PRD top-1/top-3 → evaluate Kindwise |
 | 2026-07-26 | Ship in-app privacy policy + provisional support email `chandrika.sanapati@gmail.com` | Local-first data inventory matches current binary; public store identity remains provisional; Play privacy URL still required before listing | Product owner | Final developer name/support email cleared, or a public privacy URL is published |
-| 2026-07-25 | Defer camera identification until the published Pl@ntNet vs plant.id benchmark is measured and Adopted | Kit and scoring helper are ready; no completed score corpus yet. V1 add-plant stays search-first; Spike 3 stays closed until Adopt | Product owner | Owner fills [`phase2/benchmark_scores.csv`](./phase2/benchmark_scores.csv) and records Adopt for a passing provider |
+| 2026-07-25 | Defer camera identification until the published Pl@ntNet vs plant.id benchmark is measured and Adopted | **Superseded 2026-07-26** by Pl@ntNet Adopt (cost/terms). Quality score corpus still recommended during Spike 3. | Product owner | — |
 | 2026-07-25 | Lock care stack: GBIF taxonomy + Bloom-authored schedules with cited sources; no toxicity; horticultural review required before closed beta | Matches v1 content rules; rejects quantitative/toxicity datasets that fight scope | Product owner | Catalog authoring or beta review proves a source change is required |
 | 2026-07-25 | Phase 2 ID benchmark measures Pl@ntNet and Kindwise plant.id against a 40-species houseplant corpus | Two maintained APIs with clear commercial paths; kit records quality, latency, cost, and retention terms before any camera spike | Engineering | Benchmark scores complete → flip Defer to Adopt or keep Defer with evidence |
 | 2026-07-25 | Ship English-only across Europe, the United States, and India | Owner wants one English product experience while covering the primary launch regions; non-English localization waits for closed-beta evidence of a blocking language barrier | Product owner | Closed-beta feedback shows language blocks activation or retention in a priority market |

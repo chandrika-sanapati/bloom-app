@@ -1,10 +1,10 @@
 # Bloom Phase 2 Validation Pack
 
-**Status:** Camera-blocking gates closed — care locked; scanning **deferred**; prototype sessions still owner-owned  
+**Status:** Care locked; Pl@ntNet **Adopted** for camera (Spike 3 open); prototype sessions still owner-owned  
 **Last reviewed:** 2026-07-25  
 **Market context:** English-only app; initial Play markets are Europe, the United States, and India
 
-Care ownership is locked and camera identification is explicitly deferred until a provider is Adopted from the benchmark kit. Spike 3 stays closed. Prototype recruitment/sessions continue in parallel and do not by themselves unlock the camera.
+Care ownership is locked. Pl@ntNet was Adopted for camera identification (2026-07-26); Spike 3 is open. Prototype recruitment/sessions continue in parallel.
 
 ### Working artifacts
 
@@ -172,7 +172,7 @@ Create a short care-content decision note that records the chosen sources, rejec
 ## Phase 2 exit gate
 
 - [ ] Core prototype tasks are understandable without coaching (tracker ready — [`phase2/RECRUITMENT_TRACKER.md`](./phase2/RECRUITMENT_TRACKER.md); sessions not yet run).
-- [x] One identification approach passes the agreed benchmark, or scanning is explicitly deferred (**deferred** 2026-07-25).
+- [x] One identification approach passes the agreed benchmark, or scanning is explicitly deferred (**Adopt Pl@ntNet** 2026-07-26 — cost/terms provisional).
 - [x] Care-content ownership, sourcing, and limitations are documented (**locked** 2026-07-25).
 
 ### Camera unlock rule

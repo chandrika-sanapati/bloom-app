@@ -11,6 +11,7 @@ This artifact protects the local care loop from scope expansion. A feature moves
 - Today view with overdue, due, upcoming, and completed tasks
 - My Plants collection, plant detail, and chronological care history
 - Manual plant search as the primary add-plant path (always available)
+- Camera identification via **Pl@ntNet** (ranked candidates; search remains fallback)
 - Short environment questionnaire and an editable suggested care plan
 - Done, Snooze, Skip, and Reschedule reminder actions
 - Reminder preferences and permission management
@@ -19,7 +20,7 @@ This artifact protects the local care loop from scope expansion. A feature moves
 
 ## Later — after the core build is stable
 
-- Camera identification with ranked candidates and confidence messaging (**deferred** until [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md) records Adopt for a passing provider)
+- Swap or dual-run Kindwise plant.id if Pl@ntNet houseplant quality fails PRD smoke
 - iOS and web releases
 - Optional photo growth timeline
 - Additional catalog species and additional countries beyond Europe, the United States, and India

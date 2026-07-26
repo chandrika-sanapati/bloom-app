@@ -4,7 +4,7 @@
 **Status:** Android-first implementation brief  
 **Platform:** Android first; preserve future iOS and web portability
 
-**Delivery note (2026-07-25):** Camera identification is **deferred** until the Phase 2 provider benchmark records Adopt. V1 add-plant is **search-first**; Discover may keep a non-blocking scan entry that routes to search until Spike 3 is unlocked. See [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
+**Delivery note (2026-07-26):** Camera identification provider **Pl@ntNet Adopted** (cost/terms). Discover Scan is unlocked; search remains always available. Live calls require a Bloom proxy; see [`phase2/IDENTIFICATION_BENCHMARK.md`](./phase2/IDENTIFICATION_BENCHMARK.md).
 
 ---
 

@@ -1,5 +1,6 @@
 import 'package:bloom/data/domain/care_repository.dart';
 import 'package:bloom/data/domain/settings_repository.dart';
+import 'package:bloom/data/identification/identify_repository.dart';
 import 'package:bloom/data/local/drift/bloom_database.dart';
 import 'package:bloom/data/local/drift/drift_care_repository.dart';
 import 'package:bloom/data/local/fixture_seeder.dart';
@@ -18,13 +19,15 @@ class BloomServices {
     required this.settings,
     required this.seeder,
     required this.reminders,
+    IdentifyRepository? identify,
     this.photos = const PlantPhotoStore(),
-  });
+  }) : identify = identify ?? resolveIdentifyRepository();
 
   final CareRepository care;
   final SettingsRepository settings;
   final FixtureSeeder seeder;
   final CareReminderService reminders;
+  final IdentifyRepository identify;
   final PlantPhotoStore photos;
 
   /// Bumped when collection/tasks change so shell tabs can refresh.
@@ -61,6 +64,7 @@ class BloomServices {
     BloomDatabase? database,
     SharedPreferences? preferences,
     ReminderScheduler? reminderScheduler,
+    IdentifyRepository? identify,
     bool seedSampleData = false,
   }) async {
     final db = database ?? BloomDatabase.defaults();
@@ -85,6 +89,7 @@ class BloomServices {
       settings: settings,
       seeder: seeder,
       reminders: reminders,
+      identify: identify ?? resolveIdentifyRepository(),
     );
     // Reminder mutators already update schedules; only refresh listening UI.
     onMutated = () => services.dataRevision.value++;
@@ -102,12 +107,14 @@ class BloomServices {
     BloomDatabase? database,
     SharedPreferences? preferences,
     RecordingReminderScheduler? scheduler,
+    IdentifyRepository? identify,
     bool seedSampleData = true,
   }) {
     return bootstrap(
       database: database ?? BloomDatabase.memory(),
       preferences: preferences,
       reminderScheduler: scheduler ?? RecordingReminderScheduler(),
+      identify: identify,
       seedSampleData: seedSampleData,
     );
   }

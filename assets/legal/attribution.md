@@ -55,3 +55,7 @@ commissioned or user photos when available.
 Images were resized for app packaging; license terms of the originals still apply.
 CC BY / CC BY-SA works require attribution as listed above.
 `money-plant` reuses `pothos.jpg`.
+
+## Plant identification
+
+Species ranking uses the [Pl@ntNet API](https://my.plantnet.org/) when live identification is configured. Follow Pl@ntNet terms for your account tier (attribution / powered-by may apply on free plans).
