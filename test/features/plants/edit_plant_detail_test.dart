@@ -13,9 +13,7 @@ void main() {
       preferences: await SharedPreferences.getInstance(),
     );
 
-    await tester.pumpWidget(
-      BloomApp(services: services, showSplash: false),
-    );
+    await tester.pumpWidget(BloomApp(services: services, showSplash: false));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('My Plants').last);

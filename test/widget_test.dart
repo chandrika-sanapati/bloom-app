@@ -68,7 +68,7 @@ void main() {
     await tester.tap(find.text('Pothos').hitTestable());
     await tester.pumpAndSettle();
     expect(find.text('Your conditions'), findsOneWidget);
-    expect(find.text('Nickname'), findsOneWidget);
+    expect(find.text('Pet name'), findsOneWidget);
     await tester.enterText(find.byType(TextField).first, 'Office Pothos');
     await tester.pump();
 

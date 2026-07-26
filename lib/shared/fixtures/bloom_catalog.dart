@@ -1070,8 +1070,7 @@ abstract final class BloomCatalog {
       title: item.title,
       cadenceLabel: item.cadenceLabel,
       sourceUrl: item.sourceUrl ?? BloomCareContent.interimSourceUrl,
-      careContentVersion:
-          item.careContentVersion ?? BloomCareContent.version,
+      careContentVersion: item.careContentVersion ?? BloomCareContent.version,
     );
   }
 

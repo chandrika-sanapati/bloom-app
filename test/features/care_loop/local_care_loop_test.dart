@@ -75,6 +75,9 @@ void main() {
     expect(plants, hasLength(1));
     expect(plants.first.displayName, 'Desk ZZ');
     final events = await services.care.listCareEvents(plants.first.id);
-    expect(events.any((event) => event.label.toLowerCase().contains('done')), isTrue);
+    expect(
+      events.any((event) => event.label.toLowerCase().contains('done')),
+      isTrue,
+    );
   });
 }

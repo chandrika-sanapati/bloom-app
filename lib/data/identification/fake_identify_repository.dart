@@ -30,7 +30,8 @@ class FakeIdentifyRepository implements IdentifyRepository {
       ),
       IdentifyCandidate(
         score: 0.09,
-        scientificName: 'Dracaena angolensis (Welw. ex Carrière) Byng & Christenh.',
+        scientificName:
+            'Dracaena angolensis (Welw. ex Carrière) Byng & Christenh.',
         scientificNameWithoutAuthor: 'Dracaena angolensis',
         commonNames: ['African spear'],
         gbifId: '2772598',

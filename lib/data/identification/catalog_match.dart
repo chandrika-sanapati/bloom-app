@@ -21,7 +21,9 @@ FixtureCatalogEntry catalogEntryForCandidate(IdentifyCandidate candidate) {
   }
   for (final entry in BloomCatalog.entries) {
     final entryCommon = entry.commonName.toLowerCase();
-    if (common.any((name) => name == entryCommon || name.contains(entryCommon))) {
+    if (common.any(
+      (name) => name == entryCommon || name.contains(entryCommon),
+    )) {
       return entry;
     }
   }

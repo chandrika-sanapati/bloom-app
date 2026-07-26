@@ -8,9 +8,7 @@ abstract final class CarePlanMerge {
     required List<domain.CarePlanItem> existing,
     required List<FixtureCarePlanItem> catalog,
   }) {
-    final byKind = {
-      for (final item in existing) item.kind: item,
-    };
+    final byKind = {for (final item in existing) item.kind: item};
     final merged = <domain.CarePlanItem>[];
 
     for (var i = 0; i < catalog.length; i++) {

@@ -11,8 +11,7 @@ class PlantPhotoStore {
   final Directory? overrideDirectory;
 
   Future<Directory> _photosDirectory() async {
-    final root =
-        overrideDirectory ?? await getApplicationSupportDirectory();
+    final root = overrideDirectory ?? await getApplicationSupportDirectory();
     final directory = Directory(p.join(root.path, 'plant_photos'));
     if (!directory.existsSync()) {
       await directory.create(recursive: true);

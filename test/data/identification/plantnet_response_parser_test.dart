@@ -34,7 +34,10 @@ void main() {
     expect(result.bestMatch, 'Ajuga genevensis L.');
     expect(result.remainingRequests, 498);
     expect(result.candidates, hasLength(2));
-    expect(result.candidates.first.scientificNameWithoutAuthor, 'Ajuga genevensis');
+    expect(
+      result.candidates.first.scientificNameWithoutAuthor,
+      'Ajuga genevensis',
+    );
     expect(result.candidates.first.primaryCommonName, 'Blue bugleweed');
     expect(result.candidates.first.gbifId, '2927079');
     expect(result.candidates.first.score, closeTo(0.90734, 0.0001));

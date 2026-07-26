@@ -287,11 +287,8 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
     final nextPlan = <domain.CarePlanItem>[];
     for (var i = 0; i < _domainPlan.length; i++) {
       final previous = _domainPlan[i];
-      final cadence = cadences[i].isEmpty
-          ? previous.cadenceLabel
-          : cadences[i];
-      final suggested =
-          previous.suggestedCadenceLabel ?? previous.cadenceLabel;
+      final cadence = cadences[i].isEmpty ? previous.cadenceLabel : cadences[i];
+      final suggested = previous.suggestedCadenceLabel ?? previous.cadenceLabel;
       nextPlan.add(
         domain.CarePlanItem(
           id: previous.id,
@@ -658,7 +655,8 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                         isThreeLine:
                             i < _domainPlan.length &&
                             _domainPlan[i].careContentVersion != null,
-                        trailing: i < _domainPlan.length &&
+                        trailing:
+                            i < _domainPlan.length &&
                                 _domainPlan[i].isUserModified
                             ? Text(
                                 'Edited',

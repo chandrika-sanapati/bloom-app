@@ -44,7 +44,9 @@ class PlantThumbnail extends StatelessWidget {
 
     Widget child = fallback;
     final localPath = photoPath;
-    if (localPath != null && localPath.isNotEmpty && File(localPath).existsSync()) {
+    if (localPath != null &&
+        localPath.isNotEmpty &&
+        File(localPath).existsSync()) {
       child = Image.file(
         File(localPath),
         fit: BoxFit.cover,

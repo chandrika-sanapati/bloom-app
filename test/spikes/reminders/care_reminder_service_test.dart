@@ -43,10 +43,7 @@ void main() {
   test('urgency follows calendar day across late-evening offsets', () {
     final now = DateTime(2026, 7, 26, 23, 30);
     expect(
-      CareReminderService.urgencyForDueAt(
-        DateTime(2026, 7, 26, 8),
-        now: now,
-      ),
+      CareReminderService.urgencyForDueAt(DateTime(2026, 7, 26, 8), now: now),
       CareUrgency.dueToday,
     );
     expect(
